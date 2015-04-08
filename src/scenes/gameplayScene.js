@@ -42,6 +42,7 @@ var GamePlayScene = function(game, stage)
     self.abs = false;
 
     self.dirty = true;
+    self.highestAmp = 1; //cached value
 
     self.f = function(x)
     {
@@ -97,9 +98,22 @@ var GamePlayScene = function(game, stage)
       if(self.abs) y = Math.abs(y);
       return y;
     }
+
+    self.findHighestAmp = function(sx, ex, s)
+    {
+      var amp = 0;
+      var y = 0;
+      for(var i = 0; i < s; i++)
+      {
+        y = Math.abs(self.f(sx+((ex-sx)*(i/s))));
+        if(y > amp) amp = y;
+      }
+      self.highestAmp = amp;
+      return self.highestAmp;
+    }
   }
 
-  var ModuleDrawer = function(modules, samples, x, y, w, h)
+  var GraphDrawer = function(modules, samples, x, y, w, h)
   {
     var self = this;
     self.modules = modules;
@@ -121,14 +135,23 @@ var GamePlayScene = function(game, stage)
     );
 
     self.dirty = true;
+    self.highestAmp = 1;
 
     self.draw = function(canv)
     {
-      for(var i = 0; !self.dirty && i < self.modules.length; i++)
-        if(self.modules[i].dirty) self.dirty = true;
+      for(var i = 0; i < self.modules.length; i++)
+      {
+        if(self.modules[i].dirty)
+        {
+          self.modules[i].findHighestAmp(-0.5,0.5,self.samples);
+          self.dirty = true;
+        }
+      }
 
       if(self.dirty)
       {
+        self.findHighestAmp(-0.5,0.5,self.samples);
+
         self.canv.clear();
         self.canv.context.strokeRect(0,0,self.w,self.h);
 
@@ -143,7 +166,7 @@ var GamePlayScene = function(game, stage)
           t = i*(1/(self.samples-1));
           for(var j = 0; j < self.modules.length; j++)
             sample += self.modules[j].f(t-0.5);
-          self.canv.context.lineTo(t*self.w,(self.h/2)-(sample*(h/2))/2);
+          self.canv.context.lineTo(t*self.w,(self.h/2)-((sample*(h/2))/2)/self.highestAmp);
         }
         self.canv.context.stroke();
 
@@ -151,6 +174,22 @@ var GamePlayScene = function(game, stage)
       }
 
       canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
+    }
+
+    self.findHighestAmp = function(sx, ex, s)
+    {
+      var amp = 0;
+      var y = 0;
+      for(var i = 0; i < s; i++)
+      {
+        y = 0;
+        for(var j = 0; j < self.modules.length; j++)
+          y += self.modules[j].f(sx+((ex-sx)*(i/s)));
+        y = Math.abs(y);
+        if(y > amp) amp = y;
+      }
+      self.highestAmp = amp;
+      return self.highestAmp;
     }
   }
 
@@ -167,12 +206,12 @@ var GamePlayScene = function(game, stage)
     self.componentDrawers = [];
 
     self.samples = samples;
-    self.compositionDrawer = new ModuleDrawer(self.components, self.samples, self.x, self.y, self.w-(self.w/10)-10, self.h);
+    self.compositionDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-(self.w/10)-10, self.h);
 
     self.addComponent = function(component)
     {
       self.components.push(component);
-      self.componentDrawers.push(new ModuleDrawer([self.components[self.components.length-1]],self.samples/10,self.x+self.w-(self.w/10),self.y+(self.components.length-1)*(10+self.h/10),self.w/10,self.h/10));
+      self.componentDrawers.push(new ModuleDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-(self.w/10),self.y+(self.components.length-1)*(10+self.h/10),self.w/10,self.h/10));
       self.compositionDrawer.modules = self.components;
       self.compositionDrawer.dirty = true;
     }
@@ -182,6 +221,24 @@ var GamePlayScene = function(game, stage)
       for(var i = 0; i <self.components.length; i++)
         self.componentDrawers[i].draw(canv);
       self.compositionDrawer.draw(canv);
+    }
+  }
+
+  var ModuleDrawer = function(module, samples, x, y, w, h)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.samples = samples;
+    self.graphDrawer = new GraphDrawer([module],self.samples,self.x,self.y,self.w/2,self.h);
+
+    self.draw = function(canv)
+    {
+      self.graphDrawer.draw(canv);
     }
   }
 
@@ -215,32 +272,37 @@ var GamePlayScene = function(game, stage)
     var y = 10;
 
     var module = new Module(); module.type = MOD_TYPE_SLOPE;
-    module_select_slope = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_slope = new GraphDrawer([module],samples_per,x,y,w,h);
     module_select_slope.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SLOPE; composition.addComponent(module); }
     clicker.register(module_select_slope);
     y += h+10;
+
     var module = new Module(); module.type = MOD_TYPE_EXP;
-    module_select_exp = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_exp = new GraphDrawer([module],samples_per,x,y,w,h);
     module_select_exp.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_EXP; composition.addComponent(module); }
     clicker.register(module_select_exp);
     y += h+10;
+
     var module = new Module(); module.type = MOD_TYPE_SIN;
-    module_select_sin = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_sin = new GraphDrawer([module],samples_per,x,y,w,h);
     module_select_sin.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SIN; composition.addComponent(module); }
     clicker.register(module_select_sin);
     y += h+10;
+
     var module = new Module(); module.type = MOD_TYPE_TRIANGLE;
-    module_select_triangle = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_triangle = new GraphDrawer([module],samples_per,x,y,w,h);
     module_select_triangle.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_TRIANGLE; composition.addComponent(module); }
     clicker.register(module_select_triangle);
     y += h+10;
+
     var module = new Module(); module.type = MOD_TYPE_SAW;
-    module_select_saw = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_saw = new GraphDrawer([module],samples_per,x,y,w,h);
     module_select_saw.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SAW; composition.addComponent(module); }
     clicker.register(module_select_saw);
     y += h+10;
+
     var module = new Module(); module.type = MOD_TYPE_SQUARE;
-    module_select_square = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_square = new GraphDrawer([module],samples_per,x,y,w,h);
     module_select_square.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SQUARE; composition.addComponent(module); }
     clicker.register(module_select_square);
 
