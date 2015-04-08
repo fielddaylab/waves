@@ -33,7 +33,7 @@ var GamePlayScene = function(game, stage)
     //MOD_TYPE_TRIANGLE
     //MOD_TYPE_SAW
     //MOD_TYPE_SQUARE
-    self.wavelenth = 1;
+    self.wavelength = 1;
     self.amplitude = 1;
 
     //modifyers of everything
@@ -57,28 +57,37 @@ var GamePlayScene = function(game, stage)
           y = Math.pow(x,self.exp);
           break;
         case MOD_TYPE_SIN:
+          x /= self.wavelength;
           y = Math.sin(x*(2*Math.PI));
+          y *= self.amplitude;
           break;
         case MOD_TYPE_TRIANGLE:
+          x /= self.wavelength;
           x *= 2;
           if((Math.floor(x)+100000)%2) //going up
           {
             x = x - Math.floor(x);
-            y = -1+(2*x);
+            y = (-1+(2*x));
+            y *= self.amplitude;
           }
           else //going down
           {
             x = x - Math.floor(x);
-            y = 1-(2*x);
+            y = (1-(2*x));
+            y *= self.amplitude;
           }
           break;
         case MOD_TYPE_SAW:
-          y = x - Math.floor(x);
+          x /= self.wavelength;
+          y = (x - Math.floor(x));
+          y *= self.amplitude;
           break;
         case MOD_TYPE_SQUARE:
+          x /= self.wavelength;
           x *= 2;
           if(Math.floor(x+10000000)%2) y = -1;
-          else    y = 1;
+          else                         y = 1;
+          y *= self.amplitude;
           break;
         default:
           break;
@@ -111,12 +120,14 @@ var GamePlayScene = function(game, stage)
       }
     );
 
+    self.dirty = true;
+
     self.draw = function(canv)
     {
-      var dirty = false;
-      for(var i = 0; i < self.modules.length; i++)
-        if(self.modules[i].dirty) dirty = true;
-      if(dirty)
+      for(var i = 0; !self.dirty && i < self.modules.length; i++)
+        if(self.modules[i].dirty) self.dirty = true;
+
+      if(self.dirty)
       {
         self.canv.clear();
         self.canv.context.strokeRect(0,0,self.w,self.h);
@@ -135,6 +146,8 @@ var GamePlayScene = function(game, stage)
           self.canv.context.lineTo(t*self.w,(self.h/2)-(sample*(h/2))/2);
         }
         self.canv.context.stroke();
+
+        self.dirty = false;
       }
 
       canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
