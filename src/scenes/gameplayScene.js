@@ -154,12 +154,45 @@ var GamePlayScene = function(game, stage)
     }
   }
 
+  var CompositionDrawer = function(samples, x, y, w, h)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.components = [];
+    self.componentDrawers = [];
+
+    self.samples = samples;
+    self.compositionDrawer = new ModuleDrawer(self.components, self.samples, self.x, self.y, self.w-(self.w/10)-10, self.h);
+
+    self.addComponent = function(component)
+    {
+      self.components.push(component);
+      self.componentDrawers.push(new ModuleDrawer([self.components[self.components.length-1]],self.samples/10,self.x+self.w-(self.w/10),self.y+(self.components.length-1)*(10+self.h/10),self.w/10,self.h/10));
+      self.compositionDrawer.modules = self.components;
+      self.compositionDrawer.dirty = true;
+    }
+
+    self.draw = function(canv)
+    {
+      for(var i = 0; i <self.components.length; i++)
+        self.componentDrawers[i].draw(canv);
+      self.compositionDrawer.draw(canv);
+    }
+  }
+
   var module_select_slope;
   var module_select_exp;
   var module_select_sin;
   var module_select_triangle;
   var module_select_saw;
   var module_select_square;
+
+  var composition;
 
   self.ready = function()
   {
@@ -176,29 +209,42 @@ var GamePlayScene = function(game, stage)
     ticker.register(particler);
 
     var samples_per = 100;
-    var x = 10;
-    var y = 10;
     var w = 100;
     var h = 30;
+    var x = stage.drawCanv.canvas.width-w-10;
+    var y = 10;
 
     var module = new Module(); module.type = MOD_TYPE_SLOPE;
     module_select_slope = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_slope.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SLOPE; composition.addComponent(module); }
+    clicker.register(module_select_slope);
     y += h+10;
     var module = new Module(); module.type = MOD_TYPE_EXP;
     module_select_exp = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_exp.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_EXP; composition.addComponent(module); }
+    clicker.register(module_select_exp);
     y += h+10;
     var module = new Module(); module.type = MOD_TYPE_SIN;
     module_select_sin = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_sin.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SIN; composition.addComponent(module); }
+    clicker.register(module_select_sin);
     y += h+10;
     var module = new Module(); module.type = MOD_TYPE_TRIANGLE;
     module_select_triangle = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_triangle.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_TRIANGLE; composition.addComponent(module); }
+    clicker.register(module_select_triangle);
     y += h+10;
     var module = new Module(); module.type = MOD_TYPE_SAW;
     module_select_saw = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_saw.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SAW; composition.addComponent(module); }
+    clicker.register(module_select_saw);
     y += h+10;
     var module = new Module(); module.type = MOD_TYPE_SQUARE;
     module_select_square = new ModuleDrawer([module],samples_per,x,y,w,h);
+    module_select_square.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SQUARE; composition.addComponent(module); }
+    clicker.register(module_select_square);
 
+    composition = new CompositionDrawer(samples_per*10, 10, 10, stage.drawCanv.canvas.width-w-30, stage.drawCanv.canvas.height-20);
   };
 
   self.tick = function()
@@ -220,6 +266,8 @@ var GamePlayScene = function(game, stage)
     module_select_triangle.draw(stage.drawCanv);
     module_select_saw.draw(stage.drawCanv);
     module_select_square.draw(stage.drawCanv);
+
+    composition.draw(stage.drawCanv);
   };
 
   self.cleanup = function()
