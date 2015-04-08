@@ -25,7 +25,6 @@ var GamePlayScene = function(game, stage)
     self.type = 0;
     //type-specific vars
     //MOD_TYPE_SLOPE
-    self.y = 0;
     self.slope = 1;
     //MOD_TYPE_EXP
     self.exp = 2;
@@ -37,22 +36,23 @@ var GamePlayScene = function(game, stage)
     self.amplitude = 1;
 
     //modifyers of everything
-    self.xoffset = 0;
-    self.yoffset = 0;
+    self.off_x = 0;
+    self.off_y = 0;
     self.abs = false;
+    self.neg = false;
 
     self.dirty = true;
     self.highestAmp = 1; //cached value
 
     self.f = function(x)
     {
-      x += self.xoffset;
+      x += self.off_x;
       var y = 0;
 
       switch(self.type)
       {
         case MOD_TYPE_SLOPE:
-          y = x * self.slope + self.y;
+          y = x * self.slope;
           break;
         case MOD_TYPE_EXP:
           y = Math.pow(x,self.exp);
@@ -65,7 +65,7 @@ var GamePlayScene = function(game, stage)
         case MOD_TYPE_TRIANGLE:
           x /= self.wavelength;
           x *= 2;
-          if((Math.floor(x)+100000)%2) //going up
+          if(Math.floor(x)%2) //going up
           {
             x = x - Math.floor(x);
             y = (-1+(2*x));
@@ -86,16 +86,17 @@ var GamePlayScene = function(game, stage)
         case MOD_TYPE_SQUARE:
           x /= self.wavelength;
           x *= 2;
-          if(Math.floor(x+10000000)%2) y = -1;
-          else                         y = 1;
+          if(Math.floor(x)%2) y = -1;
+          else                y = 1;
           y *= self.amplitude;
           break;
         default:
           break;
       }
 
-      y += self.yoffset;
+      y += self.off_y;
       if(self.abs) y = Math.abs(y);
+      if(self.neg) y = -y;
       return y;
     }
 
@@ -140,33 +141,37 @@ var GamePlayScene = function(game, stage)
     self.draw = function(canv)
     {
       for(var i = 0; i < self.modules.length; i++)
-      {
-        if(self.modules[i].dirty)
-        {
-          self.modules[i].findHighestAmp(-0.5,0.5,self.samples);
-          self.dirty = true;
-        }
-      }
+        if(self.modules[i].dirty) self.dirty = true;
 
       if(self.dirty)
       {
-        self.findHighestAmp(-0.5,0.5,self.samples);
+        self.findHighestAmp(-1,1,self.samples);
 
         self.canv.clear();
-        self.canv.context.strokeRect(0,0,self.w,self.h);
 
-        self.canv.context.beginPath();
-        self.canv.context.moveTo(0,0);
+        self.canv.context.strokeStyle = "#AAAAAA";
+        for(var i = -2; i <= 2; i++)
+        {
+          self.canv.context.beginPath();
+          self.canv.context.moveTo(0,     (self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
+          self.canv.context.lineTo(self.w,(self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
+          self.canv.context.stroke();
+        }
+
+        self.canv.context.strokeStyle = "#000000";
+        self.canv.context.strokeRect(0,0,self.w,self.h);
 
         var sample;
         var t;
+        self.canv.context.beginPath();
+        self.canv.context.moveTo(0,0);
         for(var i = 0; i < self.samples; i++)
         {
           sample = 0;
           t = i*(1/(self.samples-1));
           for(var j = 0; j < self.modules.length; j++)
-            sample += self.modules[j].f(t-0.5);
-          self.canv.context.lineTo(t*self.w,(self.h/2)-((sample*(h/2))/2)/self.highestAmp);
+            sample += self.modules[j].f(t*2-1);
+          self.canv.context.lineTo(t*self.w,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4))));
         }
         self.canv.context.stroke();
 
@@ -201,26 +206,35 @@ var GamePlayScene = function(game, stage)
     self.y = y;
     self.w = w;
     self.h = h;
+    self.samples = samples;
 
     self.components = [];
     self.componentDrawers = [];
+    var component_width = 200;
+    var component_height = 70;
 
-    self.samples = samples;
-    self.compositionDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-(self.w/10)-10, self.h);
+    self.compositionDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
 
     self.addComponent = function(component)
     {
       self.components.push(component);
-      self.componentDrawers.push(new ModuleDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-(self.w/10),self.y+(self.components.length-1)*(10+self.h/10),self.w/10,self.h/10));
+      self.componentDrawers.push(new ModuleDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-component_width,self.y+(self.components.length-1)*(10+component_height),component_width,component_height));
       self.compositionDrawer.modules = self.components;
       self.compositionDrawer.dirty = true;
     }
 
     self.draw = function(canv)
     {
-      for(var i = 0; i <self.components.length; i++)
+      for(var i = 0; i < self.components.length; i++)
         self.componentDrawers[i].draw(canv);
       self.compositionDrawer.draw(canv);
+    }
+
+    //cascade any unregistering
+    self.destroy = function()
+    {
+      for(var i = 0; i < self.componentDrawers.length; i++)
+        self.componentDrawers[i].destroy();
     }
   }
 
@@ -234,12 +248,254 @@ var GamePlayScene = function(game, stage)
     self.h = h;
 
     self.samples = samples;
-    self.graphDrawer = new GraphDrawer([module],self.samples,self.x,self.y,self.w/2,self.h);
+    self.module = module;
+    var knob_w = 10;
+    self.graphDrawer = new GraphDrawer([self.module],self.samples,self.x,self.y,self.w-knob_w-10,self.h);
+
+    var off_x_knob;
+    var off_y_knob;
+    var slope_knob;
+    var exp_knob;
+    var wavelength_knob;
+    var amplitude_knob;
+    var abs_knob;
+
+    var yoff = 0;
+    switch(self.module.type)
+    {
+      case MOD_TYPE_SLOPE:
+        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x; yoff += knob_w+10;
+        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y; yoff += knob_w+10;
+        slope_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); slope_knob.val = module.slope; yoff += knob_w+10;
+        dragger.register(off_x_knob);
+        //dragger.register(off_y_knob);
+        dragger.register(slope_knob);
+        break;
+      case MOD_TYPE_EXP:
+        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x; yoff += knob_w+10;
+        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y; yoff += knob_w+10;
+        exp_knob   = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.001,true); exp_knob.val = module.exp;   yoff += knob_w+10;
+        dragger.register(off_x_knob);
+        //dragger.register(off_y_knob);
+        dragger.register(exp_knob);
+        break;
+      case MOD_TYPE_SIN:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        dragger.register(off_x_knob);
+        //dragger.register(off_y_knob);
+        dragger.register(wavelength_knob);
+        dragger.register(amplitude_knob);
+        break;
+      case MOD_TYPE_TRIANGLE:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        dragger.register(off_x_knob);
+        //dragger.register(off_y_knob);
+        dragger.register(wavelength_knob);
+        dragger.register(amplitude_knob);
+        break;
+      case MOD_TYPE_SAW:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        dragger.register(off_x_knob);
+        //dragger.register(off_y_knob);
+        dragger.register(wavelength_knob);
+        dragger.register(amplitude_knob);
+        break;
+      case MOD_TYPE_SQUARE:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        dragger.register(off_x_knob);
+        //dragger.register(off_y_knob);
+        dragger.register(wavelength_knob);
+        dragger.register(amplitude_knob);
+        break;
+      default:
+        break;
+    }
 
     self.draw = function(canv)
     {
       self.graphDrawer.draw(canv);
+
+      switch(self.module.type)
+      {
+        case MOD_TYPE_SLOPE:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
+          slope_knob.draw(canv); if(slope_knob.dirty) { slope_knob.dirty = false; module.slope = slope_knob.val; module.dirty = true; }
+          break;
+        case MOD_TYPE_EXP:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
+          exp_knob.draw(canv); if(exp_knob.dirty) { exp_knob.dirty = false; module.exp = exp_knob.val; module.dirty = true; }
+          break;
+        case MOD_TYPE_SIN:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+          break;
+        case MOD_TYPE_TRIANGLE:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+          break;
+        case MOD_TYPE_SAW:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+          break;
+        case MOD_TYPE_SQUARE:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+          break;
+        default:
+          break;
+      }
     }
+
+    //to handle unregistering
+    self.destroy = function()
+    {
+      switch(self.module.type)
+      {
+        case MOD_TYPE_SLOPE:
+          dragger.unregister(off_x_knob);
+          dragger.unregister(off_y_knob);
+          dragger.unregister(slope_knob);
+          break;
+        case MOD_TYPE_EXP:
+          dragger.unregister(off_x_knob);
+          dragger.unregister(off_y_knob);
+          dragger.unregister(exp_knob);
+          break;
+        case MOD_TYPE_SIN:
+          dragger.unregister(off_x_knob);
+          dragger.unregister(off_y_knob);
+          dragger.unregister(wavelength_knob);
+          dragger.unregister(amplitude_knob);
+          break;
+        case MOD_TYPE_TRIANGLE:
+          dragger.unregister(off_x_knob);
+          dragger.unregister(off_y_knob);
+          dragger.unregister(wavelength_knob);
+          dragger.unregister(amplitude_knob);
+          break;
+        case MOD_TYPE_SAW:
+          dragger.unregister(off_x_knob);
+          dragger.unregister(off_y_knob);
+          dragger.unregister(wavelength_knob);
+          dragger.unregister(amplitude_knob);
+          break;
+        case MOD_TYPE_SQUARE:
+          dragger.unregister(off_x_knob);
+          dragger.unregister(off_y_knob);
+          dragger.unregister(wavelength_knob);
+          dragger.unregister(amplitude_knob);
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  var Knob = function(x,y,w,h,d,cw)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+    self.r = self.w/2;
+    self.d = d;
+    self.cw = cw;
+
+    //used for drag calcs
+    self.offX = 0;
+    self.offY = 0;
+    self.deltaX = 0;
+    self.deltaY = 0;
+
+    self.val = 0;
+    self.rot = 0;
+    self.dirty = true;
+
+    self.draw = function(canv)
+    {
+      //canv.context.save();
+      //canv.context.translate(self.x+self.w/2, self.y+self.h/2);
+      //canv.context.rotate(self.rot);
+
+      canv.context.beginPath();
+      canv.context.arc(self.x+self.w/2, self.y+self.h/2, self.r, 0, Math.PI*2, true);
+      canv.context.stroke();
+      canv.context.closePath();
+
+      //canv.context.drawImage(self.img, -self.w/2, -self.h/2, self.w, self.h);
+
+      //canv.context.restore();
+    }
+
+    function len(x,y)
+    {
+      return Math.sqrt((x*x)+(y*y));
+    }
+    self.dragStart = function(evt)
+    {
+      self.offX = evt.doX-(self.x+(self.w/2));
+      self.offY = evt.doY-(self.y+(self.h/2));
+    };
+    self.drag = function(evt)
+    {
+      self.deltaX = (evt.doX-self.x+(self.w/2))-self.offX;
+      self.deltaY = (evt.doY-self.y+(self.h/2))-self.offY;
+
+      self.newOffX = evt.doX-(self.x+(self.w/2));
+      self.newOffY = evt.doY-(self.y+(self.h/2));
+
+      var x = self.offX/len(self.offX,self.offY);
+      var y = self.offY/len(self.offX,self.offY);
+      self.oldT = ((-Math.atan2(x,y))+(Math.PI/2)+(2*Math.PI))%(2*Math.PI); //why terrible coordinate spaces...
+      var x = self.newOffX/len(self.newOffX,self.newOffY);
+      var y = self.newOffY/len(self.newOffX,self.newOffY);
+      self.newT = ((-Math.atan2(x,y))+(Math.PI/2)+(2*Math.PI))%(2*Math.PI); //why terrible coordinate spaces...
+
+      var a = self.oldT-self.newT;
+      if(self.cw)
+      {
+        if(a > 0) { self.val+=self.d; self.dirty = true; }
+        else      { self.val-=self.d; self.dirty = true; }
+      }
+      else
+      {
+        if(a > 0) { self.val-=self.d; self.dirty = true; }
+        else      { self.val+=self.d; self.dirty = true; }
+      }
+
+
+      self.rot -= a;
+
+      self.offX = self.newOffX;
+      self.offY = self.newOffY;
+    };
+    self.dragFinish = function()
+    {
+    };
   }
 
   var module_select_slope;
@@ -266,7 +522,7 @@ var GamePlayScene = function(game, stage)
     ticker.register(particler);
 
     var samples_per = 100;
-    var w = 100;
+    var w = 50;
     var h = 30;
     var x = stage.drawCanv.canvas.width-w-10;
     var y = 10;
