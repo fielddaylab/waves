@@ -1,0 +1,51 @@
+<html>
+<head>
+<script type='text/javascript' src='src/config.js'></script>
+<script type='text/javascript' src='src/utils/js_hacks.js'></script>
+<script type='text/javascript' src='src/utils/webgl-utils.js'></script>
+<script type="text/javascript" src="src/canv.js"></script>
+<script type="text/javascript" src="src/stage.js"></script>
+<script type="text/javascript" src="src/game.js"></script>
+
+<script type="text/javascript" src="src/doqueues/assetter.js"></script>
+<script type="text/javascript" src="src/doqueues/clicker.js"></script>
+<script type="text/javascript" src="src/doqueues/keyer.js"></script>
+<script type="text/javascript" src="src/doqueues/debugger.js"></script>
+<script type="text/javascript" src="src/doqueues/dragger.js"></script>
+<script type="text/javascript" src="src/doqueues/drawer.js"></script>
+<script type="text/javascript" src="src/doqueues/flicker.js"></script>
+<script type="text/javascript" src="src/doqueues/hoverer.js"></script>
+<script type="text/javascript" src="src/doqueues/presser.js"></script>
+<script type="text/javascript" src="src/doqueues/ticker.js"></script>
+<script type="text/javascript" src="src/doqueues/particler.js"></script>
+
+<script type="text/javascript" src="src/scenes/nullScene.js"></script>
+<script type="text/javascript" src="src/scenes/loadingScene.js"></script>
+<script type="text/javascript" src="src/scenes/testScene.js"></script>
+<script type="text/javascript" src="src/scenes/gameplayScene.js"></script>
+
+<script type="text/javascript">
+var g;
+function begin()
+{
+  g = new Game({width:640,height:320,container:"stage_container"});
+  g.begin();
+}
+window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
+window.addEventListener("load",begin,false);
+</script>
+
+</head>
+<body>
+
+<div id="content" style="display:block; margin:50px auto; width:640px; position:relative;">
+  <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
+  <div id="stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
+  <div id="shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
+    <img id="shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
+  </div>
+</div>
+
+</body>
+</html>
+
