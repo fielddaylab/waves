@@ -125,18 +125,29 @@ var GamePlayScene = function(game, stage)
     self.w = w;
     self.h = h;
 
-    self.canv = new Canv(
-      {
-        width:self.w,
-        height:self.h,
-        fillStyle:"#000000",
-        strokeStyle:"#000000",
-        smoothing:true
-      }
-    );
+    self.canv; //gets initialized in position
 
     self.dirty = true;
     self.highestAmp = 1;
+
+    self.position = function(x,y,w,h)
+    {
+      self.x = x;
+      self.y = y;
+      self.w = w;
+      self.h = h;
+
+      self.canv = new Canv(
+        {
+          width:self.w,
+          height:self.h,
+          fillStyle:"#000000",
+          strokeStyle:"#000000",
+          smoothing:true
+        }
+      );
+    }
+    self.position(self.x,self.y,self.w,self.h);
 
     self.draw = function(canv)
     {
@@ -145,8 +156,9 @@ var GamePlayScene = function(game, stage)
 
       if(self.dirty)
       {
-        self.findHighestAmp(-1,1,self.samples);
-        if(self.highestAmp < 1) self.highestAmp = 1;
+        //self.findHighestAmp(-1,1,self.samples);
+        //if(self.highestAmp < 1) self.highestAmp = 1;
+        self.highestAmp = 1;
 
         self.canv.clear();
 
@@ -199,7 +211,7 @@ var GamePlayScene = function(game, stage)
     }
   }
 
-  var ComponentDrawer = function(component, samples, x, y, w, h)
+  var ComponentEditorDrawer = function(component, samples, x, y, w, h)
   {
     var self = this;
 
@@ -210,8 +222,13 @@ var GamePlayScene = function(game, stage)
 
     self.samples = samples;
     self.component = component;
+    self.should_destroy = false;
+
     var knob_w = 10;
-    self.graphDrawer = new GraphDrawer([self.component],self.samples,self.x,self.y,self.w-knob_w-10,self.h);
+
+    var graphDrawer = new GraphDrawer([self.component],self.samples,0,0,0,0);
+    graphDrawer.click = function(evt) { self.should_destroy = true; }
+    clicker.register(graphDrawer);
 
     var off_x_knob;
     var off_y_knob;
@@ -219,62 +236,62 @@ var GamePlayScene = function(game, stage)
     var exp_knob;
     var wavelength_knob;
     var amplitude_knob;
+    var neg_knob;
     var abs_knob;
 
-    var yoff = 0;
     switch(self.component.type)
     {
       case COMP_TYPE_SLOPE:
-        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x; yoff += knob_w+10;
-        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y; yoff += knob_w+10;
-        slope_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); slope_knob.val = component.slope; yoff += knob_w+10;
+        off_x_knob = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
+        //off_y_knob = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
+        slope_knob = new Knob(0,0,0,0,0.01,true); slope_knob.val = component.slope;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(slope_knob);
         break;
       case COMP_TYPE_EXP:
-        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x; yoff += knob_w+10;
-        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y; yoff += knob_w+10;
-        exp_knob   = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.001,true); exp_knob.val = component.exp;   yoff += knob_w+10;
+        off_x_knob = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
+        //off_y_knob = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
+        exp_knob   = new Knob(0,0,0,0,0.001,true); exp_knob.val = component.exp;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(exp_knob);
         break;
       case COMP_TYPE_SIN:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
+        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_TRIANGLE:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
+        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_SAW:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
+        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_SQUARE:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
+        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
@@ -284,9 +301,61 @@ var GamePlayScene = function(game, stage)
         break;
     }
 
+    self.position = function(x,y,w,h)
+    {
+      self.x = x;
+      self.y = y;
+      self.w = w;
+      self.h = h;
+
+      graphDrawer.position(self.x,self.y,self.w-knob_w-10,self.h);
+
+      var yoff = 0;
+      switch(self.component.type)
+      {
+        case COMP_TYPE_SLOPE:
+          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          slope_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          break;
+        case COMP_TYPE_EXP:
+          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          exp_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          break;
+        case COMP_TYPE_SIN:
+          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          break;
+        case COMP_TYPE_TRIANGLE:
+          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          break;
+        case COMP_TYPE_SAW:
+          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          break;
+        case COMP_TYPE_SQUARE:
+          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          break;
+        default:
+          break;
+      }
+    }
+    self.position(self.x,self.y,self.w,self.h);
+
     self.draw = function(canv)
     {
-      self.graphDrawer.draw(canv);
+      graphDrawer.draw(canv);
 
       switch(self.component.type)
       {
@@ -332,6 +401,7 @@ var GamePlayScene = function(game, stage)
     //to handle unregistering
     self.destroy = function()
     {
+      clicker.unregister(graphDrawer);
       switch(self.component.type)
       {
         case COMP_TYPE_SLOPE:
@@ -397,12 +467,23 @@ var GamePlayScene = function(game, stage)
     self.rot = 0;
     self.dirty = true;
 
+    self.position = function(x,y,w,h)
+    {
+      self.x = x;
+      self.y = y;
+      self.w = w;
+      self.h = h;
+      self.r = self.w/2;
+    }
+    self.position(self.x,self.y,self.w,self.h);
+
     self.draw = function(canv)
     {
       //canv.context.save();
       //canv.context.translate(self.x+self.w/2, self.y+self.h/2);
       //canv.context.rotate(self.rot);
 
+      canv.context.strokeStyle = "#000000";
       canv.context.beginPath();
       canv.context.arc(self.x+self.w/2, self.y+self.h/2, self.r, 0, Math.PI*2, true);
       canv.context.stroke();
@@ -469,7 +550,6 @@ var GamePlayScene = function(game, stage)
     };
   }
 
-
   var CompositionDrawer = function(samples, x, y, w, h)
   {
     var self = this;
@@ -481,18 +561,18 @@ var GamePlayScene = function(game, stage)
     self.samples = samples;
 
     self.components = [];
-    self.componentDrawers = [];
+    self.componentEditorDrawers = [];
     var component_width = 200;
     var component_height = 70;
 
-    self.compositionDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
+    self.graphDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
 
     self.addComponent = function(component)
     {
       self.components.push(component);
-      self.componentDrawers.push(new ComponentDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-component_width,self.y+(self.components.length-1)*(10+component_height),component_width,component_height));
-      self.compositionDrawer.components = self.components;
-      self.compositionDrawer.dirty = true;
+      self.componentEditorDrawers.push(new ComponentEditorDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-component_width,self.y+(self.components.length-1)*(10+component_height),component_width,component_height));
+      self.graphDrawer.components = self.components;
+      self.graphDrawer.dirty = true;
     }
 
     self.removeComponent = function(component)
@@ -501,27 +581,39 @@ var GamePlayScene = function(game, stage)
       {
         if(self.components[i] == component)
         {
+          self.componentEditorDrawers[i].destroy;
           self.components.splice(i,1);
-          self.componentDrawers.splice(i,1);
-          self.compositionDrawer.components = self.components;
-          self.compositionDrawer.dirty = true;
-          component.destroy();
+          self.componentEditorDrawers.splice(i,1);
+          self.graphDrawer.components = self.components;
+          self.graphDrawer.dirty = true;
         }
+      }
+      for(var i = 0; i < self.components.length; i++)
+      {
+        self.componentEditorDrawers[i].position(self.x+self.w-component_width,self.y+i*(10+component_height),component_width,component_height);
       }
     }
 
     self.draw = function(canv)
     {
-      for(var i = 0; i < self.components.length; i++)
-        self.componentDrawers[i].draw(canv);
-      self.compositionDrawer.draw(canv);
+      for(var i = 0; i < self.componentEditorDrawers.length; i++)
+      {
+        if(self.componentEditorDrawers[i].should_destroy)
+        {
+          self.removeComponent(self.componentEditorDrawers[i].component);
+          i--;
+        }
+        else
+          self.componentEditorDrawers[i].draw(canv);
+      }
+      self.graphDrawer.draw(canv);
     }
 
     //cascade any unregistering
     self.destroy = function()
     {
-      for(var i = 0; i < self.componentDrawers.length; i++)
-        self.componentDrawers[i].destroy();
+      for(var i = 0; i < self.componentEditorDrawers.length; i++)
+        self.componentEditorDrawers[i].destroy();
     }
   }
 
@@ -589,7 +681,7 @@ var GamePlayScene = function(game, stage)
     component_select_square.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SQUARE; composition.addComponent(component); }
     clicker.register(component_select_square);
 
-    composition = new CompositionDrawer(samples_per*10, 10, 10, stage.drawCanv.canvas.width-w-30, stage.drawCanv.canvas.height-20);
+    composition = new CompositionDrawer(10000, 10, 10, stage.drawCanv.canvas.width-w-30, stage.drawCanv.canvas.height-20);
   };
 
   self.tick = function()
