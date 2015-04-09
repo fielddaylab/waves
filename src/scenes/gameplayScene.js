@@ -146,11 +146,12 @@ var GamePlayScene = function(game, stage)
       if(self.dirty)
       {
         self.findHighestAmp(-1,1,self.samples);
+        if(self.highestAmp < 1) self.highestAmp = 1;
 
         self.canv.clear();
 
         self.canv.context.strokeStyle = "#AAAAAA";
-        for(var i = -2; i <= 2; i++)
+        for(var i = -2*Math.floor(self.highestAmp); i <= 2*Math.floor(self.highestAmp); i++)
         {
           self.canv.context.beginPath();
           self.canv.context.moveTo(0,     (self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
@@ -282,8 +283,8 @@ var GamePlayScene = function(game, stage)
       case MOD_TYPE_SIN:
         off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
         //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
@@ -292,8 +293,8 @@ var GamePlayScene = function(game, stage)
       case MOD_TYPE_TRIANGLE:
         off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
         //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
@@ -302,8 +303,8 @@ var GamePlayScene = function(game, stage)
       case MOD_TYPE_SAW:
         off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
         //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
@@ -312,8 +313,8 @@ var GamePlayScene = function(game, stage)
       case MOD_TYPE_SQUARE:
         off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
         //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
