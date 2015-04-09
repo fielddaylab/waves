@@ -13,25 +13,25 @@ var GamePlayScene = function(game, stage)
   var particler;
 
   var ENUM = 0;
-  var MOD_TYPE_SLOPE    = ENUM; ENUM++;
-  var MOD_TYPE_EXP      = ENUM; ENUM++;
-  var MOD_TYPE_SIN      = ENUM; ENUM++;
-  var MOD_TYPE_TRIANGLE = ENUM; ENUM++;
-  var MOD_TYPE_SAW      = ENUM; ENUM++;
-  var MOD_TYPE_SQUARE   = ENUM; ENUM++;
-  var Module = function()
+  var COMP_TYPE_SLOPE    = ENUM; ENUM++;
+  var COMP_TYPE_EXP      = ENUM; ENUM++;
+  var COMP_TYPE_SIN      = ENUM; ENUM++;
+  var COMP_TYPE_TRIANGLE = ENUM; ENUM++;
+  var COMP_TYPE_SAW      = ENUM; ENUM++;
+  var COMP_TYPE_SQUARE   = ENUM; ENUM++;
+  var Component = function()
   {
     var self = this;
     self.type = 0;
     //type-specific vars
-    //MOD_TYPE_SLOPE
+    //COMP_TYPE_SLOPE
     self.slope = 1;
-    //MOD_TYPE_EXP
+    //COMP_TYPE_EXP
     self.exp = 2;
-    //MOD_TYPE_SIN
-    //MOD_TYPE_TRIANGLE
-    //MOD_TYPE_SAW
-    //MOD_TYPE_SQUARE
+    //COMP_TYPE_SIN
+    //COMP_TYPE_TRIANGLE
+    //COMP_TYPE_SAW
+    //COMP_TYPE_SQUARE
     self.wavelength = 1;
     self.amplitude = 1;
 
@@ -51,18 +51,18 @@ var GamePlayScene = function(game, stage)
 
       switch(self.type)
       {
-        case MOD_TYPE_SLOPE:
+        case COMP_TYPE_SLOPE:
           y = x * self.slope;
           break;
-        case MOD_TYPE_EXP:
+        case COMP_TYPE_EXP:
           y = Math.pow(x,self.exp);
           break;
-        case MOD_TYPE_SIN:
+        case COMP_TYPE_SIN:
           x /= self.wavelength;
           y = Math.sin(x*(2*Math.PI));
           y *= self.amplitude;
           break;
-        case MOD_TYPE_TRIANGLE:
+        case COMP_TYPE_TRIANGLE:
           x /= self.wavelength;
           x *= 2;
           if(Math.floor(x)%2) //going up
@@ -78,12 +78,12 @@ var GamePlayScene = function(game, stage)
             y *= self.amplitude;
           }
           break;
-        case MOD_TYPE_SAW:
+        case COMP_TYPE_SAW:
           x /= self.wavelength;
           y = (x - Math.floor(x));
           y *= self.amplitude;
           break;
-        case MOD_TYPE_SQUARE:
+        case COMP_TYPE_SQUARE:
           x /= self.wavelength;
           x *= 2;
           if(Math.floor(x)%2) y = -1;
@@ -114,10 +114,10 @@ var GamePlayScene = function(game, stage)
     }
   }
 
-  var GraphDrawer = function(modules, samples, x, y, w, h)
+  var GraphDrawer = function(components, samples, x, y, w, h)
   {
     var self = this;
-    self.modules = modules;
+    self.components = components;
     self.samples = samples; if(self.samples < 2) self.samples = 2; //left and right side of graph at minimum
 
     self.x = x;
@@ -140,8 +140,8 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
-      for(var i = 0; i < self.modules.length; i++)
-        if(self.modules[i].dirty) self.dirty = true;
+      for(var i = 0; i < self.components.length; i++)
+        if(self.components[i].dirty) self.dirty = true;
 
       if(self.dirty)
       {
@@ -170,8 +170,8 @@ var GamePlayScene = function(game, stage)
         {
           sample = 0;
           t = i*(1/(self.samples-1));
-          for(var j = 0; j < self.modules.length; j++)
-            sample += self.modules[j].f(t*2-1);
+          for(var j = 0; j < self.components.length; j++)
+            sample += self.components[j].f(t*2-1);
           self.canv.context.lineTo(t*self.w,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4))));
         }
         self.canv.context.stroke();
@@ -189,8 +189,8 @@ var GamePlayScene = function(game, stage)
       for(var i = 0; i < s; i++)
       {
         y = 0;
-        for(var j = 0; j < self.modules.length; j++)
-          y += self.modules[j].f(sx+((ex-sx)*(i/s)));
+        for(var j = 0; j < self.components.length; j++)
+          y += self.components[j].f(sx+((ex-sx)*(i/s)));
         y = Math.abs(y);
         if(y > amp) amp = y;
       }
@@ -199,47 +199,7 @@ var GamePlayScene = function(game, stage)
     }
   }
 
-  var CompositionDrawer = function(samples, x, y, w, h)
-  {
-    var self = this;
-
-    self.x = x;
-    self.y = y;
-    self.w = w;
-    self.h = h;
-    self.samples = samples;
-
-    self.components = [];
-    self.componentDrawers = [];
-    var component_width = 200;
-    var component_height = 70;
-
-    self.compositionDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
-
-    self.addComponent = function(component)
-    {
-      self.components.push(component);
-      self.componentDrawers.push(new ModuleDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-component_width,self.y+(self.components.length-1)*(10+component_height),component_width,component_height));
-      self.compositionDrawer.modules = self.components;
-      self.compositionDrawer.dirty = true;
-    }
-
-    self.draw = function(canv)
-    {
-      for(var i = 0; i < self.components.length; i++)
-        self.componentDrawers[i].draw(canv);
-      self.compositionDrawer.draw(canv);
-    }
-
-    //cascade any unregistering
-    self.destroy = function()
-    {
-      for(var i = 0; i < self.componentDrawers.length; i++)
-        self.componentDrawers[i].destroy();
-    }
-  }
-
-  var ModuleDrawer = function(module, samples, x, y, w, h)
+  var ComponentDrawer = function(component, samples, x, y, w, h)
   {
     var self = this;
 
@@ -249,9 +209,9 @@ var GamePlayScene = function(game, stage)
     self.h = h;
 
     self.samples = samples;
-    self.module = module;
+    self.component = component;
     var knob_w = 10;
-    self.graphDrawer = new GraphDrawer([self.module],self.samples,self.x,self.y,self.w-knob_w-10,self.h);
+    self.graphDrawer = new GraphDrawer([self.component],self.samples,self.x,self.y,self.w-knob_w-10,self.h);
 
     var off_x_knob;
     var off_y_knob;
@@ -262,59 +222,59 @@ var GamePlayScene = function(game, stage)
     var abs_knob;
 
     var yoff = 0;
-    switch(self.module.type)
+    switch(self.component.type)
     {
-      case MOD_TYPE_SLOPE:
-        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x; yoff += knob_w+10;
-        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y; yoff += knob_w+10;
-        slope_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); slope_knob.val = module.slope; yoff += knob_w+10;
+      case COMP_TYPE_SLOPE:
+        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x; yoff += knob_w+10;
+        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y; yoff += knob_w+10;
+        slope_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); slope_knob.val = component.slope; yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(slope_knob);
         break;
-      case MOD_TYPE_EXP:
-        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x; yoff += knob_w+10;
-        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y; yoff += knob_w+10;
-        exp_knob   = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.001,true); exp_knob.val = module.exp;   yoff += knob_w+10;
+      case COMP_TYPE_EXP:
+        off_x_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x; yoff += knob_w+10;
+        //off_y_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y; yoff += knob_w+10;
+        exp_knob   = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.001,true); exp_knob.val = component.exp;   yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(exp_knob);
         break;
-      case MOD_TYPE_SIN:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+      case COMP_TYPE_SIN:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
-      case MOD_TYPE_TRIANGLE:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+      case COMP_TYPE_TRIANGLE:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
-      case MOD_TYPE_SAW:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+      case COMP_TYPE_SAW:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
-      case MOD_TYPE_SQUARE:
-        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = module.off_x;      yoff += knob_w+10;
-        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = module.off_y;      yoff += knob_w+10;
-        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = module.wavelength; yoff += knob_w+10;
-        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = module.amplitude;  yoff += knob_w+10;
+      case COMP_TYPE_SQUARE:
+        off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_x_knob.val = component.off_x;      yoff += knob_w+10;
+        //off_y_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,true); off_y_knob.val = component.off_y;      yoff += knob_w+10;
+        wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); wavelength_knob.val = component.wavelength; yoff += knob_w+10;
+        amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.01,false); amplitude_knob.val = component.amplitude;  yoff += knob_w+10;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
@@ -328,41 +288,41 @@ var GamePlayScene = function(game, stage)
     {
       self.graphDrawer.draw(canv);
 
-      switch(self.module.type)
+      switch(self.component.type)
       {
-        case MOD_TYPE_SLOPE:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
-          slope_knob.draw(canv); if(slope_knob.dirty) { slope_knob.dirty = false; module.slope = slope_knob.val; module.dirty = true; }
+        case COMP_TYPE_SLOPE:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
+          slope_knob.draw(canv); if(slope_knob.dirty) { slope_knob.dirty = false; component.slope = slope_knob.val; component.dirty = true; }
           break;
-        case MOD_TYPE_EXP:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
-          exp_knob.draw(canv); if(exp_knob.dirty) { exp_knob.dirty = false; module.exp = exp_knob.val; module.dirty = true; }
+        case COMP_TYPE_EXP:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
+          exp_knob.draw(canv); if(exp_knob.dirty) { exp_knob.dirty = false; component.exp = exp_knob.val; component.dirty = true; }
           break;
-        case MOD_TYPE_SIN:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+        case COMP_TYPE_SIN:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
           break;
-        case MOD_TYPE_TRIANGLE:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+        case COMP_TYPE_TRIANGLE:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
           break;
-        case MOD_TYPE_SAW:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+        case COMP_TYPE_SAW:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
           break;
-        case MOD_TYPE_SQUARE:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; module.off_x = off_x_knob.val; module.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; module.off_y = off_y_knob.val; module.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; module.wavelength = wavelength_knob.val; module.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; module.amplitude = amplitude_knob.val; module.dirty = true; }
+        case COMP_TYPE_SQUARE:
+          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
+          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
+          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
           break;
         default:
           break;
@@ -372,37 +332,37 @@ var GamePlayScene = function(game, stage)
     //to handle unregistering
     self.destroy = function()
     {
-      switch(self.module.type)
+      switch(self.component.type)
       {
-        case MOD_TYPE_SLOPE:
+        case COMP_TYPE_SLOPE:
           dragger.unregister(off_x_knob);
           dragger.unregister(off_y_knob);
           dragger.unregister(slope_knob);
           break;
-        case MOD_TYPE_EXP:
+        case COMP_TYPE_EXP:
           dragger.unregister(off_x_knob);
           dragger.unregister(off_y_knob);
           dragger.unregister(exp_knob);
           break;
-        case MOD_TYPE_SIN:
+        case COMP_TYPE_SIN:
           dragger.unregister(off_x_knob);
           dragger.unregister(off_y_knob);
           dragger.unregister(wavelength_knob);
           dragger.unregister(amplitude_knob);
           break;
-        case MOD_TYPE_TRIANGLE:
+        case COMP_TYPE_TRIANGLE:
           dragger.unregister(off_x_knob);
           dragger.unregister(off_y_knob);
           dragger.unregister(wavelength_knob);
           dragger.unregister(amplitude_knob);
           break;
-        case MOD_TYPE_SAW:
+        case COMP_TYPE_SAW:
           dragger.unregister(off_x_knob);
           dragger.unregister(off_y_knob);
           dragger.unregister(wavelength_knob);
           dragger.unregister(amplitude_knob);
           break;
-        case MOD_TYPE_SQUARE:
+        case COMP_TYPE_SQUARE:
           dragger.unregister(off_x_knob);
           dragger.unregister(off_y_knob);
           dragger.unregister(wavelength_knob);
@@ -431,6 +391,7 @@ var GamePlayScene = function(game, stage)
     self.offY = 0;
     self.deltaX = 0;
     self.deltaY = 0;
+    self.dragging = false;
 
     self.val = 0;
     self.rot = 0;
@@ -450,6 +411,14 @@ var GamePlayScene = function(game, stage)
       //canv.context.drawImage(self.img, -self.w/2, -self.h/2, self.w, self.h);
 
       //canv.context.restore();
+
+      if(self.dragging)
+      {
+        canv.context.beginPath();
+        canv.context.moveTo(self.x+self.w/2,self.y+self.h/2);
+        canv.context.lineTo(self.x+self.w/2+self.offX,self.y+self.h/2+self.offY);
+        canv.context.stroke();
+      }
     }
 
     function len(x,y)
@@ -460,6 +429,7 @@ var GamePlayScene = function(game, stage)
     {
       self.offX = evt.doX-(self.x+(self.w/2));
       self.offY = evt.doY-(self.y+(self.h/2));
+      self.dragging = true;
     };
     self.drag = function(evt)
     {
@@ -488,7 +458,6 @@ var GamePlayScene = function(game, stage)
         else      { self.val+=self.d; self.dirty = true; }
       }
 
-
       self.rot -= a;
 
       self.offX = self.newOffX;
@@ -496,15 +465,72 @@ var GamePlayScene = function(game, stage)
     };
     self.dragFinish = function()
     {
+      self.dragging = false;
     };
   }
 
-  var module_select_slope;
-  var module_select_exp;
-  var module_select_sin;
-  var module_select_triangle;
-  var module_select_saw;
-  var module_select_square;
+
+  var CompositionDrawer = function(samples, x, y, w, h)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+    self.samples = samples;
+
+    self.components = [];
+    self.componentDrawers = [];
+    var component_width = 200;
+    var component_height = 70;
+
+    self.compositionDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
+
+    self.addComponent = function(component)
+    {
+      self.components.push(component);
+      self.componentDrawers.push(new ComponentDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-component_width,self.y+(self.components.length-1)*(10+component_height),component_width,component_height));
+      self.compositionDrawer.components = self.components;
+      self.compositionDrawer.dirty = true;
+    }
+
+    self.removeComponent = function(component)
+    {
+      for(var i = 0; i < self.components.length; i++)
+      {
+        if(self.components[i] == component)
+        {
+          self.components.splice(i,1);
+          self.componentDrawers.splice(i,1);
+          self.compositionDrawer.components = self.components;
+          self.compositionDrawer.dirty = true;
+          component.destroy();
+        }
+      }
+    }
+
+    self.draw = function(canv)
+    {
+      for(var i = 0; i < self.components.length; i++)
+        self.componentDrawers[i].draw(canv);
+      self.compositionDrawer.draw(canv);
+    }
+
+    //cascade any unregistering
+    self.destroy = function()
+    {
+      for(var i = 0; i < self.componentDrawers.length; i++)
+        self.componentDrawers[i].destroy();
+    }
+  }
+
+  var component_select_slope;
+  var component_select_exp;
+  var component_select_sin;
+  var component_select_triangle;
+  var component_select_saw;
+  var component_select_square;
 
   var composition;
 
@@ -528,40 +554,40 @@ var GamePlayScene = function(game, stage)
     var x = stage.drawCanv.canvas.width-w-10;
     var y = 10;
 
-    var module = new Module(); module.type = MOD_TYPE_SLOPE;
-    module_select_slope = new GraphDrawer([module],samples_per,x,y,w,h);
-    module_select_slope.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SLOPE; composition.addComponent(module); }
-    clicker.register(module_select_slope);
+    var component = new Component(); component.type = COMP_TYPE_SLOPE;
+    component_select_slope = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_slope.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SLOPE; composition.addComponent(component); }
+    clicker.register(component_select_slope);
     y += h+10;
 
-    var module = new Module(); module.type = MOD_TYPE_EXP;
-    module_select_exp = new GraphDrawer([module],samples_per,x,y,w,h);
-    module_select_exp.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_EXP; composition.addComponent(module); }
-    clicker.register(module_select_exp);
+    var component = new Component(); component.type = COMP_TYPE_EXP;
+    component_select_exp = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_exp.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_EXP; composition.addComponent(component); }
+    clicker.register(component_select_exp);
     y += h+10;
 
-    var module = new Module(); module.type = MOD_TYPE_SIN;
-    module_select_sin = new GraphDrawer([module],samples_per,x,y,w,h);
-    module_select_sin.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SIN; composition.addComponent(module); }
-    clicker.register(module_select_sin);
+    var component = new Component(); component.type = COMP_TYPE_SIN;
+    component_select_sin = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_sin.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SIN; composition.addComponent(component); }
+    clicker.register(component_select_sin);
     y += h+10;
 
-    var module = new Module(); module.type = MOD_TYPE_TRIANGLE;
-    module_select_triangle = new GraphDrawer([module],samples_per,x,y,w,h);
-    module_select_triangle.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_TRIANGLE; composition.addComponent(module); }
-    clicker.register(module_select_triangle);
+    var component = new Component(); component.type = COMP_TYPE_TRIANGLE;
+    component_select_triangle = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_triangle.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_TRIANGLE; composition.addComponent(component); }
+    clicker.register(component_select_triangle);
     y += h+10;
 
-    var module = new Module(); module.type = MOD_TYPE_SAW;
-    module_select_saw = new GraphDrawer([module],samples_per,x,y,w,h);
-    module_select_saw.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SAW; composition.addComponent(module); }
-    clicker.register(module_select_saw);
+    var component = new Component(); component.type = COMP_TYPE_SAW;
+    component_select_saw = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_saw.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SAW; composition.addComponent(component); }
+    clicker.register(component_select_saw);
     y += h+10;
 
-    var module = new Module(); module.type = MOD_TYPE_SQUARE;
-    module_select_square = new GraphDrawer([module],samples_per,x,y,w,h);
-    module_select_square.click = function(evt) { var module = new Module(); module.type = MOD_TYPE_SQUARE; composition.addComponent(module); }
-    clicker.register(module_select_square);
+    var component = new Component(); component.type = COMP_TYPE_SQUARE;
+    component_select_square = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_square.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SQUARE; composition.addComponent(component); }
+    clicker.register(component_select_square);
 
     composition = new CompositionDrawer(samples_per*10, 10, 10, stage.drawCanv.canvas.width-w-30, stage.drawCanv.canvas.height-20);
   };
@@ -579,12 +605,12 @@ var GamePlayScene = function(game, stage)
   {
     drawer.flush();
 
-    module_select_slope.draw(stage.drawCanv);
-    module_select_exp.draw(stage.drawCanv);
-    module_select_sin.draw(stage.drawCanv);
-    module_select_triangle.draw(stage.drawCanv);
-    module_select_saw.draw(stage.drawCanv);
-    module_select_square.draw(stage.drawCanv);
+    component_select_slope.draw(stage.drawCanv);
+    component_select_exp.draw(stage.drawCanv);
+    component_select_sin.draw(stage.drawCanv);
+    component_select_triangle.draw(stage.drawCanv);
+    component_select_saw.draw(stage.drawCanv);
+    component_select_square.draw(stage.drawCanv);
 
     composition.draw(stage.drawCanv);
   };
