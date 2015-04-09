@@ -55,6 +55,7 @@ var GamePlayScene = function(game, stage)
           y = x * self.slope;
           break;
         case COMP_TYPE_EXP:
+          x /= self.wavelength;
           y = Math.pow(x,self.exp);
           break;
         case COMP_TYPE_SIN:
@@ -156,9 +157,10 @@ var GamePlayScene = function(game, stage)
 
       if(self.dirty)
       {
-        //self.findHighestAmp(-1,1,self.samples);
-        //if(self.highestAmp < 1) self.highestAmp = 1;
-        self.highestAmp = 1;
+        self.findHighestAmp(-1,1,self.samples);
+        if(self.highestAmp < 1) self.highestAmp = 1;
+        if(self.highestAmp > 10) self.highestAmp = 10;
+        //self.highestAmp = 1;
 
         self.canv.clear();
 
@@ -242,56 +244,58 @@ var GamePlayScene = function(game, stage)
     switch(self.component.type)
     {
       case COMP_TYPE_SLOPE:
-        off_x_knob = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
-        //off_y_knob = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
-        slope_knob = new Knob(0,0,0,0,0.01,true); slope_knob.val = component.slope;
+        off_x_knob = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
+        //off_y_knob = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
+        slope_knob = new Knob(0,0,0,0,0.05,true); slope_knob.val = component.slope;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(slope_knob);
         break;
       case COMP_TYPE_EXP:
-        off_x_knob = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
-        //off_y_knob = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
-        exp_knob   = new Knob(0,0,0,0,0.001,true); exp_knob.val = component.exp;
+        off_x_knob = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
+        //off_y_knob = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
+        exp_knob   = new Knob(0,0,0,0,0.5,false); exp_knob.val = component.exp;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
+        dragger.register(wavelength_knob);
         dragger.register(exp_knob);
         break;
       case COMP_TYPE_SIN:
-        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
-        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
-        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
+        off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_TRIANGLE:
-        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
-        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
-        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
+        off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_SAW:
-        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
-        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
-        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
+        off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_SQUARE:
-        off_x_knob      = new Knob(0,0,0,0,0.01,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.01,true); off_y_knob.val = component.off_y;
-        wavelength_knob = new Knob(0,0,0,0,0.01,false); wavelength_knob.val = component.wavelength;
-        amplitude_knob  = new Knob(0,0,0,0,0.01,false); amplitude_knob.val = component.amplitude;
+        off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
+        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
+        wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
+        amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
@@ -321,6 +325,7 @@ var GamePlayScene = function(game, stage)
         case COMP_TYPE_EXP:
           off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
+          wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           exp_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           break;
         case COMP_TYPE_SIN:
@@ -367,7 +372,8 @@ var GamePlayScene = function(game, stage)
         case COMP_TYPE_EXP:
           off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
           //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
-          exp_knob.draw(canv); if(exp_knob.dirty) { exp_knob.dirty = false; component.exp = exp_knob.val; component.dirty = true; }
+          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
+          exp_knob.draw(canv); if(exp_knob.dirty) { exp_knob.dirty = false; component.exp = Math.floor(exp_knob.val); component.dirty = true; }
           break;
         case COMP_TYPE_SIN:
           off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
@@ -412,6 +418,7 @@ var GamePlayScene = function(game, stage)
         case COMP_TYPE_EXP:
           dragger.unregister(off_x_knob);
           dragger.unregister(off_y_knob);
+          dragger.unregister(wavelength_knob);
           dragger.unregister(exp_knob);
           break;
         case COMP_TYPE_SIN:
@@ -528,21 +535,22 @@ var GamePlayScene = function(game, stage)
       self.newT = ((-Math.atan2(x,y))+(Math.PI/2)+(2*Math.PI))%(2*Math.PI); //why terrible coordinate spaces...
 
       var a = self.oldT-self.newT;
-      if(self.cw)
+
+      if(Math.abs(a) > Math.PI)
       {
-        if(a > 0) { self.val+=self.d; self.dirty = true; }
-        else      { self.val-=self.d; self.dirty = true; }
+        if(a > 0) a =  2*Math.PI - a;
+        else      a = -2*Math.PI - a;
       }
-      else
-      {
-        if(a > 0) { self.val-=self.d; self.dirty = true; }
-        else      { self.val+=self.d; self.dirty = true; }
-      }
+
+      if(self.cw) self.val +=self.d*a;
+      else        self.val -=self.d*a;
 
       self.rot -= a;
 
       self.offX = self.newOffX;
       self.offY = self.newOffY;
+
+      self.dirty = true;
     };
     self.dragFinish = function()
     {
