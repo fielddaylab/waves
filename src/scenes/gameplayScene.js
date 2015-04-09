@@ -41,8 +41,8 @@ var GamePlayScene = function(game, stage)
     self.abs = false;
     self.neg = false;
 
-    self.dirty = true;
     self.highestAmp = 1; //cached value
+    var dirty = true;
 
     self.f = function(x)
     {
@@ -113,6 +113,60 @@ var GamePlayScene = function(game, stage)
       self.highestAmp = amp;
       return self.highestAmp;
     }
+
+    self.dirty   = function() { dirty = true; }
+    self.cleanse = function() { dirty = false; }
+    self.isDirty = function() { return dirty; }
+  }
+  var Components = function(components)
+  {
+    var self = this;
+    self.components = components;
+
+    self.highestAmp = 1;
+    var dirty = true;
+
+    self.f = function(x)
+    {
+      var y = 0;
+      for(var i = 0; i < self.components.length; i++)
+        y += self.components[i].f(x);
+      return y;
+    }
+
+    self.findHighestAmp = function(sx, ex, s)
+    {
+      var amp = 0;
+      var y = 0;
+      for(var i = 0; i < s; i++)
+      {
+        y = Math.abs(self.f(sx+((ex-sx)*(i/s))));
+        if(y > amp) amp = y;
+      }
+      self.highestAmp = amp;
+      return self.highestAmp;
+    }
+
+    self.dirty = function()
+    {
+      dirty = true;
+      for(var i = 0; i < self.components.length; i++)
+        self.components[i].dirty();
+    }
+    self.cleanse = function()
+    {
+      dirty = false;
+      for(var i = 0; i < self.components.length; i++)
+        self.components[i].cleanse();
+    }
+    self.isDirty = function()
+    {
+      var d = dirty;
+      for(var i = 0; i < self.components.length; i++)
+        d = d || self.components[i].isDirty();
+      dirty = d;
+      return dirty;
+    }
   }
 
   var GraphDrawer = function(components, samples, x, y, w, h)
@@ -130,8 +184,8 @@ var GamePlayScene = function(game, stage)
 
     self.color = "#000000";
     self.drawGrid = true;
-    self.dirty = true;
     self.highestAmp = 1;
+    var dirty = true;
 
     self.position = function(x,y,w,h)
     {
@@ -178,49 +232,33 @@ var GamePlayScene = function(game, stage)
         self.canv.context.moveTo(0,0);
         for(var i = 0; i < self.samples; i++)
         {
-          sample = 0;
           t = i*(1/(self.samples-1));
-          for(var j = 0; j < self.components.length; j++)
-            sample += self.components[j].f(t*2-1);
+          sample = self.components.f(t*2-1);
           self.canv.context.lineTo(t*self.w,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4))));
         }
         self.canv.context.stroke();
 
-        self.dirty = false;
+        dirty = false;
       }
 
       canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
     }
 
-    self.findHighestAmp = function(sx, ex, s)
+    self.dirty = function()
     {
-      var amp = 0;
-      var y = 0;
-      for(var i = 0; i < s; i++)
-      {
-        y = 0;
-        for(var j = 0; j < self.components.length; j++)
-          y += self.components[j].f(sx+((ex-sx)*(i/s)));
-        y = Math.abs(y);
-        if(y > amp) amp = y;
-      }
-      self.highestAmp = amp;
-      return self.highestAmp;
-    }
-
-    self.isDirty = function()
-    {
-      var d = self.dirty;
-      for(var i = 0; i < self.components.length; i++)
-        d = d || self.components[i].dirty;
-      self.dirty = d;
-      return d;
+      dirty = true;
     }
     self.cleanse = function()
     {
-      self.dirty = false;
-      for(var i = 0; i < self.components.length; i++)
-        self.components[i].dirty = false;
+      dirty = false;
+      self.components.cleanse();
+    }
+    self.isDirty = function()
+    {
+      var d = dirty;
+      d = d || self.components.isDirty();
+      dirty = d;
+      return dirty;
     }
   }
 
@@ -235,12 +273,12 @@ var GamePlayScene = function(game, stage)
 
     self.samples = samples;
     self.component = component;
-    self.dirty = true;
     self.should_destroy = false;
+    var dirty = true;
 
     var knob_w = 10;
 
-    var graphDrawer = new GraphDrawer([self.component],self.samples,0,0,0,0);
+    var graphDrawer = new GraphDrawer(new Components([self.component]),self.samples,0,0,0,0);
     graphDrawer.click = function(evt) { self.should_destroy = true; }
     clicker.register(graphDrawer);
 
@@ -372,18 +410,17 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
-      if(self.dirty) graphDrawer.dirty = true;
+      if(self.isDirty()) graphDrawer.dirty();
 
-      if(off_x_knob)      { off_x_knob.draw(canv);      if(off_x_knob.dirty)      { off_x_knob.dirty      = false; component.off_x      = off_x_knob.val;           component.dirty = true; } }
-      if(off_y_knob)      { off_y_knob.draw(canv);      if(off_y_knob.dirty)      { off_y_knob.dirty      = false; component.off_y      = off_y_knob.val;           component.dirty = true; } }
-      if(slope_knob)      { slope_knob.draw(canv);      if(slope_knob.dirty)      { slope_knob.dirty      = false; component.slope      = slope_knob.val;           component.dirty = true; } }
-      if(exp_knob)        { exp_knob.draw(canv);        if(exp_knob.dirty)        { exp_knob.dirty        = false; component.exp        = Math.floor(exp_knob.val); component.dirty = true; } }
-      if(wavelength_knob) { wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val;      component.dirty = true; } }
-      if(amplitude_knob)  { amplitude_knob.draw(canv);  if(amplitude_knob.dirty)  { amplitude_knob.dirty  = false; component.amplitude  = amplitude_knob.val;       component.dirty = true; } }
+      if(off_x_knob)      { off_x_knob.draw(canv);      if(off_x_knob.isDirty())      { component.off_x      = off_x_knob.val;           component.dirty(); off_x_knob.cleanse();      } }
+      if(off_y_knob)      { off_y_knob.draw(canv);      if(off_y_knob.isDirty())      { component.off_y      = off_y_knob.val;           component.dirty(); off_y_knob.cleanse();      } }
+      if(slope_knob)      { slope_knob.draw(canv);      if(slope_knob.isDirty())      { component.slope      = slope_knob.val;           component.dirty(); slope_knob.cleanse();      } }
+      if(exp_knob)        { exp_knob.draw(canv);        if(exp_knob.isDirty())        { component.exp        = Math.floor(exp_knob.val); component.dirty(); exp_knob.cleanse();        } }
+      if(wavelength_knob) { wavelength_knob.draw(canv); if(wavelength_knob.isDirty()) { component.wavelength = wavelength_knob.val;      component.dirty(); wavelength_knob.cleanse(); } }
+      if(amplitude_knob)  { amplitude_knob.draw(canv);  if(amplitude_knob.isDirty())  { component.amplitude  = amplitude_knob.val;       component.dirty(); amplitude_knob.cleanse();  } }
 
       graphDrawer.draw(canv);
-
-      self.dirty = false;
+      dirty = false;
     }
 
     //to handle unregistering
@@ -392,15 +429,23 @@ var GamePlayScene = function(game, stage)
       clicker.unregister(graphDrawer);
       if(off_x_knob) dragger.unregister(off_x_knob);
       if(off_y_knob) dragger.unregister(off_y_knob);
-      if(off_slope_knob) dragger.unregister(slope_knob);
+      if(slope_knob) dragger.unregister(slope_knob);
       if(exp_knob) dragger.unregister(exp_knob);
       if(wavelength_knob) dragger.unregister(wavelength_knob);
       if(amplitude_knob) dragger.unregister(amplitude_knob);
     }
 
+    self.isDirty = function()
+    {
+      var d = dirty;
+      dirty = dirty || graphDrawer.isDirty();
+      dirty = d;
+      return dirty;
+    }
+    self.dirty = function() { dirty = true; }
     self.cleanse = function()
     {
-      self.dirty = false;
+      dirty = false;
       graphDrawer.cleanse();
     }
   }
@@ -426,7 +471,7 @@ var GamePlayScene = function(game, stage)
 
     self.val = 0;
     self.rot = 0;
-    self.dirty = true;
+    var dirty = true;
 
     self.position = function(x,y,w,h)
     {
@@ -506,12 +551,16 @@ var GamePlayScene = function(game, stage)
       self.offX = self.newOffX;
       self.offY = self.newOffY;
 
-      self.dirty = true;
+      dirty = true;
     };
     self.dragFinish = function()
     {
       self.dragging = false;
     };
+
+    self.isDirty = function() { return dirty; }
+    self.dirty   = function() { dirty = true; }
+    self.cleanse = function() { dirty = false; }
   }
 
   var CompositionDrawer = function(samples, x, y, w, h)
@@ -528,9 +577,9 @@ var GamePlayScene = function(game, stage)
     self.componentEditorDrawers = [];
     var component_width = 200;
     var component_height = 70;
+    var dirty = true;
 
-    self.graphDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
-
+    self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x, self.y, self.w-component_width-10, self.h);
     self.goalGraphDrawer;
 
     self.randomizeGraphDrawer = function()
@@ -575,7 +624,7 @@ var GamePlayScene = function(game, stage)
         }
         components.push(component);
       }
-      self.goalGraphDrawer = new GraphDrawer(components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
+      self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.x, self.y, self.w-component_width-10, self.h);
       self.goalGraphDrawer.color = "#33FF33";
       self.goalGraphDrawer.drawGrid = false;
     }
@@ -585,8 +634,8 @@ var GamePlayScene = function(game, stage)
     {
       self.components.push(component);
       self.componentEditorDrawers.push(new ComponentEditorDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-component_width,self.y+(self.components.length-1)*(10+component_height),component_width,component_height));
-      self.graphDrawer.components = self.components;
-      self.graphDrawer.dirty = true;
+      self.graphDrawer.components = new Components(self.components);
+      self.graphDrawer.dirty();
     }
 
     self.removeComponent = function(component)
@@ -595,17 +644,15 @@ var GamePlayScene = function(game, stage)
       {
         if(self.components[i] == component)
         {
-          self.componentEditorDrawers[i].destroy;
+          self.componentEditorDrawers[i].destroy();
           self.components.splice(i,1);
           self.componentEditorDrawers.splice(i,1);
-          self.graphDrawer.components = self.components;
-          self.graphDrawer.dirty = true;
+          self.graphDrawer.components = new Components(self.components);
+          self.graphDrawer.dirty();
         }
       }
       for(var i = 0; i < self.components.length; i++)
-      {
         self.componentEditorDrawers[i].position(self.x+self.w-component_width,self.y+i*(10+component_height),component_width,component_height);
-      }
     }
 
     self.draw = function(canv)
@@ -622,28 +669,20 @@ var GamePlayScene = function(game, stage)
       }
       if(self.graphDrawer.isDirty())
       {
-        var a = self.graphDrawer.findHighestAmp(-1,1,self.graphDrawer.samples);
-        var b = self.goalGraphDrawer.findHighestAmp(-1,1,self.goalGraphDrawer.samples);
+        var a = self.graphDrawer.components.findHighestAmp(-1,1,self.graphDrawer.samples);
+        var b = self.goalGraphDrawer.components.findHighestAmp(-1,1,self.goalGraphDrawer.samples);
         if(b > a) a = b;
         if(a < 1) a = 1;
         if(a > 10) a = 10;
         self.graphDrawer.highestAmp = a;
         self.goalGraphDrawer.highestAmp = a;
-        self.graphDrawer.dirty = true;
-        self.goalGraphDrawer.dirty = true;
+        self.graphDrawer.dirty();
+        self.goalGraphDrawer.dirty();
       }
       self.graphDrawer.draw(canv);
       self.goalGraphDrawer.draw(canv);
-    }
 
-    self.cleanse = function()
-    {
-      for(var i = 0; i < self.components.length; i++)
-        self.components[i].dirty = false;
-      for(var i = 0; i < self.componentEditorDrawers.length; i++)
-        self.componentEditorDrawers[i].cleanse();
-      self.graphDrawer.cleanse();
-      self.goalGraphDrawer.cleanse();
+      dirty = false;
     }
 
     //cascade any unregistering
@@ -651,6 +690,26 @@ var GamePlayScene = function(game, stage)
     {
       for(var i = 0; i < self.componentEditorDrawers.length; i++)
         self.componentEditorDrawers[i].destroy();
+    }
+
+    self.isDirty = function()
+    {
+      var d = dirty;
+      d = d || graphDrawer.isDirty() || goalGraphDrawer.isDirty();
+      for(var i = 0; i < self.components.length; i++)
+        d = d || self.components[i].isDirty();
+      dirty = d;
+      return dirty;
+    }
+    self.dirty = function() { dirty = true; }
+    self.cleanse = function()
+    {
+      for(var i = 0; i < self.components.length; i++)
+        self.components[i].cleanse();
+      for(var i = 0; i < self.componentEditorDrawers.length; i++)
+        self.componentEditorDrawers[i].cleanse();
+      self.graphDrawer.cleanse();
+      self.goalGraphDrawer.cleanse();
     }
   }
 
@@ -684,7 +743,7 @@ var GamePlayScene = function(game, stage)
     var y = 10;
 
     var component = new Component(); component.type = COMP_TYPE_SLOPE;
-    component_select_slope = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_slope = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
     component_select_slope.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SLOPE; composition.addComponent(component); }
     clicker.register(component_select_slope);
     component_select_slope.draw(stage.drawCanv); //draw once,
@@ -692,7 +751,7 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_EXP;
-    component_select_exp = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_exp = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
     component_select_exp.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_EXP; composition.addComponent(component); }
     clicker.register(component_select_exp);
     component_select_exp.draw(stage.drawCanv); //draw once,
@@ -700,7 +759,7 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SIN;
-    component_select_sin = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_sin = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
     component_select_sin.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SIN; composition.addComponent(component); }
     clicker.register(component_select_sin);
     component_select_sin.draw(stage.drawCanv); //draw once,
@@ -708,7 +767,7 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_TRIANGLE;
-    component_select_triangle = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_triangle = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
     component_select_triangle.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_TRIANGLE; composition.addComponent(component); }
     clicker.register(component_select_triangle);
     component_select_triangle.draw(stage.drawCanv); //draw once,
@@ -716,7 +775,7 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SAW;
-    component_select_saw = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_saw = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
     component_select_saw.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SAW; composition.addComponent(component); }
     clicker.register(component_select_saw);
     component_select_saw.draw(stage.drawCanv); //draw once,
@@ -724,7 +783,7 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SQUARE;
-    component_select_square = new GraphDrawer([component],samples_per,x,y,w,h);
+    component_select_square = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
     component_select_square.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SQUARE; composition.addComponent(component); }
     clicker.register(component_select_square);
     component_select_square.draw(stage.drawCanv); //draw once,
