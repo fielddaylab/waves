@@ -128,6 +128,8 @@ var GamePlayScene = function(game, stage)
 
     self.canv; //gets initialized in position
 
+    self.color = "#000000";
+    self.drawGrid = true;
     self.dirty = true;
     self.highestAmp = 1;
 
@@ -157,27 +159,24 @@ var GamePlayScene = function(game, stage)
 
       if(self.dirty)
       {
-        self.findHighestAmp(-1,1,self.samples);
-        if(self.highestAmp < 1) self.highestAmp = 1;
-        if(self.highestAmp > 10) self.highestAmp = 10;
-        //self.highestAmp = 1;
-
         self.canv.clear();
 
-        self.canv.context.strokeStyle = "#AAAAAA";
-        for(var i = -2*Math.floor(self.highestAmp); i <= 2*Math.floor(self.highestAmp); i++)
+        if(self.drawGrid)
         {
-          self.canv.context.beginPath();
-          self.canv.context.moveTo(0,     (self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
-          self.canv.context.lineTo(self.w,(self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
-          self.canv.context.stroke();
+          self.canv.context.strokeStyle = "#AAAAAA";
+          for(var i = -2*Math.floor(self.highestAmp); i <= 2*Math.floor(self.highestAmp); i++)
+          {
+            self.canv.context.beginPath();
+            self.canv.context.moveTo(0,     (self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
+            self.canv.context.lineTo(self.w,(self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
+            self.canv.context.stroke();
+          }
         }
-
-        self.canv.context.strokeStyle = "#000000";
-        self.canv.context.strokeRect(0,0,self.w,self.h);
 
         var sample;
         var t;
+        self.canv.context.strokeStyle = self.color;
+        self.canv.context.strokeRect(0,0,self.w,self.h);
         self.canv.context.beginPath();
         self.canv.context.moveTo(0,0);
         for(var i = 0; i < self.samples; i++)
@@ -575,6 +574,56 @@ var GamePlayScene = function(game, stage)
 
     self.graphDrawer = new GraphDrawer(self.components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
 
+    self.goalGraphDrawer;
+
+    self.randomizeGraphDrawer = function()
+    {
+      var components = [];
+
+      var n = Math.floor(1+Math.random()*2);
+      for(var i = 0; i < n; i++)
+      {
+        var t = Math.floor(Math.random()*6);
+        var component = new Component();
+        component.type = t;
+        switch(t)
+        {
+          case COMP_TYPE_SLOPE:
+            component.slope = Math.random()*10-5;
+            break;
+          case COMP_TYPE_EXP:
+            component.wavelength = Math.random()*10-5;
+            component.exp = Math.round(Math.random()*10-5);
+            break;
+          case COMP_TYPE_SIN:
+            component.off_x = Math.random()*10-5;
+            component.wavelength = Math.random()*10-5;
+            component.amplitude = Math.random()*10-5;
+            break;
+          case COMP_TYPE_TRIANGLE:
+            component.off_x = Math.random()*10-5;
+            component.wavelength = Math.random()*10-5;
+            component.amplitude = Math.random()*10-5;
+            break;
+          case COMP_TYPE_SAW:
+            component.off_x = Math.random()*10-5;
+            component.wavelength = Math.random()*10-5;
+            component.amplitude = Math.random()*10-5;
+            break;
+          case COMP_TYPE_SQUARE:
+            component.off_x = Math.random()*10-5;
+            component.wavelength = Math.random()*10-5;
+            component.amplitude = Math.random()*10-5;
+            break;
+        }
+        components.push(component);
+      }
+      self.goalGraphDrawer = new GraphDrawer(components, self.samples, self.x, self.y, self.w-component_width-10, self.h);
+      self.goalGraphDrawer.color = "#33FF33";
+      self.goalGraphDrawer.drawGrid = false;
+    }
+    self.randomizeGraphDrawer();
+
     self.addComponent = function(component)
     {
       self.components.push(component);
@@ -614,7 +663,18 @@ var GamePlayScene = function(game, stage)
         else
           self.componentEditorDrawers[i].draw(canv);
       }
+      if(self.graphDrawer.dirty || self.goalGraphDrawer.dirty)
+      {
+        var a = self.graphDrawer.findHighestAmp(-1,1,self.graphDrawer.samples);
+        var b = self.goalGraphDrawer.findHighestAmp(-1,1,self.goalGraphDrawer.samples);
+        if(b > a) a = b;
+        if(a < 1) a = 1;
+        if(a > 10) a = 10;
+        self.graphDrawer.highestamp = a;
+        self.goalGraphDrawer.highestamp = a;
+      }
       self.graphDrawer.draw(canv);
+      self.goalGraphDrawer.draw(canv);
     }
 
     //cascade any unregistering
