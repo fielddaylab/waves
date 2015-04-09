@@ -154,10 +154,7 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
-      for(var i = 0; i < self.components.length; i++)
-        if(self.components[i].dirty) self.dirty = true;
-
-      if(self.dirty)
+      if(self.isDirty())
       {
         self.canv.clear();
 
@@ -210,6 +207,21 @@ var GamePlayScene = function(game, stage)
       self.highestAmp = amp;
       return self.highestAmp;
     }
+
+    self.isDirty = function()
+    {
+      var d = self.dirty;
+      for(var i = 0; i < self.components.length; i++)
+        d = d || self.components[i].dirty;
+      self.dirty = d;
+      return d;
+    }
+    self.cleanse = function()
+    {
+      self.dirty = false;
+      for(var i = 0; i < self.components.length; i++)
+        self.components[i].dirty = false;
+    }
   }
 
   var ComponentEditorDrawer = function(component, samples, x, y, w, h)
@@ -223,6 +235,7 @@ var GamePlayScene = function(game, stage)
 
     self.samples = samples;
     self.component = component;
+    self.dirty = true;
     self.should_destroy = false;
 
     var knob_w = 10;
@@ -359,94 +372,36 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
+      if(self.dirty) graphDrawer.dirty = true;
+
+      if(off_x_knob)      { off_x_knob.draw(canv);      if(off_x_knob.dirty)      { off_x_knob.dirty      = false; component.off_x      = off_x_knob.val;           component.dirty = true; } }
+      if(off_y_knob)      { off_y_knob.draw(canv);      if(off_y_knob.dirty)      { off_y_knob.dirty      = false; component.off_y      = off_y_knob.val;           component.dirty = true; } }
+      if(slope_knob)      { slope_knob.draw(canv);      if(slope_knob.dirty)      { slope_knob.dirty      = false; component.slope      = slope_knob.val;           component.dirty = true; } }
+      if(exp_knob)        { exp_knob.draw(canv);        if(exp_knob.dirty)        { exp_knob.dirty        = false; component.exp        = Math.floor(exp_knob.val); component.dirty = true; } }
+      if(wavelength_knob) { wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val;      component.dirty = true; } }
+      if(amplitude_knob)  { amplitude_knob.draw(canv);  if(amplitude_knob.dirty)  { amplitude_knob.dirty  = false; component.amplitude  = amplitude_knob.val;       component.dirty = true; } }
+
       graphDrawer.draw(canv);
 
-      switch(self.component.type)
-      {
-        case COMP_TYPE_SLOPE:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
-          slope_knob.draw(canv); if(slope_knob.dirty) { slope_knob.dirty = false; component.slope = slope_knob.val; component.dirty = true; }
-          break;
-        case COMP_TYPE_EXP:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
-          exp_knob.draw(canv); if(exp_knob.dirty) { exp_knob.dirty = false; component.exp = Math.floor(exp_knob.val); component.dirty = true; }
-          break;
-        case COMP_TYPE_SIN:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
-          break;
-        case COMP_TYPE_TRIANGLE:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
-          break;
-        case COMP_TYPE_SAW:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
-          break;
-        case COMP_TYPE_SQUARE:
-          off_x_knob.draw(canv); if(off_x_knob.dirty) { off_x_knob.dirty = false; component.off_x = off_x_knob.val; component.dirty = true; }
-          //off_y_knob.draw(canv); if(off_y_knob.dirty) { off_y_knob.dirty = false; component.off_y = off_y_knob.val; component.dirty = true; }
-          wavelength_knob.draw(canv); if(wavelength_knob.dirty) { wavelength_knob.dirty = false; component.wavelength = wavelength_knob.val; component.dirty = true; }
-          amplitude_knob.draw(canv); if(amplitude_knob.dirty) { amplitude_knob.dirty = false; component.amplitude = amplitude_knob.val; component.dirty = true; }
-          break;
-        default:
-          break;
-      }
+      self.dirty = false;
     }
 
     //to handle unregistering
     self.destroy = function()
     {
       clicker.unregister(graphDrawer);
-      switch(self.component.type)
-      {
-        case COMP_TYPE_SLOPE:
-          dragger.unregister(off_x_knob);
-          dragger.unregister(off_y_knob);
-          dragger.unregister(slope_knob);
-          break;
-        case COMP_TYPE_EXP:
-          dragger.unregister(off_x_knob);
-          dragger.unregister(off_y_knob);
-          dragger.unregister(wavelength_knob);
-          dragger.unregister(exp_knob);
-          break;
-        case COMP_TYPE_SIN:
-          dragger.unregister(off_x_knob);
-          dragger.unregister(off_y_knob);
-          dragger.unregister(wavelength_knob);
-          dragger.unregister(amplitude_knob);
-          break;
-        case COMP_TYPE_TRIANGLE:
-          dragger.unregister(off_x_knob);
-          dragger.unregister(off_y_knob);
-          dragger.unregister(wavelength_knob);
-          dragger.unregister(amplitude_knob);
-          break;
-        case COMP_TYPE_SAW:
-          dragger.unregister(off_x_knob);
-          dragger.unregister(off_y_knob);
-          dragger.unregister(wavelength_knob);
-          dragger.unregister(amplitude_knob);
-          break;
-        case COMP_TYPE_SQUARE:
-          dragger.unregister(off_x_knob);
-          dragger.unregister(off_y_knob);
-          dragger.unregister(wavelength_knob);
-          dragger.unregister(amplitude_knob);
-          break;
-        default:
-          break;
-      }
+      if(off_x_knob) dragger.unregister(off_x_knob);
+      if(off_y_knob) dragger.unregister(off_y_knob);
+      if(off_slope_knob) dragger.unregister(slope_knob);
+      if(exp_knob) dragger.unregister(exp_knob);
+      if(wavelength_knob) dragger.unregister(wavelength_knob);
+      if(amplitude_knob) dragger.unregister(amplitude_knob);
+    }
+
+    self.cleanse = function()
+    {
+      self.dirty = false;
+      graphDrawer.cleanse();
     }
   }
 
@@ -534,17 +489,19 @@ var GamePlayScene = function(game, stage)
       self.newT = ((-Math.atan2(x,y))+(Math.PI/2)+(2*Math.PI))%(2*Math.PI); //why terrible coordinate spaces...
 
       var a = self.oldT-self.newT;
-
-      if(Math.abs(a) > Math.PI)
+      if(!isNaN(a))
       {
-        if(a > 0) a =  2*Math.PI - a;
-        else      a = -2*Math.PI - a;
+        if(Math.abs(a) > Math.PI)
+        {
+          if(a > 0) a =  2*Math.PI - a;
+          else      a = -2*Math.PI - a;
+        }
+
+        if(self.cw) self.val += self.d*a;
+        else        self.val -= self.d*a;
+
+        self.rot -= a;
       }
-
-      if(self.cw) self.val +=self.d*a;
-      else        self.val -=self.d*a;
-
-      self.rot -= a;
 
       self.offX = self.newOffX;
       self.offY = self.newOffY;
@@ -663,18 +620,30 @@ var GamePlayScene = function(game, stage)
         else
           self.componentEditorDrawers[i].draw(canv);
       }
-      if(self.graphDrawer.dirty || self.goalGraphDrawer.dirty)
+      if(self.graphDrawer.isDirty())
       {
         var a = self.graphDrawer.findHighestAmp(-1,1,self.graphDrawer.samples);
         var b = self.goalGraphDrawer.findHighestAmp(-1,1,self.goalGraphDrawer.samples);
         if(b > a) a = b;
         if(a < 1) a = 1;
         if(a > 10) a = 10;
-        self.graphDrawer.highestamp = a;
-        self.goalGraphDrawer.highestamp = a;
+        self.graphDrawer.highestAmp = a;
+        self.goalGraphDrawer.highestAmp = a;
+        self.graphDrawer.dirty = true;
+        self.goalGraphDrawer.dirty = true;
       }
       self.graphDrawer.draw(canv);
       self.goalGraphDrawer.draw(canv);
+    }
+
+    self.cleanse = function()
+    {
+      for(var i = 0; i < self.components.length; i++)
+        self.components[i].dirty = false;
+      for(var i = 0; i < self.componentEditorDrawers.length; i++)
+        self.componentEditorDrawers[i].cleanse();
+      self.graphDrawer.cleanse();
+      self.goalGraphDrawer.cleanse();
     }
 
     //cascade any unregistering
@@ -718,36 +687,48 @@ var GamePlayScene = function(game, stage)
     component_select_slope = new GraphDrawer([component],samples_per,x,y,w,h);
     component_select_slope.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SLOPE; composition.addComponent(component); }
     clicker.register(component_select_slope);
+    component_select_slope.draw(stage.drawCanv); //draw once,
+    component_select_slope.cleanse(); //mark clean
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_EXP;
     component_select_exp = new GraphDrawer([component],samples_per,x,y,w,h);
     component_select_exp.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_EXP; composition.addComponent(component); }
     clicker.register(component_select_exp);
+    component_select_exp.draw(stage.drawCanv); //draw once,
+    component_select_exp.cleanse(); //mark clean
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SIN;
     component_select_sin = new GraphDrawer([component],samples_per,x,y,w,h);
     component_select_sin.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SIN; composition.addComponent(component); }
     clicker.register(component_select_sin);
+    component_select_sin.draw(stage.drawCanv); //draw once,
+    component_select_sin.cleanse(); //mark clean
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_TRIANGLE;
     component_select_triangle = new GraphDrawer([component],samples_per,x,y,w,h);
     component_select_triangle.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_TRIANGLE; composition.addComponent(component); }
     clicker.register(component_select_triangle);
+    component_select_triangle.draw(stage.drawCanv); //draw once,
+    component_select_triangle.cleanse(); //mark clean
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SAW;
     component_select_saw = new GraphDrawer([component],samples_per,x,y,w,h);
     component_select_saw.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SAW; composition.addComponent(component); }
     clicker.register(component_select_saw);
+    component_select_saw.draw(stage.drawCanv); //draw once,
+    component_select_saw.cleanse(); //mark clean
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SQUARE;
     component_select_square = new GraphDrawer([component],samples_per,x,y,w,h);
     component_select_square.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SQUARE; composition.addComponent(component); }
     clicker.register(component_select_square);
+    component_select_square.draw(stage.drawCanv); //draw once,
+    component_select_square.cleanse(); //mark clean
 
     composition = new CompositionDrawer(10000, 10, 10, stage.drawCanv.canvas.width-w-30, stage.drawCanv.canvas.height-20);
   };
@@ -773,6 +754,7 @@ var GamePlayScene = function(game, stage)
     component_select_square.draw(stage.drawCanv);
 
     composition.draw(stage.drawCanv);
+    composition.cleanse();
   };
 
   self.cleanup = function()
