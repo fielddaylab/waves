@@ -42,7 +42,7 @@ var GamePlayScene = function(game, stage)
     self.neg = false;
 
     self.highestAmp = 1; //cached value
-    var dirty = true;
+    self._dirty = true;
 
     self.f = function(x)
     {
@@ -114,9 +114,9 @@ var GamePlayScene = function(game, stage)
       return self.highestAmp;
     }
 
-    self.dirty   = function() { dirty = true; }
-    self.cleanse = function() { dirty = false; }
-    self.isDirty = function() { return dirty; }
+    self.dirty   = function() { self._dirty = true; }
+    self.cleanse = function() { self._dirty = false; }
+    self.isDirty = function() { return self._dirty; }
   }
   var Components = function(components)
   {
@@ -124,7 +124,7 @@ var GamePlayScene = function(game, stage)
     self.components = components;
 
     self.highestAmp = 1;
-    var dirty = true;
+    self._dirty = true;
 
     self.f = function(x)
     {
@@ -149,23 +149,23 @@ var GamePlayScene = function(game, stage)
 
     self.dirty = function()
     {
-      dirty = true;
+      self._dirty = true;
       for(var i = 0; i < self.components.length; i++)
         self.components[i].dirty();
     }
     self.cleanse = function()
     {
-      dirty = false;
+      self._dirty = false;
       for(var i = 0; i < self.components.length; i++)
         self.components[i].cleanse();
     }
     self.isDirty = function()
     {
-      var d = dirty;
+      var d = self._dirty;
       for(var i = 0; i < self.components.length; i++)
         d = d || self.components[i].isDirty();
-      dirty = d;
-      return dirty;
+      self._dirty = d;
+      return self._dirty;
     }
   }
 
@@ -185,7 +185,7 @@ var GamePlayScene = function(game, stage)
     self.color = "#000000";
     self.drawGrid = true;
     self.highestAmp = 1;
-    var dirty = true;
+    self._dirty = true;
 
     self.position = function(x,y,w,h)
     {
@@ -203,7 +203,7 @@ var GamePlayScene = function(game, stage)
           smoothing:true
         }
       );
-      dirty = true;
+      self._dirty = true;
     }
     self.position(self.x,self.y,self.w,self.h);
 
@@ -239,7 +239,7 @@ var GamePlayScene = function(game, stage)
         }
         self.canv.context.stroke();
 
-        dirty = false;
+        self._dirty = false;
       }
 
       canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
@@ -247,19 +247,19 @@ var GamePlayScene = function(game, stage)
 
     self.dirty = function()
     {
-      dirty = true;
+      self._dirty = true;
     }
     self.cleanse = function()
     {
-      dirty = false;
+      self._dirty = false;
       self.components.cleanse();
     }
     self.isDirty = function()
     {
-      var d = dirty;
+      var d = self._dirty;
       d = d || self.components.isDirty();
-      dirty = d;
-      return dirty;
+      self._dirty = d;
+      return self._dirty;
     }
   }
 
@@ -275,7 +275,7 @@ var GamePlayScene = function(game, stage)
     self.samples = samples;
     self.component = component;
     self.should_destroy = false;
-    var dirty = true;
+    self._dirty = true;
 
     var knob_w = 10;
 
@@ -406,6 +406,8 @@ var GamePlayScene = function(game, stage)
         default:
           break;
       }
+
+      self._dirty = true;
     }
     self.position(self.x,self.y,self.w,self.h);
 
@@ -421,7 +423,7 @@ var GamePlayScene = function(game, stage)
       if(amplitude_knob)  { amplitude_knob.draw(canv);  if(amplitude_knob.isDirty())  { component.amplitude  = amplitude_knob.val;       component.dirty(); amplitude_knob.cleanse();  } }
 
       graphDrawer.draw(canv);
-      dirty = false;
+      self._dirty = false;
     }
 
     //to handle unregistering
@@ -438,15 +440,15 @@ var GamePlayScene = function(game, stage)
 
     self.isDirty = function()
     {
-      var d = dirty;
-      dirty = dirty || graphDrawer.isDirty();
-      dirty = d;
-      return dirty;
+      var d = self._dirty;
+      self._dirty = self._dirty || graphDrawer.isDirty();
+      self._dirty = d;
+      return self._dirty;
     }
-    self.dirty = function() { dirty = true; }
+    self.dirty = function() { self._dirty = true; }
     self.cleanse = function()
     {
-      dirty = false;
+      self._dirty = false;
       graphDrawer.cleanse();
     }
   }
@@ -472,7 +474,7 @@ var GamePlayScene = function(game, stage)
 
     self.val = 0;
     self.rot = 0;
-    var dirty = true;
+    self._dirty = true;
 
     self.position = function(x,y,w,h)
     {
@@ -481,6 +483,8 @@ var GamePlayScene = function(game, stage)
       self.w = w;
       self.h = h;
       self.r = self.w/2;
+
+      self._dirty = true;
     }
     self.position(self.x,self.y,self.w,self.h);
 
@@ -552,16 +556,16 @@ var GamePlayScene = function(game, stage)
       self.offX = self.newOffX;
       self.offY = self.newOffY;
 
-      dirty = true;
+      self._dirty = true;
     };
     self.dragFinish = function()
     {
       self.dragging = false;
     };
 
-    self.isDirty = function() { return dirty; }
-    self.dirty   = function() { dirty = true; }
-    self.cleanse = function() { dirty = false; }
+    self.isDirty = function() { return self._dirty; }
+    self.dirty   = function() { self._dirty = true; }
+    self.cleanse = function() { self._dirty = false; }
   }
 
   var CompositionDrawer = function(samples, x, y, w, h)
@@ -578,7 +582,7 @@ var GamePlayScene = function(game, stage)
     self.componentEditorDrawers = [];
     var component_width = 200;
     var component_height = 70;
-    var dirty = true;
+    self._dirty = true;
 
     self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x, self.y, self.w-component_width-10, self.h);
     self.goalGraphDrawer;
@@ -683,7 +687,7 @@ var GamePlayScene = function(game, stage)
       self.graphDrawer.draw(canv);
       self.goalGraphDrawer.draw(canv);
 
-      dirty = false;
+      self._dirty = false;
     }
 
     //cascade any unregistering
@@ -695,14 +699,14 @@ var GamePlayScene = function(game, stage)
 
     self.isDirty = function()
     {
-      var d = dirty;
+      var d = self._dirty;
       d = d || graphDrawer.isDirty() || goalGraphDrawer.isDirty();
       for(var i = 0; i < self.components.length; i++)
         d = d || self.components[i].isDirty();
-      dirty = d;
-      return dirty;
+      self._dirty = d;
+      return self._dirty;
     }
-    self.dirty = function() { dirty = true; }
+    self.dirty = function() { self._dirty = true; }
     self.cleanse = function()
     {
       for(var i = 0; i < self.components.length; i++)
