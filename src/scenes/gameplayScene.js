@@ -128,9 +128,9 @@ var GamePlayScene = function(game, stage)
 
     self.f = function(x)
     {
-      var y = 0;
+      var y = 1;
       for(var i = 0; i < self.components.length; i++)
-        y += self.components[i].f(x);
+        y *= self.components[i].f(x);
       return y;
     }
 
