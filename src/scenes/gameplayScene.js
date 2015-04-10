@@ -604,7 +604,8 @@ var GamePlayScene = function(game, stage)
       var n = Math.floor(1+Math.random()*2);
       for(var i = 0; i < n; i++)
       {
-        var t = Math.floor(Math.random()*6);
+        //var t = Math.floor(Math.random()*6);
+        var t = 2+Math.floor(Math.random()*4);
         var component = new Component();
         component.type = t;
         switch(t)
