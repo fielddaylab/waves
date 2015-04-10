@@ -203,6 +203,7 @@ var GamePlayScene = function(game, stage)
           smoothing:true
         }
       );
+      dirty = true;
     }
     self.position(self.x,self.y,self.w,self.h);
 
