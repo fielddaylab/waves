@@ -582,9 +582,10 @@ var GamePlayScene = function(game, stage)
     self.componentEditorDrawers = [];
     var component_width = 200;
     var component_height = 70;
+    self.score = 1000000; //bad
     self._dirty = true;
 
-    self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x, self.y, self.w-component_width-10, self.h);
+    self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x, self.y, self.w-component_width-10, self.h-30);
     self.goalGraphDrawer;
 
     self.randomizeGraphDrawer = function()
@@ -629,7 +630,7 @@ var GamePlayScene = function(game, stage)
         }
         components.push(component);
       }
-      self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.x, self.y, self.w-component_width-10, self.h);
+      self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.x, self.y, self.w-component_width-10, self.h-30);
       self.goalGraphDrawer.color = "#33FF33";
       self.goalGraphDrawer.drawGrid = false;
     }
@@ -660,6 +661,21 @@ var GamePlayScene = function(game, stage)
         self.componentEditorDrawers[i].position(self.x+self.w-component_width,self.y+i*(10+component_height),component_width,component_height);
     }
 
+    self.calculateScore = function(samples)
+    {
+      if(samples < 2) samples = 2;
+      var score = 0;
+      var x;
+      for(var i = 0; i < samples; i++)
+      {
+        x = (i/(samples-1)*2)-1;
+        y = Math.abs(self.graphDrawer.components.f(x)-self.goalGraphDrawer.components.f(x));
+        if(y > 100) y = 100;
+        score += y;
+      }
+      return score/self.graphDrawer.highestAmp;
+    }
+
     self.draw = function(canv)
     {
       for(var i = 0; i < self.componentEditorDrawers.length; i++)
@@ -672,7 +688,7 @@ var GamePlayScene = function(game, stage)
         else
           self.componentEditorDrawers[i].draw(canv);
       }
-      if(self.graphDrawer.isDirty())
+      if(self.graphDrawer.isDirty() || self.goalGraphDrawer.isDirty())
       {
         var a = self.graphDrawer.components.findHighestAmp(-1,1,self.graphDrawer.samples);
         var b = self.goalGraphDrawer.components.findHighestAmp(-1,1,self.goalGraphDrawer.samples);
@@ -683,9 +699,25 @@ var GamePlayScene = function(game, stage)
         self.goalGraphDrawer.highestAmp = a;
         self.graphDrawer.dirty();
         self.goalGraphDrawer.dirty();
+
+        self.score = self.calculateScore(100);
+        console.log(self.score);
       }
       self.graphDrawer.draw(canv);
       self.goalGraphDrawer.draw(canv);
+
+      canv.context.fillStyle = "#000000";
+      canv.context.fillRect(self.x,self.y+self.h-20,self.w,20);
+      if(self.score < 200)
+      {
+        canv.context.fillStyle = "#00FF00";
+        canv.context.fillRect(self.x,self.y+self.h-20,self.w*((200-self.score)/200),20);
+      }
+      if(self.score < 5)
+      {
+        self.randomizeGraphDrawer();
+        self.score = 100000;
+      }
 
       self._dirty = false;
     }
