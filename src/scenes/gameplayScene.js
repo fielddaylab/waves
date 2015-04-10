@@ -306,7 +306,7 @@ var GamePlayScene = function(game, stage)
         off_x_knob = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
         //off_y_knob = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
         wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
-        exp_knob   = new Knob(0,0,0,0,0.5,false); exp_knob.val = component.exp;
+        exp_knob   = new Knob(0,0,0,0,0.1,false); exp_knob.val = component.exp;
         dragger.register(off_x_knob);
         //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
@@ -510,6 +510,13 @@ var GamePlayScene = function(game, stage)
         canv.context.moveTo(self.x+self.w/2,self.y+self.h/2);
         canv.context.lineTo(self.x+self.w/2+self.offX,self.y+self.h/2+self.offY);
         canv.context.stroke();
+
+        var off = self.offX;
+        if(self.offX > 100) off = 100;
+        if(self.offX < -100) off = -100;
+        if(self.cw) self.val -= self.d*off/200;
+        else        self.val += self.d*off/200;
+        self._dirty = true;
       }
     }
 
@@ -538,6 +545,10 @@ var GamePlayScene = function(game, stage)
       var y = self.newOffY/len(self.newOffX,self.newOffY);
       self.newT = ((-Math.atan2(x,y))+(Math.PI/2)+(2*Math.PI))%(2*Math.PI); //why terrible coordinate spaces...
 
+      self.offX = self.newOffX;
+      self.offY = self.newOffY;
+
+/*
       var a = self.oldT-self.newT;
       if(!isNaN(a))
       {
@@ -552,9 +563,7 @@ var GamePlayScene = function(game, stage)
 
         self.rot -= a;
       }
-
-      self.offX = self.newOffX;
-      self.offY = self.newOffY;
+*/
 
       self._dirty = true;
     };
@@ -701,7 +710,6 @@ var GamePlayScene = function(game, stage)
         self.goalGraphDrawer.dirty();
 
         self.score = self.calculateScore(100);
-        console.log(self.score);
       }
       self.graphDrawer.draw(canv);
       self.goalGraphDrawer.draw(canv);
