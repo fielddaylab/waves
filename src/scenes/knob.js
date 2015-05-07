@@ -1,4 +1,4 @@
-var Knob = function(scene, x,y,w,h,d,cw)
+var Knob = function(x,y,w,h,d,cw)
 {
   var self = this;
 

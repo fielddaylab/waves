@@ -12,7 +12,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
 
   self.components = [];
   self.componentGraphDrawers = [];
-  self.componentEditorDrawer = new ComponentEditorDrawer(scene, {},self.samples/10,701,234,243,237)
+  self.componentEditorDrawer = new ComponentEditorDrawer(scene, self.samples/10, 701,234,243,237)
   var component_width = 200;
   var component_height = 70;
   self.score = 1000000; //bad
@@ -133,8 +133,16 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
 
   self.selectComponent = function(i)
   {
-    if(self.selected == i) self.selected = -1;
-    else self.selected = i;
+    if(self.selected == i)
+    {
+      self.selected = -1;
+      self.componentEditorDrawer.setComponent(false);
+    }
+    else
+    {
+      self.selected = i;
+      self.componentEditorDrawer.setComponent(self.components[i]);
+    }
   }
 
   self.calculateScore = function(samples)
@@ -196,6 +204,8 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     }
     if(i < 3)
       ; //draw "place here"
+
+    self.componentEditorDrawer.draw(canv);
 
     self._dirty = false;
   }
