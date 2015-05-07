@@ -13,8 +13,6 @@ var GamePlayScene = function(game, stage)
   var particler;
 
   var ENUM = 0;
-  var COMP_TYPE_SLOPE    = ENUM; ENUM++;
-  var COMP_TYPE_EXP      = ENUM; ENUM++;
   var COMP_TYPE_SIN      = ENUM; ENUM++;
   var COMP_TYPE_TRIANGLE = ENUM; ENUM++;
   var COMP_TYPE_SAW      = ENUM; ENUM++;
@@ -23,21 +21,11 @@ var GamePlayScene = function(game, stage)
   {
     var self = this;
     self.type = 0;
-    //type-specific vars
-    //COMP_TYPE_SLOPE
-    self.slope = 1;
-    //COMP_TYPE_EXP
-    self.exp = 2;
-    //COMP_TYPE_SIN
-    //COMP_TYPE_TRIANGLE
-    //COMP_TYPE_SAW
-    //COMP_TYPE_SQUARE
+
     self.wavelength = 1;
     self.amplitude = 1;
-
-    //modifyers of everything
     self.off_x = 0;
-    self.off_y = 0;
+
     self.abs = false;
     self.neg = false;
 
@@ -51,13 +39,6 @@ var GamePlayScene = function(game, stage)
 
       switch(self.type)
       {
-        case COMP_TYPE_SLOPE:
-          y = x * self.slope;
-          break;
-        case COMP_TYPE_EXP:
-          x /= self.wavelength;
-          y = Math.pow(x,self.exp);
-          break;
         case COMP_TYPE_SIN:
           x /= self.wavelength;
           y = Math.sin(x*(2*Math.PI));
@@ -95,7 +76,6 @@ var GamePlayScene = function(game, stage)
           break;
       }
 
-      y += self.off_y;
       if(self.abs) y = Math.abs(y);
       if(self.neg) y = -y;
       return y;
@@ -213,6 +193,9 @@ var GamePlayScene = function(game, stage)
       {
         self.canv.clear();
 
+        self.canv.context.fillStyle = "rgba(255,255,255,0.5)";
+        self.canv.context.fillRect(0,0,self.w,self.h);
+
         if(self.drawGrid)
         {
           self.canv.context.strokeStyle = "#AAAAAA";
@@ -284,9 +267,6 @@ var GamePlayScene = function(game, stage)
     clicker.register(graphDrawer);
 
     var off_x_knob;
-    var off_y_knob;
-    var slope_knob;
-    var exp_knob;
     var wavelength_knob;
     var amplitude_knob;
     var neg_knob;
@@ -294,61 +274,35 @@ var GamePlayScene = function(game, stage)
 
     switch(self.component.type)
     {
-      case COMP_TYPE_SLOPE:
-        off_x_knob = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
-        //off_y_knob = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
-        slope_knob = new Knob(0,0,0,0,0.05,true); slope_knob.val = component.slope;
-        dragger.register(off_x_knob);
-        //dragger.register(off_y_knob);
-        dragger.register(slope_knob);
-        break;
-      case COMP_TYPE_EXP:
-        off_x_knob = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
-        //off_y_knob = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
-        wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
-        exp_knob   = new Knob(0,0,0,0,0.1,false); exp_knob.val = component.exp;
-        dragger.register(off_x_knob);
-        //dragger.register(off_y_knob);
-        dragger.register(wavelength_knob);
-        dragger.register(exp_knob);
-        break;
       case COMP_TYPE_SIN:
         off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
         wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
         amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
-        //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_TRIANGLE:
         off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
         wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
         amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
-        //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_SAW:
         off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
         wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
         amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
-        //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
       case COMP_TYPE_SQUARE:
         off_x_knob      = new Knob(0,0,0,0,0.05,true); off_x_knob.val = component.off_x;
-        //off_y_knob      = new Knob(0,0,0,0,0.05,true); off_y_knob.val = component.off_y;
         wavelength_knob = new Knob(0,0,0,0,0.05,false); wavelength_knob.val = component.wavelength;
         amplitude_knob  = new Knob(0,0,0,0,0.05,false); amplitude_knob.val = component.amplitude;
         dragger.register(off_x_knob);
-        //dragger.register(off_y_knob);
         dragger.register(wavelength_knob);
         dragger.register(amplitude_knob);
         break;
@@ -368,38 +322,23 @@ var GamePlayScene = function(game, stage)
       var yoff = 0;
       switch(self.component.type)
       {
-        case COMP_TYPE_SLOPE:
-          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          slope_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          break;
-        case COMP_TYPE_EXP:
-          off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          exp_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          break;
         case COMP_TYPE_SIN:
           off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           break;
         case COMP_TYPE_TRIANGLE:
           off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           break;
         case COMP_TYPE_SAW:
           off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           break;
         case COMP_TYPE_SQUARE:
           off_x_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
-          //off_y_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           wavelength_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           amplitude_knob.position(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w); yoff += knob_w+10;
           break;
@@ -416,9 +355,6 @@ var GamePlayScene = function(game, stage)
       if(self.isDirty()) graphDrawer.dirty();
 
       if(off_x_knob)      { off_x_knob.draw(canv);      if(off_x_knob.isDirty())      { component.off_x      = off_x_knob.val;           component.dirty(); off_x_knob.cleanse();      } }
-      if(off_y_knob)      { off_y_knob.draw(canv);      if(off_y_knob.isDirty())      { component.off_y      = off_y_knob.val;           component.dirty(); off_y_knob.cleanse();      } }
-      if(slope_knob)      { slope_knob.draw(canv);      if(slope_knob.isDirty())      { component.slope      = slope_knob.val;           component.dirty(); slope_knob.cleanse();      } }
-      if(exp_knob)        { exp_knob.draw(canv);        if(exp_knob.isDirty())        { component.exp        = Math.floor(exp_knob.val); component.dirty(); exp_knob.cleanse();        } }
       if(wavelength_knob) { wavelength_knob.draw(canv); if(wavelength_knob.isDirty()) { component.wavelength = wavelength_knob.val;      component.dirty(); wavelength_knob.cleanse(); } }
       if(amplitude_knob)  { amplitude_knob.draw(canv);  if(amplitude_knob.isDirty())  { component.amplitude  = amplitude_knob.val;       component.dirty(); amplitude_knob.cleanse();  } }
 
@@ -431,9 +367,6 @@ var GamePlayScene = function(game, stage)
     {
       clicker.unregister(graphDrawer);
       if(off_x_knob) dragger.unregister(off_x_knob);
-      if(off_y_knob) dragger.unregister(off_y_knob);
-      if(slope_knob) dragger.unregister(slope_knob);
-      if(exp_knob) dragger.unregister(exp_knob);
       if(wavelength_knob) dragger.unregister(wavelength_knob);
       if(amplitude_knob) dragger.unregister(amplitude_knob);
     }
@@ -473,7 +406,6 @@ var GamePlayScene = function(game, stage)
     self.dragging = false;
 
     self.val = 0;
-    self.rot = 0;
     self._dirty = true;
 
     self.position = function(x,y,w,h)
@@ -490,19 +422,11 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
-      //canv.context.save();
-      //canv.context.translate(self.x+self.w/2, self.y+self.h/2);
-      //canv.context.rotate(self.rot);
-
       canv.context.strokeStyle = "#000000";
       canv.context.beginPath();
       canv.context.arc(self.x+self.w/2, self.y+self.h/2, self.r, 0, Math.PI*2, true);
       canv.context.stroke();
       canv.context.closePath();
-
-      //canv.context.drawImage(self.img, -self.w/2, -self.h/2, self.w, self.h);
-
-      //canv.context.restore();
 
       if(self.dragging)
       {
@@ -522,7 +446,7 @@ var GamePlayScene = function(game, stage)
 
     function len(x,y)
     {
-      return Math.sqrt((x*x)+(y*y));
+      return math.sqrt((x*x)+(y*y));
     }
     self.dragStart = function(evt)
     {
@@ -532,38 +456,14 @@ var GamePlayScene = function(game, stage)
     };
     self.drag = function(evt)
     {
-      self.deltaX = (evt.doX-self.x+(self.w/2))-self.offX;
-      self.deltaY = (evt.doY-self.y+(self.h/2))-self.offY;
+      self.deltaX = (evt.doX-(self.x+(self.w/2)))-self.offX;
+      self.deltaY = (evt.doY-(self.y+(self.h/2)))-self.offY;
 
-      self.newOffX = evt.doX-(self.x+(self.w/2));
-      self.newOffY = evt.doY-(self.y+(self.h/2));
+      self.newoffX = evt.doX-(self.x+(self.w/2));
+      self.newoffY = evt.doY-(self.y+(self.h/2));
 
-      var x = self.offX/len(self.offX,self.offY);
-      var y = self.offY/len(self.offX,self.offY);
-      self.oldT = ((-Math.atan2(x,y))+(Math.PI/2)+(2*Math.PI))%(2*Math.PI); //why terrible coordinate spaces...
-      var x = self.newOffX/len(self.newOffX,self.newOffY);
-      var y = self.newOffY/len(self.newOffX,self.newOffY);
-      self.newT = ((-Math.atan2(x,y))+(Math.PI/2)+(2*Math.PI))%(2*Math.PI); //why terrible coordinate spaces...
-
-      self.offX = self.newOffX;
-      self.offY = self.newOffY;
-
-/*
-      var a = self.oldT-self.newT;
-      if(!isNaN(a))
-      {
-        if(Math.abs(a) > Math.PI)
-        {
-          if(a > 0) a =  2*Math.PI - a;
-          else      a = -2*Math.PI - a;
-        }
-
-        if(self.cw) self.val += self.d*a;
-        else        self.val -= self.d*a;
-
-        self.rot -= a;
-      }
-*/
+      self.offX = self.newoffX;
+      self.offY = self.newoffY;
 
       self._dirty = true;
     };
@@ -594,7 +494,7 @@ var GamePlayScene = function(game, stage)
     self.score = 1000000; //bad
     self._dirty = true;
 
-    self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x, self.y, self.w-component_width-10, self.h-30);
+    self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x+68, self.y+140, 490, 333);
     self.goalGraphDrawer;
 
     self.randomizeGraphDrawer = function()
@@ -610,13 +510,6 @@ var GamePlayScene = function(game, stage)
         component.type = t;
         switch(t)
         {
-          case COMP_TYPE_SLOPE:
-            component.slope = Math.random()*10-5;
-            break;
-          case COMP_TYPE_EXP:
-            component.wavelength = Math.random()*10-5;
-            component.exp = Math.round(Math.random()*10-5);
-            break;
           case COMP_TYPE_SIN:
             component.off_x = Math.random()*10-5;
             component.wavelength = Math.random()*10-5;
@@ -640,7 +533,7 @@ var GamePlayScene = function(game, stage)
         }
         components.push(component);
       }
-      self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.x, self.y, self.w-component_width-10, self.h-30);
+      self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.graphDrawer.x, self.graphDrawer.y, self.graphDrawer.w, self.graphDrawer.h);
       self.goalGraphDrawer.color = "#33FF33";
       self.goalGraphDrawer.drawGrid = false;
     }
@@ -727,6 +620,7 @@ var GamePlayScene = function(game, stage)
         self.randomizeGraphDrawer();
         self.score = 100000;
       }
+      canv.context.drawImage(assetter.asset("composition_cover.png"),67,134,498,366);
 
       self._dirty = false;
     }
@@ -759,8 +653,100 @@ var GamePlayScene = function(game, stage)
     }
   }
 
-  var component_select_slope;
-  var component_select_exp;
+  var Img = function(src, x,y,w,h)
+  {
+    var self = this;
+
+    self.asset = assetter.asset(src);
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+    self.draw = function(canv)
+    {
+      canv.context.drawImage(self.asset,self.x,self.y,self.w,self.h);
+    }
+  }
+
+  var Placer = function(src, x,y,w,h)
+  {
+    var self = this;
+
+    self.stroke = false;
+    self.dragging = false;
+    self.resizing = false;
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+    self.offX = 0;
+    self.offY = 0;
+    self.deltaX = 0;
+    self.deltaY = 0;
+
+    self.draw = function(canv)
+    {
+      canv.context.save();
+      canv.context.globalAlpha = 0.8;
+      canv.context.drawImage(assetter.asset(src), self.x,self.y,self.w,self.h);
+      if(self.stroke) canv.context.strokeRect(self.x,self.y,self.w,self.h);
+      canv.context.restore();
+    }
+
+    function len(x,y)
+    {
+      return math.sqrt((x*x)+(y*y));
+    }
+    self.dragStart = function(evt)
+    {
+      self.dragging = false;
+      self.resizing = false;
+
+      self.offX = evt.doX-(self.x+(self.w/2));
+      self.offY = evt.doY-(self.y+(self.h/2));
+
+      if(self.offX > 0.4*self.w && self.offY > 0.4*self.h)
+        self.resizing = true
+      else
+        self.dragging = true;
+    };
+    self.drag = function(evt)
+    {
+      self.deltaX = (evt.doX-(self.x+(self.w/2)))-self.offX;
+      self.deltaY = (evt.doY-(self.y+(self.h/2)))-self.offY;
+
+      if(self.dragging)
+      {
+        self.x += self.deltaX;
+        self.y += self.deltaY;
+      }
+      else if(self.resizing)
+      {
+        self.w += self.deltaX;
+        self.h += self.deltaY;
+      }
+
+      self.offX = evt.doX-(self.x+(self.w/2));
+      self.offY = evt.doY-(self.y+(self.h/2));
+
+      self._dirty = true;
+    };
+    self.dragFinish = function()
+    {
+      self.dragging = false;
+      self.resizing = false;
+    };
+
+    self.click = function(evt)
+    {
+      console.log(self.x+","+self.y+","+self.w+","+self.h);
+      self.stroke = !self.stroke;
+    }
+  }
+
+  var bg;
+  var placer;
+
   var component_select_sin;
   var component_select_triangle;
   var component_select_saw;
@@ -782,27 +768,16 @@ var GamePlayScene = function(game, stage)
     drawer.register(particler);
     ticker.register(particler);
 
+    bg = new Img("bg.jpg",0,0,stage.drawCanv.canvas.width,stage.drawCanv.canvas.height);
+    //placer = new Placer("composition_cover.png",0,0,100,100);
+    if(placer)clicker.register(placer);
+    if(placer)dragger.register(placer);
+
     var samples_per = 100;
     var w = 50;
     var h = 30;
     var x = stage.drawCanv.canvas.width-w-10;
     var y = 10;
-
-    var component = new Component(); component.type = COMP_TYPE_SLOPE;
-    component_select_slope = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
-    component_select_slope.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SLOPE; composition.addComponent(component); }
-    clicker.register(component_select_slope);
-    component_select_slope.draw(stage.drawCanv); //draw once,
-    component_select_slope.cleanse(); //mark clean
-    y += h+10;
-
-    var component = new Component(); component.type = COMP_TYPE_EXP;
-    component_select_exp = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
-    component_select_exp.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_EXP; composition.addComponent(component); }
-    clicker.register(component_select_exp);
-    component_select_exp.draw(stage.drawCanv); //draw once,
-    component_select_exp.cleanse(); //mark clean
-    y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SIN;
     component_select_sin = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
@@ -835,7 +810,7 @@ var GamePlayScene = function(game, stage)
     component_select_square.draw(stage.drawCanv); //draw once,
     component_select_square.cleanse(); //mark clean
 
-    composition = new CompositionDrawer(10000, 10, 10, stage.drawCanv.canvas.width-w-30, stage.drawCanv.canvas.height-20);
+    composition = new CompositionDrawer(10000, 0, 0, stage.drawCanv.canvas.width, stage.drawCanv.canvas.height);
   };
 
   self.tick = function()
@@ -851,8 +826,9 @@ var GamePlayScene = function(game, stage)
   {
     drawer.flush();
 
-    component_select_slope.draw(stage.drawCanv);
-    component_select_exp.draw(stage.drawCanv);
+    bg.draw(stage.drawCanv);
+    if(placer)placer.draw(stage.drawCanv);
+
     component_select_sin.draw(stage.drawCanv);
     component_select_triangle.draw(stage.drawCanv);
     component_select_saw.draw(stage.drawCanv);

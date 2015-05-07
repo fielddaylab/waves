@@ -38,7 +38,8 @@ var LoadingScene = function(game, stage)
 
   self.tick = function()
   {
-    if(progress <= imagesloaded/(img_srcs.length+1)) progress += 0.01;
+    //if(progress <= imagesloaded/(img_srcs.length+1)) progress += 0.01;
+    if(progress <= imagesloaded/(img_srcs.length+1)) progress += 10; //speed hack
     if(progress >= 1.0) game.nextScene();
   };
 
