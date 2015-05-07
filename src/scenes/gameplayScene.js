@@ -149,7 +149,7 @@ var GamePlayScene = function(game, stage)
     }
   }
 
-  var GraphDrawer = function(components, samples, x, y, w, h)
+  var GraphDrawer = function(components, samples, x, y, w, h, info)
   {
     var self = this;
     self.components = components;
@@ -162,8 +162,17 @@ var GamePlayScene = function(game, stage)
 
     self.canv; //gets initialized in position
 
-    self.color = "#000000";
-    self.drawGrid = true;
+    self.lineColor = "#000000";             if(info.lineColor) self.lineColor = info.lineColor;
+    self.bgColor = "rgba(255,255,255,0.5)"; if(info.bgColor) self.bgColor = info.bgColor;
+    self.gridColor = "#AAAAAA";             if(info.gridColor) self.gridColor = info.gridColor;
+    self.shadowColor = "#777777";           if(info.shadowColor) self.shadowColor = info.shadowColor;
+    self.lineWidth = 1;                     if(info.lineWidth) self.lineWidth = info.lineWidth;
+    self.shadowWidth = 0;                   if(info.shadowWidth) self.shadowWidth = info.shadowWidth;
+    self.shadowOffX = 0;                    if(info.shadowOffX) self.shadowOffX = info.shadowOffX;
+    self.shadowOffY = 0;                    if(info.shadowOffY) self.shadowOffY = info.shadowOffY;
+    self.gridWidth = 0;                     if(info.gridWidth) self.gridWidth = info.gridWidth;
+    self.drawBG = false;                    if(info.drawBG) self.drawBG = info.drawBG;
+
     self.highestAmp = 1;
     self._dirty = true;
 
@@ -193,12 +202,16 @@ var GamePlayScene = function(game, stage)
       {
         self.canv.clear();
 
-        self.canv.context.fillStyle = "rgba(255,255,255,0.5)";
-        self.canv.context.fillRect(0,0,self.w,self.h);
-
-        if(self.drawGrid)
+        if(self.drawBG)
         {
-          self.canv.context.strokeStyle = "#AAAAAA";
+          self.canv.context.fillStyle = self.bgColor;
+          self.canv.context.fillRect(0,0,self.w,self.h);
+        }
+
+        if(self.gridWidth > 0)
+        {
+          self.canv.context.lineWidth = self.gridWidth;
+          self.canv.context.strokeStyle = self.gridColor;
           for(var i = -2*Math.floor(self.highestAmp); i <= 2*Math.floor(self.highestAmp); i++)
           {
             self.canv.context.beginPath();
@@ -210,7 +223,25 @@ var GamePlayScene = function(game, stage)
 
         var sample;
         var t;
-        self.canv.context.strokeStyle = self.color;
+
+        if(self.shadowWidth > 0)
+        {
+          self.canv.context.lineWidth = self.shadowWidth;
+          self.canv.context.strokeStyle = self.shadowColor;
+          self.canv.context.strokeRect(0,0,self.w,self.h);
+          self.canv.context.beginPath();
+          self.canv.context.moveTo(0,0);
+          for(var i = 0; i < self.samples; i++)
+          {
+            t = i*(1/(self.samples-1));
+            sample = self.components.f(t*2-1);
+            self.canv.context.lineTo(t*self.w+self.shadowOffX,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.shadowOffY);
+          }
+          self.canv.context.stroke();
+        }
+
+        self.canv.context.lineWidth = self.lineWidth;
+        self.canv.context.strokeStyle = self.lineColor;
         self.canv.context.strokeRect(0,0,self.w,self.h);
         self.canv.context.beginPath();
         self.canv.context.moveTo(0,0);
@@ -262,7 +293,7 @@ var GamePlayScene = function(game, stage)
 
     var knob_w = 10;
 
-    var graphDrawer = new GraphDrawer(new Components([self.component]),self.samples,0,0,0,0);
+    var graphDrawer = new GraphDrawer(new Components([self.component]),self.samples,0,0,0,0,{});
     graphDrawer.click = function(evt) { self.should_destroy = true; }
     clicker.register(graphDrawer);
 
@@ -382,7 +413,7 @@ var GamePlayScene = function(game, stage)
     self.cleanse = function()
     {
       self._dirty = false;
-      graphDrawer.cleanse();
+      //graphDrawer.cleanse();
     }
   }
 
@@ -487,14 +518,46 @@ var GamePlayScene = function(game, stage)
     self.h = h;
     self.samples = samples;
 
+    self.selected = -1;
+
     self.components = [];
-    self.componentEditorDrawers = [];
+    self.componentGraphDrawers = [];
+    self.componentEditorDrawer = new ComponentEditorDrawer({},self.samples/10,701,234,243,237)
     var component_width = 200;
     var component_height = 70;
     self.score = 1000000; //bad
     self._dirty = true;
 
-    self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x+68, self.y+140, 490, 333);
+    self.component_bg_x = [];
+    self.component_bg_rect = {};
+    self.component_bg_rect.x = 92;
+    self.component_bg_rect.y = 590;
+    self.component_bg_rect.w = 253;
+    self.component_bg_rect.h = 65;
+    self.component_bg_x[0] = 92;
+    self.component_bg_x[1] = 384;
+    self.component_bg_x[2] = 674;
+
+    self.component_graph_x = [];
+    self.component_graph_rect = {};
+    self.component_graph_rect.x = 162;
+    self.component_graph_rect.y = 593;
+    self.component_graph_rect.w = 143;
+    self.component_graph_rect.h = 54;
+    self.component_graph_x[0] = 162;
+    self.component_graph_x[1] = 453;
+    self.component_graph_x[2] = 742;
+
+    self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x+68, self.y+140, 490, 333, 
+    {
+      drawBG:false,
+      lineWidth:2,
+      gridWidth:0,
+      shadowWidth:2,
+      shadowColor:"#5D1413",
+      shadowOffX:10,
+      shadowOffY:10
+    });
     self.goalGraphDrawer;
 
     self.randomizeGraphDrawer = function()
@@ -533,16 +596,20 @@ var GamePlayScene = function(game, stage)
         }
         components.push(component);
       }
-      self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.graphDrawer.x, self.graphDrawer.y, self.graphDrawer.w, self.graphDrawer.h);
-      self.goalGraphDrawer.color = "#33FF33";
-      self.goalGraphDrawer.drawGrid = false;
+      self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.graphDrawer.x, self.graphDrawer.y, self.graphDrawer.w, self.graphDrawer.h, {
+        drawBG:false,
+        lineWidth:2,
+        lineColor:"#33FF33",
+        gridWidth:0
+      });
     }
     self.randomizeGraphDrawer();
 
     self.addComponent = function(component)
     {
+      if(self.components.length > 2) return;
       self.components.push(component);
-      self.componentEditorDrawers.push(new ComponentEditorDrawer(self.components[self.components.length-1],self.samples/10,self.x+self.w-component_width,self.y+(self.components.length-1)*(10+component_height),component_width,component_height));
+      self.componentGraphDrawers.push(new GraphDrawer(new Components([self.components[self.components.length-1]]), self.samples/10, self.component_graph_x[self.components.length-1], self.component_graph_rect.y, self.component_graph_rect.w, self.component_graph_rect.h, {lineWidth:2}));
       self.graphDrawer.components = new Components(self.components);
       self.graphDrawer.dirty();
     }
@@ -553,15 +620,15 @@ var GamePlayScene = function(game, stage)
       {
         if(self.components[i] == component)
         {
-          self.componentEditorDrawers[i].destroy();
+          self.componentGraphDrawers[i].destroy();
           self.components.splice(i,1);
-          self.componentEditorDrawers.splice(i,1);
+          self.componentGraphDrawers.splice(i,1);
           self.graphDrawer.components = new Components(self.components);
           self.graphDrawer.dirty();
         }
       }
       for(var i = 0; i < self.components.length; i++)
-        self.componentEditorDrawers[i].position(self.x+self.w-component_width,self.y+i*(10+component_height),component_width,component_height);
+        self.componentGraphDrawers[i].position(self.component_graph_x[components.length-1], self.component_graph_rect.y, self.component_graph_rect.w, self.component_graph_rect.h);
     }
 
     self.calculateScore = function(samples)
@@ -581,15 +648,13 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
-      for(var i = 0; i < self.componentEditorDrawers.length; i++)
+      for(var i = 0; i < self.componentGraphDrawers.length; i++)
       {
-        if(self.componentEditorDrawers[i].should_destroy)
+        if(self.componentGraphDrawers[i].should_destroy)
         {
-          self.removeComponent(self.componentEditorDrawers[i].component);
+          self.removeComponent(self.components[i]);
           i--;
         }
-        else
-          self.componentEditorDrawers[i].draw(canv);
       }
       if(self.graphDrawer.isDirty() || self.goalGraphDrawer.isDirty())
       {
@@ -622,14 +687,42 @@ var GamePlayScene = function(game, stage)
       }
       canv.context.drawImage(assetter.asset("composition_cover.png"),67,134,498,366);
 
+      var i = 0;
+      for(i = 0; i < self.componentGraphDrawers.length; i++)
+      {
+        if(i == self.selected)
+          canv.context.drawImage(assetter.asset("component_bg_select.png"),self.component_bg_x[i],self.component_bg_rect.y,self.component_bg_rect.w,self.component_bg_rect.h);
+        else
+          canv.context.drawImage(assetter.asset("component_bg.png"),      self.component_bg_x[i],self.component_bg_rect.y,self.component_bg_rect.w,self.component_bg_rect.h);
+        self.componentGraphDrawers[i].draw(canv);
+      }
+      if(i < 3)
+        ; //draw "place here"
+
       self._dirty = false;
+    }
+
+    self.click = function(evt)
+    {
+      var i;
+      for(i = 0; i < self.components.length; i++)
+      {
+        self.component_bg_rect.x = self.component_bg_x[i];
+        if(clicked(self.component_bg_rect, evt))
+        {
+          if(self.selected == i) self.selected = -1;
+          else                   self.selected = i;
+        }
+      }
     }
 
     //cascade any unregistering
     self.destroy = function()
     {
-      for(var i = 0; i < self.componentEditorDrawers.length; i++)
-        self.componentEditorDrawers[i].destroy();
+      for(var i = 0; i < self.components.length; i++)
+        self.componentGraphDrawers[i].destroy();
+      self.componentEditorDrawer.destroy();
+      clicker.unregister(self);
     }
 
     self.isDirty = function()
@@ -645,9 +738,11 @@ var GamePlayScene = function(game, stage)
     self.cleanse = function()
     {
       for(var i = 0; i < self.components.length; i++)
+      {
         self.components[i].cleanse();
-      for(var i = 0; i < self.componentEditorDrawers.length; i++)
-        self.componentEditorDrawers[i].cleanse();
+        self.componentGraphDrawers[i].cleanse();
+      }
+      self.componentEditorDrawer.cleanse();
       self.graphDrawer.cleanse();
       self.goalGraphDrawer.cleanse();
     }
@@ -769,7 +864,7 @@ var GamePlayScene = function(game, stage)
     ticker.register(particler);
 
     bg = new Img("bg.jpg",0,0,stage.drawCanv.canvas.width,stage.drawCanv.canvas.height);
-    //placer = new Placer("composition_cover.png",0,0,100,100);
+    placer = new Placer("component_bg.png",0,0,100,100);
     if(placer)clicker.register(placer);
     if(placer)dragger.register(placer);
 
@@ -780,7 +875,7 @@ var GamePlayScene = function(game, stage)
     var y = 10;
 
     var component = new Component(); component.type = COMP_TYPE_SIN;
-    component_select_sin = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
+    component_select_sin = new GraphDrawer(new Components([component]),samples_per,x,y,w,h,{});
     component_select_sin.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SIN; composition.addComponent(component); }
     clicker.register(component_select_sin);
     component_select_sin.draw(stage.drawCanv); //draw once,
@@ -788,7 +883,7 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_TRIANGLE;
-    component_select_triangle = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
+    component_select_triangle = new GraphDrawer(new Components([component]),samples_per,x,y,w,h,{});
     component_select_triangle.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_TRIANGLE; composition.addComponent(component); }
     clicker.register(component_select_triangle);
     component_select_triangle.draw(stage.drawCanv); //draw once,
@@ -796,7 +891,7 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SAW;
-    component_select_saw = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
+    component_select_saw = new GraphDrawer(new Components([component]),samples_per,x,y,w,h,{});
     component_select_saw.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SAW; composition.addComponent(component); }
     clicker.register(component_select_saw);
     component_select_saw.draw(stage.drawCanv); //draw once,
@@ -804,13 +899,14 @@ var GamePlayScene = function(game, stage)
     y += h+10;
 
     var component = new Component(); component.type = COMP_TYPE_SQUARE;
-    component_select_square = new GraphDrawer(new Components([component]),samples_per,x,y,w,h);
+    component_select_square = new GraphDrawer(new Components([component]),samples_per,x,y,w,h,{});
     component_select_square.click = function(evt) { var component = new Component(); component.type = COMP_TYPE_SQUARE; composition.addComponent(component); }
     clicker.register(component_select_square);
     component_select_square.draw(stage.drawCanv); //draw once,
     component_select_square.cleanse(); //mark clean
 
     composition = new CompositionDrawer(10000, 0, 0, stage.drawCanv.canvas.width, stage.drawCanv.canvas.height);
+    clicker.register(composition);
   };
 
   self.tick = function()
@@ -827,7 +923,6 @@ var GamePlayScene = function(game, stage)
     drawer.flush();
 
     bg.draw(stage.drawCanv);
-    if(placer)placer.draw(stage.drawCanv);
 
     component_select_sin.draw(stage.drawCanv);
     component_select_triangle.draw(stage.drawCanv);
@@ -836,6 +931,8 @@ var GamePlayScene = function(game, stage)
 
     composition.draw(stage.drawCanv);
     composition.cleanse();
+
+    if(placer)placer.draw(stage.drawCanv);
   };
 
   self.cleanup = function()
