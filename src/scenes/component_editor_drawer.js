@@ -9,14 +9,11 @@ var ComponentEditorDrawer = function(scene, component, samples, x, y, w, h)
 
   self.samples = samples;
   self.component = component;
-  self.should_destroy = false;
   self._dirty = true;
 
   var knob_w = 10;
 
   var graphDrawer = new GraphDrawer(new Components([self.component]),self.samples,0,0,0,0,{});
-  graphDrawer.click = function(evt) { self.should_destroy = true; }
-  scene.clicker.register(graphDrawer);
 
   var off_x_knob;
   var wavelength_knob;
@@ -117,7 +114,6 @@ var ComponentEditorDrawer = function(scene, component, samples, x, y, w, h)
   //to handle unregistering
   self.destroy = function()
   {
-    scene.clicker.unregister(graphDrawer);
     if(off_x_knob) scene.dragger.unregister(off_x_knob);
     if(wavelength_knob) scene.dragger.unregister(wavelength_knob);
     if(amplitude_knob) scene.dragger.unregister(amplitude_knob);

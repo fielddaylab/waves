@@ -114,25 +114,27 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     self.graphDrawer.dirty();
   }
 
-  self.removeComponent = function(component)
+  self.removeComponent = function(i)
   {
-    for(var i = 0; i < self.components.length; i++)
-    {
-      if(self.components[i] == component)
-      {
-        self.components.splice(i,1);
-        self.componentGraphDrawers.splice(i,1);
-        self.graphDrawer.components = new Components(self.components);
-        self.graphDrawer.dirty();
-        if(self.selected == i) self.selected = -1;
-        if(self.selected > i) self.selected--;
-      }
-    }
+    self.components.splice(i,1);
+    self.componentGraphDrawers.splice(i,1);
+    self.graphDrawer.components = new Components(self.components);
+    self.graphDrawer.dirty();
+
+    if(self.selected == i) self.selectComponent(i);
+    if(self.selected > i) self.selectComponent(self.selected-1);
+
     for(var i = 0; i < self.components.length; i++)
     {
       self.componentGraphDrawers[i].position(self.component_graph_x[i], self.component_graph_rect.y, self.component_graph_rect.w, self.component_graph_rect.h);
       self.componentGraphDrawers[i].dirty();
     }
+  }
+
+  self.selectComponent = function(i)
+  {
+    if(self.selected == i) self.selected = -1;
+    else self.selected = i;
   }
 
   self.calculateScore = function(samples)
@@ -152,14 +154,6 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
 
   self.draw = function(canv)
   {
-    for(var i = 0; i < self.componentGraphDrawers.length; i++)
-    {
-      if(self.componentGraphDrawers[i].should_destroy)
-      {
-        self.removeComponent(self.components[i]);
-        i--;
-      }
-    }
     if(self.graphDrawer.isDirty() || self.goalGraphDrawer.isDirty())
     {
       var a = self.graphDrawer.components.findHighestAmp(-1,1,self.graphDrawer.samples);
@@ -214,7 +208,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
       self.component_x_rect.x = self.component_x_x[i];
       if(clicked(self.component_x_rect, evt))
       {
-        self.removeComponent(self.components[i]);
+        self.removeComponent(i);
         return;
       }
       else
@@ -222,8 +216,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
         self.component_bg_rect.x = self.component_bg_x[i];
         if(clicked(self.component_bg_rect, evt))
         {
-          if(self.selected == i) self.selected = -1;
-          else                   self.selected = i;
+          self.selectComponent(i);
           return;
         }
       }
