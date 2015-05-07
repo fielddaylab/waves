@@ -162,6 +162,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
 
   self.draw = function(canv)
   {
+    self.componentEditorDrawer.draw(canv);
     if(self.graphDrawer.isDirty() || self.goalGraphDrawer.isDirty())
     {
       var a = self.graphDrawer.components.findHighestAmp(-1,1,self.graphDrawer.samples);
@@ -204,8 +205,6 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     }
     if(i < 3)
       ; //draw "place here"
-
-    self.componentEditorDrawer.draw(canv);
 
     self._dirty = false;
   }

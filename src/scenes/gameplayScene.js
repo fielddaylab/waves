@@ -23,7 +23,7 @@ var GamePlayScene = function(game, stage)
     self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
     bg = new Img(self.assetter.asset("bg.jpg"),0,0,stage.drawCanv.canvas.width,stage.drawCanv.canvas.height);
-    placer = new Placer(self.assetter.asset("component_bg.png"),0,0,100,100);
+    //placer = new Placer(self.assetter.asset("component_bg.png"),0,0,100,100);
     if(placer)self.clicker.register(placer);
     if(placer)self.dragger.register(placer);
 
