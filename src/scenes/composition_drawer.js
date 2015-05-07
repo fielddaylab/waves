@@ -124,10 +124,15 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
         self.componentGraphDrawers.splice(i,1);
         self.graphDrawer.components = new Components(self.components);
         self.graphDrawer.dirty();
+        if(self.selected == i) self.selected = -1;
+        if(self.selected > i) self.selected--;
       }
     }
     for(var i = 0; i < self.components.length; i++)
-      self.componentGraphDrawers[i].position(self.component_graph_x[self.components.length-1], self.component_graph_rect.y, self.component_graph_rect.w, self.component_graph_rect.h);
+    {
+      self.componentGraphDrawers[i].position(self.component_graph_x[i], self.component_graph_rect.y, self.component_graph_rect.w, self.component_graph_rect.h);
+      self.componentGraphDrawers[i].dirty();
+    }
   }
 
   self.calculateScore = function(samples)
@@ -210,7 +215,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
       if(clicked(self.component_x_rect, evt))
       {
         self.removeComponent(self.components[i]);
-        i--;
+        return;
       }
       else
       {
@@ -219,6 +224,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
         {
           if(self.selected == i) self.selected = -1;
           else                   self.selected = i;
+          return;
         }
       }
     }
