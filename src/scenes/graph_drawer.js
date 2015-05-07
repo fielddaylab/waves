@@ -21,6 +21,7 @@ var GraphDrawer = function(components, samples, x, y, w, h, info)
   self.shadowOffY = 0;                    if(info.shadowOffY) self.shadowOffY = info.shadowOffY;
   self.gridWidth = 0;                     if(info.gridWidth) self.gridWidth = info.gridWidth;
   self.drawBG = false;                    if(info.drawBG) self.drawBG = info.drawBG;
+  self.drawOffY = 0;                      if(info.drawOffY) self.drawOffY = info.drawOffY;
 
   self.highestAmp = 1;
   self._dirty = true;
@@ -84,7 +85,7 @@ var GraphDrawer = function(components, samples, x, y, w, h, info)
         {
           t = i*(1/(self.samples-1));
           sample = self.components.f(t*2-1);
-          self.canv.context.lineTo(t*self.w+self.shadowOffX,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.shadowOffY);
+          self.canv.context.lineTo(t*self.w+self.shadowOffX,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.shadowOffY+self.drawOffY);
         }
         self.canv.context.stroke();
       }
@@ -98,7 +99,7 @@ var GraphDrawer = function(components, samples, x, y, w, h, info)
       {
         t = i*(1/(self.samples-1));
         sample = self.components.f(t*2-1);
-        self.canv.context.lineTo(t*self.w,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4))));
+        self.canv.context.lineTo(t*self.w,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.drawOffY);
       }
       self.canv.context.stroke();
 

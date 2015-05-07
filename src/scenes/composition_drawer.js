@@ -48,13 +48,15 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   self.component_graph_x[1] = 453;
   self.component_graph_x[2] = 742;
 
-  self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x+68, self.y+140, 490, 333, 
+  self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x+68, self.y+140, 490, 333,
   {
     drawBG:false,
-    lineWidth:2,
     gridWidth:0,
-    shadowWidth:2,
-    shadowColor:"#5D1413",
+    drawOffY:23,
+    lineColor:"#BD3333",
+    lineWidth:2,
+    shadowWidth:4,
+    shadowColor:"rgba(95,05,04,0.2)",
     shadowOffX:10,
     shadowOffY:10
   });
@@ -98,6 +100,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     }
     self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.graphDrawer.x, self.graphDrawer.y, self.graphDrawer.w, self.graphDrawer.h, {
       drawBG:false,
+      drawOffY:23,
       lineWidth:2,
       lineColor:"#33FF33",
       gridWidth:0
