@@ -8,9 +8,16 @@ var Components = function(components)
 
   self.f = function(x)
   {
-    var y = 1;
+    var y = 0;
     for(var i = 0; i < self.components.length; i++)
-      y *= self.components[i].f(x);
+    {
+      if(i == 0)
+        y += self.components[i].f(x);
+      else if(self.components[i-1].comb == COMP_COMB_ADD)
+        y += self.components[i].f(x);
+      else if(self.components[i-1].comb == COMP_COMB_MUL)
+        y *= self.components[i].f(x);
+    }
     return y;
   }
 

@@ -3,10 +3,15 @@ var COMP_TYPE_SIN      = COMP_TYPE_COUNT; COMP_TYPE_COUNT++;
 var COMP_TYPE_TRIANGLE = COMP_TYPE_COUNT; COMP_TYPE_COUNT++;
 var COMP_TYPE_SAW      = COMP_TYPE_COUNT; COMP_TYPE_COUNT++;
 var COMP_TYPE_SQUARE   = COMP_TYPE_COUNT; COMP_TYPE_COUNT++;
+
+var COMP_COMB_COUNT = 0;
+var COMP_COMB_ADD = COMP_COMB_COUNT; COMP_COMB_COUNT++;
+var COMP_COMB_MUL = COMP_COMB_COUNT; COMP_COMB_COUNT++;
 var Component = function()
 {
   var self = this;
   self.type = 0;
+  self.comb = 0;
 
   self.wavelength = 1;
   self.amplitude = 1;

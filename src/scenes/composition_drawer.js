@@ -119,6 +119,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     {
       var t = Math.floor(Math.random()*COMP_TYPE_COUNT);
       var component = new Component();
+      component.type = t;
       component.off_x = Math.random()*10-5;
       component.wavelength = 0.5+Math.random()*2;
       if(Math.random() > 0.75) component.wavelength = -component.wavelength;
