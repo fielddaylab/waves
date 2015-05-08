@@ -19,25 +19,25 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   var comp;
   comp = new Component();
   comp.type = COMP_TYPE_SIN;
-  var sinGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+  var sinGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/10, 180,304,173,112,{
     lineWidth:2,
     lineColor:"#FF3333"
   });
   comp = new Component();
   comp.type = COMP_TYPE_TRIANGLE;
-  var triangleGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+  var triangleGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/10, 180,304,173,112,{
     lineWidth:2,
     lineColor:"#FF3333"
   });
   comp = new Component();
   comp.type = COMP_TYPE_SAW;
-  var sawGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+  var sawGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/10, 180,304,173,112,{
     lineWidth:2,
     lineColor:"#FF3333"
   });
   comp = new Component();
   comp.type = COMP_TYPE_SQUARE;
-  var squareGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+  var squareGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/10, 180,304,173,112,{
     lineWidth:2,
     lineColor:"#FF3333"
   });

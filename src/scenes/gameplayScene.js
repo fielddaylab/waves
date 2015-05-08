@@ -20,7 +20,7 @@ var GamePlayScene = function(game, stage)
     if(placer)self.clicker.register(placer);
     if(placer)self.dragger.register(placer);
 
-    composition = new CompositionDrawer(self, 10000, 0, 0, stage.drawCanv.canvas.width, stage.drawCanv.canvas.height);
+    composition = new CompositionDrawer(self, 1000, 0, 0, stage.drawCanv.canvas.width, stage.drawCanv.canvas.height);
     self.clicker.register(composition);
   };
 

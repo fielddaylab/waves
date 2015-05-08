@@ -25,7 +25,7 @@ var ComponentEditorDrawer = function(scene, samples, x, y, w, h)
     self.component = component;
     if(component)
     {
-      graphDrawer = new GraphDrawer(new Components([component]),self.samples,702,234,240,117,{lineWidth:2});
+      graphDrawer = new GraphDrawer(new Components([component]),self.samples,702,234,240,117,{lineWidth:2, lineColor:"#FF3333"});
       wavelength_knob = new Knob(709,394,61,61,0.05,true); wavelength_knob.val = component.wavelength;
       amplitude_knob  = new Knob(797,394,61,61,0.05,false); amplitude_knob.val = component.amplitude;
       off_x_knob      = new Knob(886,394,61,61,0.05,true);  off_x_knob.val = component.off_x;
