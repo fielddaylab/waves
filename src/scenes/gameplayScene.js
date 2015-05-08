@@ -16,7 +16,7 @@ var GamePlayScene = function(game, stage)
     self.clicker = new Clicker({source:stage.dispCanv.canvas});
     self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    placer = new Placer(self.assetter.asset("place_wave_btn.png"),0,0,100,100);
+    //placer = new Placer(self.assetter.asset("place_wave_btn.png"),0,0,100,100);
     if(placer)self.clicker.register(placer);
     if(placer)self.dragger.register(placer);
 
