@@ -13,6 +13,8 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   var MODE_PICKER = MODE_COUNT; MODE_COUNT++;
   var mode = MODE_NORMAL;
 
+  var level = 0;
+
   var selected_type = -1;
   var comp;
   comp = new Component();
@@ -107,40 +109,21 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   });
   self.goalGraphDrawer;
 
-  self.randomizeGraphDrawer = function()
+  self.randomizeGraphDrawer = function(lvl)
   {
     var components = [];
 
-    var n = Math.floor(1+Math.random()*2);
+    var n = Math.floor(1+Math.floor(lvl/3));
+    if(n > 3) n = 3;
     for(var i = 0; i < n; i++)
     {
-      //var t = Math.floor(Math.random()*6);
-      var t = 2+Math.floor(Math.random()*4);
+      var t = Math.floor(Math.random()*COMP_TYPE_COUNT);
       var component = new Component();
-      component.type = t;
-      switch(t)
-      {
-        case COMP_TYPE_SIN:
-          component.off_x = Math.random()*10-5;
-          component.wavelength = Math.random()*10-5;
-          component.amplitude = Math.random()*10-5;
-          break;
-        case COMP_TYPE_TRIANGLE:
-          component.off_x = Math.random()*10-5;
-          component.wavelength = Math.random()*10-5;
-          component.amplitude = Math.random()*10-5;
-          break;
-        case COMP_TYPE_SAW:
-          component.off_x = Math.random()*10-5;
-          component.wavelength = Math.random()*10-5;
-          component.amplitude = Math.random()*10-5;
-          break;
-        case COMP_TYPE_SQUARE:
-          component.off_x = Math.random()*10-5;
-          component.wavelength = Math.random()*10-5;
-          component.amplitude = Math.random()*10-5;
-          break;
-      }
+      component.off_x = Math.random()*10-5;
+      component.wavelength = 0.5+Math.random()*2;
+      if(Math.random() > 0.75) component.wavelength = -component.wavelength;
+      component.amplitude = 0.2+Math.random()*2;
+      if(Math.random() > 0.75) component.amplitude = -component.amplitude;
       components.push(component);
     }
     self.goalGraphDrawer = new GraphDrawer(new Components(components), self.samples, self.graphDrawer.x, self.graphDrawer.y, self.graphDrawer.w, self.graphDrawer.h, {
@@ -151,7 +134,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
       gridWidth:0
     });
   }
-  self.randomizeGraphDrawer();
+  self.randomizeGraphDrawer(level);
 
   self.addComponent = function(component)
   {
@@ -244,7 +227,8 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
       }
       if(self.score < 5)
       {
-        self.randomizeGraphDrawer();
+        level++;
+        self.randomizeGraphDrawer(level);
         self.score = 100000;
       }
       canv.context.drawImage(scene.assetter.asset("composition_cover.png"),67,134,498,366);
