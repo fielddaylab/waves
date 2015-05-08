@@ -78,29 +78,35 @@ var GraphDrawer = function(components, samples, x, y, w, h, info)
       {
         self.canv.context.lineWidth = self.shadowWidth;
         self.canv.context.strokeStyle = self.shadowColor;
-        self.canv.context.strokeRect(0,0,self.w,self.h);
         self.canv.context.beginPath();
-        self.canv.context.moveTo(0,0);
-        for(var i = 0; i < self.samples; i++)
+
+        t = (1/(self.samples-1));
+        sample = self.components.f(t*2-1);
+        self.canv.context.moveTo(t*self.w+self.shadowOffX,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.shadowOffY+self.drawOffY);
+        for(var i = 1; i < self.samples; i++)
         {
           t = i*(1/(self.samples-1));
           sample = self.components.f(t*2-1);
           self.canv.context.lineTo(t*self.w+self.shadowOffX,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.shadowOffY+self.drawOffY);
         }
+
         self.canv.context.stroke();
       }
 
       self.canv.context.lineWidth = self.lineWidth;
       self.canv.context.strokeStyle = self.lineColor;
-      self.canv.context.strokeRect(0,0,self.w,self.h);
       self.canv.context.beginPath();
-      self.canv.context.moveTo(0,0);
-      for(var i = 0; i < self.samples; i++)
+
+      t = (1/(self.samples-1));
+      sample = self.components.f(t*2-1);
+      self.canv.context.moveTo(t*self.w,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.drawOffY);
+      for(var i = 1; i < self.samples; i++)
       {
         t = i*(1/(self.samples-1));
         sample = self.components.f(t*2-1);
         self.canv.context.lineTo(t*self.w,(self.h/2)-((sample/self.highestAmp)*((self.h/2)*(3/4)))+self.drawOffY);
       }
+
       self.canv.context.stroke();
 
       self._dirty = false;

@@ -50,16 +50,12 @@ var ComponentEditorDrawer = function(scene, samples, x, y, w, h)
       if(off_x_knob.isDirty())
       {
         self.component.off_x = off_x_knob.val;
-        if(Math.abs(self.component.wavelength) > Math.abs(self.component.off_x))
-          self.component.off_x = self.component.off_x%self.component.wavelength;
         self.component.dirty();
         off_x_knob.cleanse();
       }
       if(wavelength_knob.isDirty())
       {
         self.component.wavelength = wavelength_knob.val;
-        if(Math.abs(self.component.wavelength) < Math.abs(self.component.off_x))
-          self.component.off_x = self.component.off_x%self.component.wavelength;
         self.component.dirty();
         wavelength_knob.cleanse();
       }
@@ -68,6 +64,11 @@ var ComponentEditorDrawer = function(scene, samples, x, y, w, h)
         self.component.amplitude = amplitude_knob.val;
         self.component.dirty();
         amplitude_knob.cleanse();
+      }
+      if(Math.abs(self.component.wavelength) < Math.abs(self.component.off_x))
+      {
+        self.component.off_x = self.component.off_x%self.component.wavelength;
+        off_x_knob.val = self.component.off_x;
       }
 
       graphDrawer.draw(canv);

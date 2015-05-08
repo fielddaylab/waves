@@ -122,7 +122,10 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   {
     if(self.components.length > 2) return;
     self.components.push(component);
-    self.componentGraphDrawers.push(new GraphDrawer(new Components([self.components[self.components.length-1]]), self.samples/10, self.component_graph_x[self.components.length-1], self.component_graph_rect.y, self.component_graph_rect.w, self.component_graph_rect.h, {lineWidth:2}));
+    self.componentGraphDrawers.push(new GraphDrawer(new Components([self.components[self.components.length-1]]), self.samples/10, self.component_graph_x[self.components.length-1], self.component_graph_rect.y, self.component_graph_rect.w, self.component_graph_rect.h, {
+      lineWidth:2,
+      lineColor:"#FF3333"
+    }));
     self.graphDrawer.components = new Components(self.components);
     self.graphDrawer.dirty();
   }
