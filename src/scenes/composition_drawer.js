@@ -219,13 +219,12 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
       self.graphDrawer.draw(canv);
       self.goalGraphDrawer.draw(canv);
 
-      canv.context.fillStyle = "#000000";
-      canv.context.fillRect(self.x,self.y+self.h-20,self.w,20);
       if(self.score < 200)
       {
-        canv.context.fillStyle = "#00FF00";
-        canv.context.fillRect(self.x,self.y+self.h-20,self.w*((200-self.score)/200),20);
+        canv.context.fillStyle = "#E8A32D";
+        canv.context.fillRect(622,256+(162*(self.score/200)),8,162*((200-self.score)/200));
       }
+
       if(self.score < 5)
       {
         level++;
