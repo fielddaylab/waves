@@ -11,7 +11,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   var MODE_COUNT = 0;
   var MODE_NORMAL = MODE_COUNT; MODE_COUNT++;
   var MODE_PICKER = MODE_COUNT; MODE_COUNT++;
-  var mode = MODE_PICKER;
+  var mode = MODE_NORMAL;
 
   var selected_type = -1;
   var comp;
@@ -163,6 +163,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     }));
     self.graphDrawer.components = new Components(self.components);
     self.graphDrawer.dirty();
+    self.selectComponent(self.components.length-1);
   }
 
   self.removeComponent = function(i)
