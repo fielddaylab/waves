@@ -12,7 +12,6 @@ var ComponentEditorDrawer = function(scene, samples, x, y, w, h)
   self._dirty = true;
 
   var graphDrawer;
-  var knob_w = 10;
 
   var off_x_knob;
   var wavelength_knob;

@@ -8,6 +8,38 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   self.h = h;
   self.samples = samples;
 
+  var MODE_COUNT = 0;
+  var MODE_NORMAL = MODE_COUNT; MODE_COUNT++;
+  var MODE_PICKER = MODE_COUNT; MODE_COUNT++;
+  var mode = MODE_PICKER;
+
+  var selected_type = -1;
+  var comp;
+  comp = new Component();
+  comp.type = COMP_TYPE_SIN;
+  var sinGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+    lineWidth:2,
+    lineColor:"#FF3333"
+  });
+  comp = new Component();
+  comp.type = COMP_TYPE_TRIANGLE;
+  var triangleGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+    lineWidth:2,
+    lineColor:"#FF3333"
+  });
+  comp = new Component();
+  comp.type = COMP_TYPE_SAW;
+  var sawGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+    lineWidth:2,
+    lineColor:"#FF3333"
+  });
+  comp = new Component();
+  comp.type = COMP_TYPE_SQUARE;
+  var squareGraphDrawer = new GraphDrawer(new Components([comp]), self.samples/100, 180,304,173,112,{
+    lineWidth:2,
+    lineColor:"#FF3333"
+  });
+
   self.selected = -1;
 
   self.components = [];
@@ -57,6 +89,9 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   self.component_graph_x[0] = 162;
   self.component_graph_x[1] = 453;
   self.component_graph_x[2] = 742;
+
+  self.bg = new Img(scene.assetter.asset("bg.jpg"),self.x,self.y,self.w,self.h);
+  self.picker_bg = new Img(scene.assetter.asset("selector_bg.jpg"),self.x,self.y,self.w,self.h);
 
   self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x+68, self.y+140, 490, 333,
   {
@@ -178,72 +213,130 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
 
   self.draw = function(canv)
   {
-    self.componentEditorDrawer.draw(canv);
-    if(self.graphDrawer.isDirty() || self.goalGraphDrawer.isDirty())
+    if(mode == MODE_NORMAL)
     {
-      var a = self.graphDrawer.components.findHighestAmp(-1,1,self.graphDrawer.samples);
-      var b = self.goalGraphDrawer.components.findHighestAmp(-1,1,self.goalGraphDrawer.samples);
-      if(b > a) a = b;
-      if(a < 1) a = 1;
-      if(a > 10) a = 10;
-      self.graphDrawer.highestAmp = a;
-      self.goalGraphDrawer.highestAmp = a;
-      self.graphDrawer.dirty();
-      self.goalGraphDrawer.dirty();
+      self.bg.draw(canv);
+      self.componentEditorDrawer.draw(canv);
+      if(self.graphDrawer.isDirty() || self.goalGraphDrawer.isDirty())
+      {
+        var a = self.graphDrawer.components.findHighestAmp(-1,1,self.graphDrawer.samples);
+        var b = self.goalGraphDrawer.components.findHighestAmp(-1,1,self.goalGraphDrawer.samples);
+        if(b > a) a = b;
+        if(a < 1) a = 1;
+        if(a > 10) a = 10;
+        self.graphDrawer.highestAmp = a;
+        self.goalGraphDrawer.highestAmp = a;
+        self.graphDrawer.dirty();
+        self.goalGraphDrawer.dirty();
 
-      self.score = self.calculateScore(100);
+        self.score = self.calculateScore(100);
+      }
+      self.graphDrawer.draw(canv);
+      self.goalGraphDrawer.draw(canv);
+
+      canv.context.fillStyle = "#000000";
+      canv.context.fillRect(self.x,self.y+self.h-20,self.w,20);
+      if(self.score < 200)
+      {
+        canv.context.fillStyle = "#00FF00";
+        canv.context.fillRect(self.x,self.y+self.h-20,self.w*((200-self.score)/200),20);
+      }
+      if(self.score < 5)
+      {
+        self.randomizeGraphDrawer();
+        self.score = 100000;
+      }
+      canv.context.drawImage(scene.assetter.asset("composition_cover.png"),67,134,498,366);
+
+      var i = 0;
+      for(i = 0; i < self.componentGraphDrawers.length; i++)
+      {
+        if(i == self.selected)
+          canv.context.drawImage(scene.assetter.asset("component_bg_select.png"),self.component_bg_x[i],self.component_bg_rect.y,self.component_bg_rect.w,self.component_bg_rect.h);
+        else
+          canv.context.drawImage(scene.assetter.asset("component_bg.png"),      self.component_bg_x[i],self.component_bg_rect.y,self.component_bg_rect.w,self.component_bg_rect.h);
+        self.componentGraphDrawers[i].draw(canv);
+      }
+      if(i < 3)
+        canv.context.drawImage(scene.assetter.asset("place_wave_btn.png"),self.component_place_x[i],self.component_place_rect.y,self.component_place_rect.w,self.component_place_rect.h);
+
+      self._dirty = false;
     }
-    self.graphDrawer.draw(canv);
-    self.goalGraphDrawer.draw(canv);
-
-    canv.context.fillStyle = "#000000";
-    canv.context.fillRect(self.x,self.y+self.h-20,self.w,20);
-    if(self.score < 200)
+    else
     {
-      canv.context.fillStyle = "#00FF00";
-      canv.context.fillRect(self.x,self.y+self.h-20,self.w*((200-self.score)/200),20);
+      self.picker_bg.draw(canv);
+      if(selected_type == COMP_TYPE_SIN) { sinGraphDrawer.draw(canv); }
+      if(selected_type == COMP_TYPE_TRIANGLE) { triangleGraphDrawer.draw(canv); }
+      if(selected_type == COMP_TYPE_SAW) { sawGraphDrawer.draw(canv); }
+      if(selected_type == COMP_TYPE_SQUARE) { squareGraphDrawer.draw(canv); }
     }
-    if(self.score < 5)
-    {
-      self.randomizeGraphDrawer();
-      self.score = 100000;
-    }
-    canv.context.drawImage(scene.assetter.asset("composition_cover.png"),67,134,498,366);
-
-    var i = 0;
-    for(i = 0; i < self.componentGraphDrawers.length; i++)
-    {
-      if(i == self.selected)
-        canv.context.drawImage(scene.assetter.asset("component_bg_select.png"),self.component_bg_x[i],self.component_bg_rect.y,self.component_bg_rect.w,self.component_bg_rect.h);
-      else
-        canv.context.drawImage(scene.assetter.asset("component_bg.png"),      self.component_bg_x[i],self.component_bg_rect.y,self.component_bg_rect.w,self.component_bg_rect.h);
-      self.componentGraphDrawers[i].draw(canv);
-    }
-    if(i < 3)
-      canv.context.drawImage(scene.assetter.asset("place_wave_btn.png"),self.component_place_x[i],self.component_place_rect.y,self.component_place_rect.w,self.component_place_rect.h);
-
-    self._dirty = false;
   }
 
   self.click = function(evt)
   {
-    var i;
-    for(i = 0; i < self.components.length; i++)
+    if(mode == MODE_NORMAL)
     {
-      self.component_x_rect.x = self.component_x_x[i];
-      if(clicked(self.component_x_rect, evt))
+      var i;
+      for(i = 0; i < self.components.length; i++)
       {
-        self.removeComponent(i);
-        return;
+        self.component_x_rect.x = self.component_x_x[i];
+        if(clicked(self.component_x_rect, evt))
+        {
+          self.removeComponent(i);
+          return;
+        }
+        else
+        {
+          self.component_bg_rect.x = self.component_bg_x[i];
+          if(clicked(self.component_bg_rect, evt))
+          {
+            self.selectComponent(i);
+            return;
+          }
+        }
       }
-      else
+      if(i < 3)
       {
         self.component_bg_rect.x = self.component_bg_x[i];
         if(clicked(self.component_bg_rect, evt))
         {
-          self.selectComponent(i);
+          mode = MODE_PICKER;
           return;
         }
+      }
+    }
+    else
+    {
+      if(ptWithin(evt.doX,evt.doY,404,564,228,53))
+      {
+        if(selected_type != -1)
+        {
+          var component = new Component();
+          component.type = selected_type;
+          self.addComponent(component);
+        }
+        mode = MODE_NORMAL;
+        selected_type = -1;
+      }
+      else if(ptWithin(evt.doX,evt.doY,406,285,230,81))
+      {
+        if(selected_type == COMP_TYPE_SIN) selected_type = -1;
+        else selected_type = COMP_TYPE_SIN;
+      }
+      else if(ptWithin(evt.doX,evt.doY,404,374,230,81))
+      {
+        if(selected_type == COMP_TYPE_TRIANGLE) selected_type = -1;
+        else selected_type = COMP_TYPE_TRIANGLE;
+      }
+      else if(ptWithin(evt.doX,evt.doY,658,374,230,81))
+      {
+        if(selected_type == COMP_TYPE_SAW) selected_type = -1;
+        else selected_type = COMP_TYPE_SAW;
+      }
+      else if(ptWithin(evt.doX,evt.doY,661,285,230,81))
+      {
+        if(selected_type == COMP_TYPE_SQUARE) selected_type = -1;
+        else selected_type = COMP_TYPE_SQUARE;
       }
     }
   }
