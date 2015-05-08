@@ -28,6 +28,16 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   self.component_bg_x[1] = 384;
   self.component_bg_x[2] = 674;
 
+  self.component_place_x = [];
+  self.component_place_rect = {};
+  self.component_place_rect.x = 397;
+  self.component_place_rect.y = 598;
+  self.component_place_rect.w = 233;
+  self.component_place_rect.h = 45;
+  self.component_place_x[0] = 106;
+  self.component_place_x[1] = 397;
+  self.component_place_x[2] = 687;
+
   self.component_x_x = [];
   self.component_x_rect = {};
   self.component_x_rect.x = 92;
@@ -53,9 +63,9 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     drawBG:false,
     gridWidth:0,
     drawOffY:23,
-    lineColor:"#BD3333",
-    lineWidth:2,
-    shadowWidth:4,
+    lineColor:"#FF3333",
+    lineWidth:3,
+    shadowWidth:5,
     shadowColor:"rgba(95,05,04,0.2)",
     shadowOffX:10,
     shadowOffY:10
@@ -207,7 +217,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
       self.componentGraphDrawers[i].draw(canv);
     }
     if(i < 3)
-      ; //draw "place here"
+      canv.context.drawImage(scene.assetter.asset("place_wave_btn.png"),self.component_place_x[i],self.component_place_rect.y,self.component_place_rect.w,self.component_place_rect.h);
 
     self._dirty = false;
   }

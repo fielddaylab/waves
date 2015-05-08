@@ -26,11 +26,10 @@ var ComponentEditorDrawer = function(scene, samples, x, y, w, h)
     self.component = component;
     if(component)
     {
-      var yoff = 0;
       graphDrawer = new GraphDrawer(new Components([component]),self.samples,702,234,240,117,{lineWidth:2});
-      off_x_knob      = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.05,true);  yoff += knob_w+10; off_x_knob.val = component.off_x;
-      wavelength_knob = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.05,false); yoff += knob_w+10; wavelength_knob.val = component.wavelength;
-      amplitude_knob  = new Knob(self.x+self.w-knob_w,self.y+yoff,knob_w,knob_w,0.05,false); yoff += knob_w+10; amplitude_knob.val = component.amplitude;
+      wavelength_knob = new Knob(709,394,61,61,0.05,true); wavelength_knob.val = component.wavelength;
+      amplitude_knob  = new Knob(797,394,61,61,0.05,false); amplitude_knob.val = component.amplitude;
+      off_x_knob      = new Knob(886,394,61,61,0.05,true);  off_x_knob.val = component.off_x;
       scene.dragger.register(off_x_knob);
       scene.dragger.register(wavelength_knob);
       scene.dragger.register(amplitude_knob);
@@ -44,9 +43,32 @@ var ComponentEditorDrawer = function(scene, samples, x, y, w, h)
     {
       if(self.isDirty()) graphDrawer.dirty();
 
-      off_x_knob.draw(canv);      if(off_x_knob.isDirty())      { self.component.off_x      = off_x_knob.val;      self.component.dirty(); off_x_knob.cleanse();      }
-      wavelength_knob.draw(canv); if(wavelength_knob.isDirty()) { self.component.wavelength = wavelength_knob.val; self.component.dirty(); wavelength_knob.cleanse(); }
-      amplitude_knob.draw(canv);  if(amplitude_knob.isDirty())  { self.component.amplitude  = amplitude_knob.val;  self.component.dirty(); amplitude_knob.cleanse();  }
+      off_x_knob.draw(canv);
+      wavelength_knob.draw(canv);
+      amplitude_knob.draw(canv);
+
+      if(off_x_knob.isDirty())
+      {
+        self.component.off_x = off_x_knob.val;
+        if(Math.abs(self.component.wavelength) > Math.abs(self.component.off_x))
+          self.component.off_x = self.component.off_x%self.component.wavelength;
+        self.component.dirty();
+        off_x_knob.cleanse();
+      }
+      if(wavelength_knob.isDirty())
+      {
+        self.component.wavelength = wavelength_knob.val;
+        if(Math.abs(self.component.wavelength) < Math.abs(self.component.off_x))
+          self.component.off_x = self.component.off_x%self.component.wavelength;
+        self.component.dirty();
+        wavelength_knob.cleanse();
+      }
+      if(amplitude_knob.isDirty())
+      {
+        self.component.amplitude = amplitude_knob.val;
+        self.component.dirty();
+        amplitude_knob.cleanse();
+      }
 
       graphDrawer.draw(canv);
       self._dirty = false;
