@@ -9,8 +9,9 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
   self.samples = samples;
 
   var MODE_COUNT = 0;
-  var MODE_NORMAL = MODE_COUNT; MODE_COUNT++;
-  var MODE_PICKER = MODE_COUNT; MODE_COUNT++;
+  var MODE_NORMAL   = MODE_COUNT; MODE_COUNT++;
+  var MODE_PICKER   = MODE_COUNT; MODE_COUNT++;
+  var MODE_COMPLETE = MODE_COUNT; MODE_COUNT++;
   var mode = MODE_NORMAL;
 
   var level = 0;
@@ -94,6 +95,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
 
   self.bg = new Img(scene.assetter.asset("bg.jpg"),self.x,self.y,self.w,self.h);
   self.picker_bg = new Img(scene.assetter.asset("selector_bg.jpg"),self.x,self.y,self.w,self.h);
+  self.complete_bg = new Img(scene.assetter.asset("blank_selector_bg.jpg"),self.x,self.y,self.w,self.h);
 
   self.graphDrawer = new GraphDrawer(new Components(self.components), self.samples, self.x+68, self.y+140, 490, 333,
   {
@@ -246,11 +248,12 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
         canv.context.fillRect(622,256+(162*(self.score/200)),8,162*((200-self.score)/200));
       }
 
-      if(self.score < 5)
+      if(self.score < 8)
       {
         level++;
         self.randomizeGraphDrawer(level);
         self.score = 100000;
+        mode = MODE_COMPLETE;
       }
       canv.context.drawImage(scene.assetter.asset("composition_cover.png"),67,134,498,366);
 
@@ -268,13 +271,22 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
 
       self._dirty = false;
     }
-    else
+    else if(mode == MODE_PICKER)
     {
       self.picker_bg.draw(canv);
       if(selected_type == COMP_TYPE_SIN) { sinGraphDrawer.draw(canv); }
       if(selected_type == COMP_TYPE_TRIANGLE) { triangleGraphDrawer.draw(canv); }
       if(selected_type == COMP_TYPE_SAW) { sawGraphDrawer.draw(canv); }
       if(selected_type == COMP_TYPE_SQUARE) { squareGraphDrawer.draw(canv); }
+    }
+    else if(mode == MODE_COMPLETE)
+    {
+      self.complete_bg.draw(canv);
+      canv.context.fillStyle = "black";
+      canv.context.font = "35px Arial Black";
+      canv.context.fillText('LEVEL ' + level + ' COMPLETE!', 335, 375);
+      canv.context.font = "18px Arial Black";
+      canv.context.fillText('NEXT LEVEL', 455, 599);
     }
   }
 
@@ -311,7 +323,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
         }
       }
     }
-    else
+    else if(mode == MODE_PICKER)
     {
       if(ptWithin(evt.doX,evt.doY,404,564,228,53))
       {
@@ -343,6 +355,13 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
       {
         if(selected_type == COMP_TYPE_SQUARE) selected_type = -1;
         else selected_type = COMP_TYPE_SQUARE;
+      }
+    }
+    else if(mode == MODE_COMPLETE)
+    {
+      if(ptWithin(evt.doX,evt.doY,404,564,228,53))
+      {
+        mode = MODE_NORMAL;
       }
     }
   }
