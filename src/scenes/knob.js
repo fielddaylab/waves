@@ -47,11 +47,9 @@ var Knob = function(x,y,w,h,d,cw)
       canv.context.lineTo(self.x+self.w/2+self.offX,self.y+self.h/2+self.offY);
       canv.context.stroke();
 
-      var off = self.offX;
-      if(self.offX > 100) off = 100;
-      if(self.offX < -100) off = -100;
-      if(self.cw) self.val -= self.d*off/200;
-      else        self.val += self.d*off/200;
+      var off = self.offY;
+      if(self.cw) self.val = self.startVal + self.d*off/30;
+      else        self.val = self.startVal - self.d*off/30;
       self._dirty = true;
     }
   }
@@ -65,6 +63,7 @@ var Knob = function(x,y,w,h,d,cw)
     self.offX = evt.doX-(self.x+(self.w/2));
     self.offY = evt.doY-(self.y+(self.h/2));
     self.dragging = true;
+    self.startVal = self.val;
   };
   self.drag = function(evt)
   {
