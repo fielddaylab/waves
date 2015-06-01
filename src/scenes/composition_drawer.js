@@ -102,7 +102,7 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
     drawOffY:23,
     lineColor:"#FF3333",
     lineWidth:3,
-    shadowWidth:5,
+    shadowWidth:0,
     shadowColor:"rgba(95,05,04,0.2)",
     shadowOffX:10,
     shadowOffY:10
@@ -213,8 +213,29 @@ var CompositionDrawer = function(scene, samples, x, y, w, h)
         self.goalGraphDrawer.highestAmp = a;
         self.graphDrawer.dirty();
         self.goalGraphDrawer.dirty();
+        window.storedAmplitude = a;
 
         self.score = self.calculateScore(100);
+      }
+      // draw the individual components on the graph
+      for (var i = 0; i < self.graphDrawer.components.components.length; i++)
+      {
+        var drawer = new GraphDrawer(new Components([self.graphDrawer.components.components[i]]), self.samples, self.x+68, self.y+140, 490, 333,
+        {
+          drawBG:false,
+          gridWidth:0,
+          drawOffY:23,
+          lineColor: i == self.selected ? "rgb(51, 51, 255)" : "rgba(51, 51, 255, 0.15)",
+          lineWidth:3,
+          shadowWidth:0,
+          shadowColor:"rgba(95,05,04,0.2)",
+          shadowOffX:10,
+          shadowOffY:10
+        });
+        drawer.highestAmp = window.storedAmplitude;
+        if(self.graphDrawer.isDirty())
+          drawer.dirty();
+        drawer.draw(canv);
       }
       self.graphDrawer.draw(canv);
       self.goalGraphDrawer.draw(canv);

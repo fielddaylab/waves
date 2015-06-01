@@ -29,6 +29,12 @@ var Components = function(components)
     {
       y = Math.abs(self.f(sx+((ex-sx)*(i/s))));
       if(y > amp) amp = y;
+      // also include the amplitudes of individual components
+      for (var j = 0; j < self.components.length; j++)
+      {
+        y = Math.abs(self.components[j].f(sx+((ex-sx)*(i/s))));
+        if(y > amp) amp = y;
+      }
     }
     self.highestAmp = amp;
     return self.highestAmp;
