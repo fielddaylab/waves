@@ -30,7 +30,12 @@ var Clicker = function(init)
     doSetPosOnEvent(evt);
     for(var i = 0; i < clickables.length; i++)
     {
-      if(clicked(clickables[i], evt))
+      if(
+        evt.doX >= clickables[i].x &&
+        evt.doX <= clickables[i].x+clickables[i].w &&
+        evt.doY >= clickables[i].y &&
+        evt.doY <= clickables[i].y+clickables[i].h
+      )
       {
         callbackQueue.push(clickables[i].click);
         evtQueue.push(evt);
@@ -46,11 +51,6 @@ var Clicker = function(init)
   }
 
   self.attach();
-}
-
-var clicked = function(clickable, evt)
-{
-  return ptWithinObj(evt.doX, evt.doY, clickable);
 }
 
 //example clickable- just needs x,y,w,h and click callback

@@ -1,4 +1,4 @@
-var Dragger = function(init)
+var Flicker = function(init)
 {
   var default_init =
   {
@@ -8,14 +8,14 @@ var Dragger = function(init)
   var self = this;
   doMapInitDefaults(self,init,default_init);
 
-  var draggables = [];
-  var dragging = [];
+  var flickables = [];
+  var flicking = [];
   var callbackQueue = [];
   var evtQueue = [];
-  self.register = function(draggable) { draggables.push(draggable); }
-  self.unregister = function(draggable) { var i = draggables.indexOf(draggable); if(i != -1) draggables.splice(i,1); }
-  self.clear = function() { draggables = []; }
-  self.attach = function() //will get auto-called on create
+  self.register = function(flickable) { flickables.push(flickable); }
+  self.unregister = function(flickable) { var i = flickables.indexOf(flickable); if(i != -1) flickables.splice(i,1); }
+  self.clear = function() { flickables = []; }
+  self.attach = function() //will get auto-called on creation
   {
     if(platform == "PC")
     {
@@ -49,41 +49,33 @@ var Dragger = function(init)
   function begin(evt)
   {
     doSetPosOnEvent(evt);
-    for(var i = 0; i < draggables.length; i++)
+    for(var i = 0; i < flickables.length; i++)
     {
-      if(ptWithinObj(evt.doX, evt.doY, draggables[i]))
+      if(
+        evt.doX >= flickables[i].x &&
+        evt.doX <= flickables[i].x+flickables[i].w &&
+        evt.doY >= flickables[i].y &&
+        evt.doY <= flickables[i].y+flickables[i].h
+      )
       {
-        var already_dragging = false;
-        for(var j = 0; j < dragging.length; j++)
-          if(draggables[i] == dragging[j]) already_dragging = true;
-
-        if(!already_dragging)
-        {
-          dragging.push(draggables[i]);
-          callbackQueue.push(draggables[i].dragStart);
-          evtQueue.push(evt);
-        }
+        flicking.push(flickables[i]);
+        callbackQueue.push(flickables[i].flickStart);
+        evtQueue.push(evt);
       }
     }
   }
   function drag(evt)
   {
     doSetPosOnEvent(evt);
-    for(var i = 0; i < dragging.length; i++)
+    for(var i = 0; i < flicking.length; i++)
     {
-      callbackQueue.push(dragging[i].drag);
+      callbackQueue.push(flicking[i].flicking);
       evtQueue.push(evt);
     }
   }
   function end(evt)
   {
-    doSetPosOnEvent(evt);
-    for(var i = 0; i < dragging.length; i++)
-    {
-      callbackQueue.push(dragging[i].dragFinish);
-      evtQueue.push(evt);
-    }
-    dragging = [];
+    flicking = []; //clear all currently flicking
   }
   self.flush = function()
   {
@@ -96,37 +88,25 @@ var Dragger = function(init)
   self.attach();
 }
 
-//example draggable- just needs x,y,w,h and dragStart, drag, and dragFinish callback
-var Draggable = function(args)
+//example flickable- NOTE- Has a lot of infrastructure. should probably just copy/paste this object
+var Flickable = function(args)
 {
   var self = this;
 
-  //nice in smooth dragging
-  self.offX = 0;
-  self.offY = 0;
+  self.flicked = false;
+
+  self.startX = 0;
+  self.startY = 0;
+  self.vec = {"x":0,"y":0};
 
   self.x = args.x ? args.x : 0;
   self.y = args.y ? args.y : 0;
   self.w = args.w ? args.w : 0;
   self.h = args.h ? args.h : 0;
-
-  self.dragStart = args.dragStart ? args.dragStart : function(evt)
-  {
-    self.offX = evt.doX-self.x;
-    self.offY = evt.doY-self.y;
-  }
-  self.drag = args.drag ? args.drag : function(evt)
-  {
-    self.deltaX = ((evt.doX-self.x)-self.offX);
-    self.deltaY = ((evt.doY-self.y)-self.offY);
-    self.x = self.x + self.deltaX;
-    self.y = self.y + self.deltaY;
-    self.offX = evt.doX - self.x;
-    self.offY = evt.doY - self.y;
-  }
-  self.dragFinish = args.dragFinish ? args.dragFinish : function()
-  {
-  }
+  self.r = args.r ? args.r : 0;
+  self.flickStart = args.flickStart ? args.flickStart : function(evt){ self.startX = evt.doX; self.startY = evt.doY; self.flicked = false; };
+  self.flicking   = args.flicking   ? args.flicking   : function(evt){ if(self.flicked) return; self.vec.x = (evt.doX-self.startX); self.vec.y = (evt.doY-self.startY); if(Math.sqrt((self.vec.x*self.vec.x)+(self.vec.y*self.vec.y)) >= self.r) { self.flick(self.vec); self.flicked = true; }};
+  self.flick      = args.flick      ? args.flick      : function(vec){};
 
   //nice for debugging purposes
   self.draw = function(canv)

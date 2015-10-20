@@ -6,12 +6,10 @@ var TestScene = function(game, stage)
   var drawer;
   var ticker;
   var clicker;
-  var blurer;
   var hoverer;
   var dragger;
   var flicker;
   var presser;
-  var keyer;
   var particler;
 
   var spacer = new (function()
@@ -119,12 +117,6 @@ var TestScene = function(game, stage)
   })();
   spacer.space_v(presstest);
 
-  var numboxtest = new NumberBox(0,0,20,20,1,0.1,function(n){});
-  spacer.space_v(numboxtest);
-
-  var sliderboxtest = new SliderBox(0,10,100,20,0,100,50,function(n){});
-  spacer.space_v(sliderboxtest);
-
   var particle = function()
   {
     var self = this;
@@ -196,16 +188,6 @@ var TestScene = function(game, stage)
     presser.register(presstest);
     drawer.register(presstest);
 
-    keyer = new Keyer({source:stage.dispCanv.canvas});
-    blurer = new Blurer({source:stage.dispCanv.canvas});
-    keyer.register(numboxtest);
-    blurer.register(numboxtest);
-    dragger.register(numboxtest);
-    drawer.register(numboxtest);
-
-    dragger.register(sliderboxtest);
-    drawer.register(sliderboxtest);
-
     particler = new Particler({});
     fountain.particler = particler; //inject
     particler.register(fountain);
@@ -217,13 +199,11 @@ var TestScene = function(game, stage)
   self.tick = function()
   {
     clicker.flush();
-    blurer.flush();
     hoverer.flush();
     dragger.flush();
     flicker.flush();
     presser.flush();
     ticker.flush();
-    keyer.flush();
   };
 
   self.draw = function()
@@ -233,29 +213,7 @@ var TestScene = function(game, stage)
 
   self.cleanup = function()
   {
-    assetter.detach();
-    dbugger.detach();
-    ticker.detach();
-    drawer.detach();
-    clicker.detach();
-    blurer.detach();
-    hoverer.detach();
-    dragger.detach();
-    flicker.detach();
-    presser.detach();
-    particler.detach();
-
-    assetter.clear();
-    dbugger.clear();
-    ticker.clear();
-    drawer.clear();
-    clicker.clear();
-    blurer.clear();
-    hoverer.clear();
-    dragger.clear();
-    flicker.clear();
-    presser.clear();
-    particler.clear();
   };
+
 };
 

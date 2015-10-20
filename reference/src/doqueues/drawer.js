@@ -42,22 +42,3 @@ var Drawable = function(args)
   }
 }
 
-//helpers
-var strokeRect = function(canv, x, y, w, h)
-{
-  canv.context.strokeRect(x,y,w,h);
-}
-var strokeCirc = function(canv, x, y, r)
-{
-  canv.context.beginPath();
-  canv.context.arc(x,y,r,0,2*Math.PI);
-  canv.context.stroke();
-}
-var strokeLine = function(canv, x1, y1, x2, y2)
-{
-  canv.context.beginPath();
-  canv.context.moveTo(x1,y1);
-  canv.context.lineTo(x2,y2);
-  canv.context.stroke();
-}
-

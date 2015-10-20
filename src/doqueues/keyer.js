@@ -14,35 +14,67 @@ var Keyer = function(init)
   self.register = function(keyable) { keyables.push(keyable); }
   self.unregister = function(keyable) { var i = keyables.indexOf(keyable); if(i != -1) keyables.splice(i,1); }
   self.clear = function() { keyables = []; }
-  function preventFault(evt) { if(evt.keyCode == 8) { evt.preventDefault(); return false; } };
   self.attach = function() //will get auto-called at creation
   {
-    document.addEventListener('keypress', key, false);
-    document.addEventListener('keydown', preventFault, false);
-    document.addEventListener('keyup', preventFault, false);
+    document.addEventListener('keypress', press, false);
+    document.addEventListener('keydown', down, false);
+    document.addEventListener('keyup', up, false);
   }
   self.detach = function()
   {
-    document.removeEventListener('keypress', key);
-    document.removeEventListener('keydown', preventFault);
-    document.removeEventListener('keyup', preventFault);
+    document.removeEventListener('keypress', press);
+    document.removeEventListener('keydown', down);
+    document.removeEventListener('keyup', up);
   }
 
-  function key(evt)
+  function press(evt)
   {
-    var code;
-    if((code = evt.charCode) == 13) code = 32;
-    var k = String.fromCharCode(code).toLowerCase();
+    for(var i = 0; i < keyables.length; i++)
+    {
+      callbackQueue.push(keyables[i].key);
+      evtQueue.push(evt);
+    }
+
+    var k = String.fromCharCode(evt.charCode).toLowerCase();
     if(k != "")
     {
       for(var i = 0; i < keyables.length; i++)
       {
-        callbackQueue.push(keyables[i].key);
+        callbackQueue.push(keyables[i].key_letter);
         evtQueue.push(k);
       }
     }
+
     evt.preventDefault();
     return false;
+  }
+  function down(evt)
+  {
+    for(var i = 0; i < keyables.length; i++)
+    {
+      callbackQueue.push(keyables[i].key_down);
+      evtQueue.push(evt);
+    }
+
+    if(evt.keyCode == 8) //prevent backspace
+    {
+      evt.preventDefault();
+      return false;
+    }
+  }
+  function up(evt)
+  {
+    for(var i = 0; i < keyables.length; i++)
+    {
+      callbackQueue.push(keyables[i].key_up);
+      evtQueue.push(evt);
+    }
+
+    if(evt.keyCode == 8) //prevent backspace
+    {
+      evt.preventDefault();
+      return false;
+    }
   }
   self.flush = function()
   {
@@ -60,6 +92,9 @@ var Keyable = function(args)
 {
   var self = this;
 
-  self.key = args.key ? args.key : function(){};
+  self.key        = args.key        ? args.key        : function(){};
+  self.key_letter = args.key_letter ? args.key_letter : function(){};
+  self.key_down   = args.key_down   ? args.key_down   : function(){};
+  self.key_up     = args.key_up     ? args.key_up     : function(){};
 }
 
