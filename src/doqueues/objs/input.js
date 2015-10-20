@@ -276,3 +276,4 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
     console.log("("+self.x+","+self.y+","+self.w+","+self.h+") min:"+self.min_val+" max:"+self.max_val+" v:"+self.val+" "+"");
   }
 }
+
