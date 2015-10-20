@@ -20,19 +20,13 @@ var LoadingScene = function(game, stage)
     pad = 20;
     barw = (canv.canvas.width-(2*pad));
     progress = 0;
-    canv.context.fillStyle = "#FFFFFF";
+    canv.context.fillStyle = "#000000";
     canv.context.fillText(".",0,0);// funky way to encourage any custom font to load
 
     //put strings in 'img_srcs' as separate array to get "static" count
     /*
     img_srcs.push("assets/man.png");
     */
-    img_srcs.push("assets/bg.jpg");
-    img_srcs.push("assets/composition_cover.png");
-    img_srcs.push("assets/component_bg.png");
-    img_srcs.push("assets/place_wave_btn.png");
-    img_srcs.push("assets/component_bg_select.png");
-    img_srcs.push("assets/selector_bg.jpg");
     for(var i = 0; i < img_srcs.length; i++)
     {
       images[i] = new Image();
@@ -45,7 +39,6 @@ var LoadingScene = function(game, stage)
   self.tick = function()
   {
     if(progress <= imagesloaded/(img_srcs.length+1)) progress += 0.01;
-    //if(progress <= imagesloaded/(img_srcs.length+1)) progress += 10; //speed hack
     if(progress >= 1.0) game.nextScene();
   };
 
@@ -60,7 +53,7 @@ var LoadingScene = function(game, stage)
     progress = 0;
     imagesloaded = 0;
     images = [];//just used them to cache assets in browser; let garbage collector handle 'em.
-    canv.context.fillStyle = "#000000";
+    canv.context.fillStyle = "#FFFFFF";
     canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
   };
 };
