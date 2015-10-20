@@ -175,7 +175,6 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   self.isDirty = function()
   {
     return self._dirty || self.composition.isDirty();
-    var d = self._dirty;
   }
 }
 
@@ -196,9 +195,9 @@ var ComponentEditor = function(component, n_samples, x,y,w,h)
 
   self.graph = new GraphDrawer(self.component, self.n_samples, -10, 10, -5, 5, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
   self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { console.log("reset:"+on); });
-  self.offset_slider     = new SliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, -20, 20,     self.default_offset, function(n) { console.log("offset:"+n);});
-  self.wavelength_slider = new SliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,   2, 20, self.default_wavelength, function(n) { console.log("wavelength:"+n);});
-  self.amplitude_slider  = new SliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20, -20, 20,  self.default_amplitude, function(n) { console.log("amplitude:"+n);});
+  self.offset_slider     = new SliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, -20, 20,     self.default_offset, function(n) { self.component.offset = n; self.component.dirty(); });
+  self.wavelength_slider = new SliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,   2, 20, self.default_wavelength, function(n) { self.component.wavelength = n; self.component.dirty(); });
+  self.amplitude_slider  = new SliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20, -20, 20,  self.default_amplitude, function(n) { self.component.amplitude = n; self.component.dirty(); });
 
   self.register = function(presser, dragger)
   {
@@ -240,6 +239,9 @@ var GamePlayScene = function(game, stage)
   self.dc = stage.drawCanv;
   self.c = self.dc.canvas;
 
+  var dragger;
+  var presser;
+
   var C0;
   var C1;
   var Comp;
@@ -249,6 +251,9 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
+    dragger = new Dragger({source:stage.dispCanv.canvas});
+    presser = new Presser({source:stage.dispCanv.canvas});
+
     C0 = new Component(COMP_TYPE_SIN, 0, 5, 5);
     C1 = new Component(COMP_TYPE_NONE, 0, 0, 0);
     Comp = new Composition(C0, C1);
@@ -256,10 +261,14 @@ var GamePlayScene = function(game, stage)
     E0 = new ComponentEditor(C0, 100,                  10, self.c.height/2+10, (self.c.width/2)-20, (self.c.height/2)-20);
     E1 = new ComponentEditor(C1, 100, (self.c.width/2)+10, self.c.height/2+10, (self.c.width/2)-20, (self.c.height/2)-20);
 
+    E0.register(presser, dragger);
+    E1.register(presser, dragger);
   };
 
   self.tick = function()
   {
+    presser.flush();
+    dragger.flush();
   };
 
   self.draw = function()

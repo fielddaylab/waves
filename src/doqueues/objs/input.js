@@ -159,7 +159,7 @@ function ButtonBox(x,y,w,h,callback)
 
   self.hit = function()
   {
-    callback(self.on);
+    callback(self.down);
   }
 
   self.draw = function(canv)
@@ -250,8 +250,8 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   {
     if(evt.doX < self.x) evt.doX = self.x;
     if(evt.doX > self.x+self.w) evt.doX = self.x+self.w;
-    self.val = min_val+(self.max_val-self.min_val)*((evt.doX-self.x)/self.w);
-    callback(self.number);
+    self.val = self.min_val+(self.max_val-self.min_val)*((evt.doX-self.x)/self.w);
+    callback(self.val);
   }
   self.dragFinish = function()
   {
