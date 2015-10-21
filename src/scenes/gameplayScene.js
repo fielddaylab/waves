@@ -3,6 +3,9 @@ var graph_min_x = -50;
 var graph_max_x =  50;
 var graph_min_y = -50;
 var graph_max_y =  50;
+var graph_default_offset = (graph_min_x+graph_max_x)/2;
+var graph_default_wavelength = (2+(graph_max_x*2))/2;
+var graph_default_amplitude = graph_max_y/4;
 
 var ENUM = 0;
 var COMP_TYPE_NONE   = ENUM; ENUM++;
@@ -192,9 +195,6 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,   max_x,     self.default_offset, function(n) {     self.component.offset = n; self.component.dirty(); });
   self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2, max_x*2, self.default_wavelength, function(n) { self.component.wavelength = n; self.component.dirty(); });
   self.amplitude_slider  = new SmoothSliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y/2,  self.default_amplitude, function(n) {  self.component.amplitude = n; self.component.dirty(); });
-  self.offset_slider.set(self.offset_slider.val); //to immediately call callback
-  self.wavelength_slider.set(self.wavelength_slider.val); //to immediately call callback
-  self.amplitude_slider.set(self.amplitude_slider.val); //to immediately call callback
 
   self.register = function(presser, dragger)
   {
@@ -246,27 +246,37 @@ var GamePlayScene = function(game, stage)
   var dragger;
   var presser;
 
-  var C0;
-  var C1;
-  var Comp;
-  var Display;
-  var E0;
-  var E1;
+  var myC0;
+  var myC1;
+  var myComp;
+  var myDisplay;
+  var myE0;
+  var myE1;
+
+  var gC0;
+  var gC1;
+  var gComp;
+  var gDisplay;
 
   self.ready = function()
   {
     dragger = new Dragger({source:stage.dispCanv.canvas});
     presser = new Presser({source:stage.dispCanv.canvas});
 
-    C0 = new Component(COMP_TYPE_SIN, 0, 5, 5);
-    C1 = new Component(COMP_TYPE_NONE, 0, 0, 0);
-    Comp = new Composition(C0, C1);
-    Display = new GraphDrawer(Comp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
-    E0      = new ComponentEditor(C0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
-    E1      = new ComponentEditor(C1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, (self.c.width/2)+10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
+    myC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    myC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    myComp = new Composition(myC0, myC1);
+    myDisplay = new GraphDrawer(myComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+    myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
+    myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, (self.c.width/2)+10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
 
-    E0.register(presser, dragger);
-    E1.register(presser, dragger);
+    gC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    gComp = new Composition(gC0, gC1);
+    gDisplay = new GraphDrawer(gComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+
+    myE0.register(presser, dragger);
+    myE1.register(presser, dragger);
   };
 
   self.tick = function()
@@ -274,18 +284,21 @@ var GamePlayScene = function(game, stage)
     presser.flush();
     dragger.flush();
 
-    E0.tick();
-    E1.tick();
+    myE0.tick();
+    myE1.tick();
   };
 
   self.draw = function()
   {
-    Display.draw(self.dc);
-    E0.draw(self.dc);
-    E1.draw(self.dc);
+    gDisplay.draw(self.dc);
+    myDisplay.draw(self.dc);
+    myE0.draw(self.dc);
+    myE1.draw(self.dc);
 
-    Comp.cleanse();
-    Display.cleanse();
+    myComp.cleanse();
+    myDisplay.cleanse();
+    gComp.cleanse();
+    gDisplay.cleanse();
   };
 
   self.cleanup = function()
