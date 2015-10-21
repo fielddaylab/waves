@@ -107,7 +107,6 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   self.canv; //gets initialized in position
 
   self.color = "#000000";
-  self.drawGrid = true;
   self._dirty = true;
 
   self.position = function(x,y,w,h)
@@ -135,18 +134,6 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
     if(self.isDirty())
     {
       self.canv.clear();
-
-      if(self.drawGrid)
-      {
-        self.canv.context.strokeStyle = "#AAAAAA";
-        for(var i = self.min_y; i <= self.max_y; i++)
-        {
-          //self.canv.context.beginPath();
-          //self.canv.context.moveTo(0,);
-          //self.canv.context.lineTo(self.w,(self.h/2)-((i/self.highestAmp)*((self.h/2)*(3/4))));
-          //self.canv.context.stroke();
-        }
-      }
 
       var sample;
       var t;
@@ -201,10 +188,13 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.default_amplitude = max_y/4;
 
   self.graph = new GraphDrawer(self.component, self.n_samples, min_x, max_x, min_y, max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
-  self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { console.log("reset:"+on); });
-  self.offset_slider     = new SliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,   max_x,     self.default_offset, function(n) { self.component.offset = n; self.component.dirty(); });
-  self.wavelength_slider = new SliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2, max_x*2, self.default_wavelength, function(n) { self.component.wavelength = n; self.component.dirty(); });
-  self.amplitude_slider  = new SliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y/2,  self.default_amplitude, function(n) { self.component.amplitude = n; self.component.dirty(); });
+  self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { self.reset(); });
+  self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,   max_x,     self.default_offset, function(n) {     self.component.offset = n; self.component.dirty(); });
+  self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2, max_x*2, self.default_wavelength, function(n) { self.component.wavelength = n; self.component.dirty(); });
+  self.amplitude_slider  = new SmoothSliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y/2,  self.default_amplitude, function(n) {  self.component.amplitude = n; self.component.dirty(); });
+  self.offset_slider.set(self.offset_slider.val); //to immediately call callback
+  self.wavelength_slider.set(self.wavelength_slider.val); //to immediately call callback
+  self.amplitude_slider.set(self.amplitude_slider.val); //to immediately call callback
 
   self.register = function(presser, dragger)
   {
@@ -226,6 +216,13 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.offset_slider.set(self.default_offset);
     self.wavelength_slider.set(self.default_wavelength);
     self.amplitude_slider.set(self.default_amplitude);
+  }
+
+  self.tick = function()
+  {
+    self.offset_slider.tick();
+    self.wavelength_slider.tick();
+    self.amplitude_slider.tick();
   }
 
   self.draw = function(canv)
@@ -276,6 +273,9 @@ var GamePlayScene = function(game, stage)
   {
     presser.flush();
     dragger.flush();
+
+    E0.tick();
+    E1.tick();
   };
 
   self.draw = function()
