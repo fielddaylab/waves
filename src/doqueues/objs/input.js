@@ -239,8 +239,8 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.w = w;
   self.h = h;
 
-  self.slit_x = self.x + self.w/20;
-  self.slit_w = self.w - self.w/10;
+  self.slit_x = Math.round(self.x + self.w/20);
+  self.slit_w = Math.round(self.w - self.w/10);
 
   self.min_val = min_val;
   self.max_val = max_val;
@@ -255,8 +255,8 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.drag = function(evt)
   {
     if(evt.doX < self.slit_x) evt.doX = self.slit_x;
-    if(evt.doX > self.slit_x+self.slit_w) evt.doX = self.slit_x+self.slit_w;
-    self.val = self.min_val+(self.max_val-self.min_val)*((evt.doX-self.slit_x)/self.slit_w);
+    if(evt.doX > self.slit_x+self.maxPixel()) evt.doX = self.slit_x+self.maxPixel();
+    self.val = self.valAtPixel(evt.doX-self.slit_x);
     callback(self.val);
   }
   self.dragFinish = function()
@@ -267,6 +267,15 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   {
     self.val = n;
     callback(self.val);
+  }
+
+  self.maxPixel = function()
+  {
+    return self.slit_w;
+  }
+  self.valAtPixel = function(p)
+  {
+    return self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
   }
 
   self.draw = function(canv)
@@ -310,8 +319,8 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.drag = function(evt)
   {
     if(evt.doX < self.slit_x) evt.doX = self.slit_x;
-    if(evt.doX > self.slit_x+self.slit_w) evt.doX = self.slit_x+self.slit_w;
-    self.desired_val = self.min_val+(self.max_val-self.min_val)*((evt.doX-self.slit_x)/self.slit_w);
+    if(evt.doX > self.slit_x+self.maxPixel()) evt.doX = self.slit_x+self.maxPixel();
+    self.desired_val = self.valAtPixel(evt.doX-self.slit_x);
   }
   self.dragFinish = function()
   {
@@ -320,6 +329,15 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.set = function(n)
   {
     self.desired_val = n;
+  }
+
+  self.maxPixel = function()
+  {
+    return self.slit_w;
+  }
+  self.valAtPixel = function(p)
+  {
+    return self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
   }
 
   self.tick = function()

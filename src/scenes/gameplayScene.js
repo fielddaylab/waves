@@ -4,7 +4,7 @@ var graph_max_x =  50;
 var graph_min_y = -50;
 var graph_max_y =  50;
 var graph_default_offset = (graph_min_x+graph_max_x)/2;
-var graph_default_wavelength = graph_max_x;
+var graph_default_wavelength = (2+(graph_max_x*2))/2;
 var graph_default_amplitude = graph_max_y/4;
 
 var ENUM = 0;
@@ -340,6 +340,12 @@ var Level = function()
   self.allowed_wiggle_room = 0; //make sure you change this- will never be perfect
 }
 
+//In creating levels, the goal inputs must be aligned to the integer pixels allowed by the UI (to prevent un-winnable levels)
+//Use these to assign valid values to components
+var pix2Off = function(e,p) { return e.offset_slider.valAtPixel(p); }
+var pix2Wav = function(e,p) { return e.wavelength_slider.valAtPixel(p); }
+var pix2Amp = function(e,p) { return e.amplitude_slider.valAtPixel(p); }
+
 var GamePlayScene = function(game, stage)
 {
   var self = this;
@@ -395,65 +401,27 @@ var GamePlayScene = function(game, stage)
     n_levels = 0;
     levels = [];
 
+    var maxPix = myE0.offset_slider.maxPixel(); //grab arbitrary slider to find max pix len, useful in determining starting vals
+    var r = Math.round;
+
     //Lvl 0
     n_levels++;
     level = new Level();
-    level.myC0_type = COMP_TYPE_SIN;
-    level.myC0_offset = graph_default_offset;
-    level.myC0_wavelength = graph_default_wavelength;
-    level.myC0_amplitude = graph_default_amplitude;
 
-    level.myC1_type = COMP_TYPE_NONE;
-    level.myC1_offset = graph_default_offset;
-    level.myC1_wavelength = graph_default_wavelength;
-    level.myC1_amplitude = graph_default_amplitude;
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
+    level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,    r(maxPix/2));
+    level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myE0_enabled = true;                             level.myE1_enabled = true;
 
-    level.gC0_type = COMP_TYPE_NONE;
-    level.gC0_offset = graph_default_offset;
-    level.gC0_wavelength = graph_default_wavelength;
-    level.gC0_amplitude = graph_default_amplitude;
-
-    level.gC1_type = COMP_TYPE_NONE;
-    level.gC1_offset = graph_default_offset;
-    level.gC1_wavelength = graph_default_wavelength;
-    level.gC1_amplitude = graph_default_amplitude;
-
-    level.myE0_enabled = true;
-    level.myE1_enabled = true;
-
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = pix2Off(myE0, r(maxPix/2)+40); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0,    r(maxPix/2)); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
+    level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
     level.allowed_wiggle_room = 5;
 
     levels.push(level);
 
-    //Lvl 1
-    n_levels++;
-    level = new Level();
-    level.myC0_type = COMP_TYPE_SIN;
-    level.myC0_offset = graph_default_offset;
-    level.myC0_wavelength = graph_default_wavelength;
-    level.myC0_amplitude = graph_default_amplitude;
-
-    level.myC1_type = COMP_TYPE_SIN;
-    level.myC1_offset = graph_default_offset;
-    level.myC1_wavelength = graph_default_wavelength;
-    level.myC1_amplitude = graph_default_amplitude;
-
-    level.gC0_type = COMP_TYPE_SIN;
-    level.gC0_offset = graph_default_offset;
-    level.gC0_wavelength = 10;
-    level.gC0_amplitude = 2;
-
-    level.gC1_type = COMP_TYPE_SIN;
-    level.gC1_offset = 5;
-    level.gC1_wavelength = 2;
-    level.gC1_amplitude = 10;
-
-    level.myE0_enabled = true;
-    level.myE1_enabled = true;
-
-    level.allowed_wiggle_room = 5;
-
-    levels.push(level);
 
     self.beginLevel(levels[cur_level]);
   };
