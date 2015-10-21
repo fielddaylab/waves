@@ -369,6 +369,7 @@ var GamePlayScene = function(game, stage)
     gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
     gDisplay = new GraphDrawer(gComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+    gDisplay.color = "#00BB00";
 
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
 
@@ -458,6 +459,7 @@ var GamePlayScene = function(game, stage)
     gC1.set(level.gC1_type, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
   }
 
+  var t = 0;
   self.tick = function()
   {
     presser.flush();
@@ -471,11 +473,15 @@ var GamePlayScene = function(game, stage)
       cur_level = (cur_level+1)%n_levels;
       self.beginLevel(levels[cur_level]);
     }
+    t += 0.05;
+    while(t > Math.PI) t-=Math.PI;
   };
 
   self.draw = function()
   {
+    self.dc.context.globalAlpha = (Math.sin(t)+1)/2;
     gDisplay.draw(self.dc);
+    self.dc.context.globalAlpha = 1;
     myDisplay.draw(self.dc);
     myE0.draw(self.dc);
     myE1.draw(self.dc);
