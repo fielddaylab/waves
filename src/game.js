@@ -24,9 +24,13 @@ var Game = function(init)
   {
     requestAnimFrame(tick,stage.dispCanv.canvas);
     stage.clear();
+    var old_cur_scene = currentScene;
     scenes[currentScene].tick();
-    scenes[currentScene].draw();
-    stage.draw(); //blits from offscreen canvas to on screen one
+    if(old_cur_scene == currentScene) //still in same scene- draw
+    {
+      scenes[currentScene].draw();
+      stage.draw(); //blits from offscreen canvas to on screen one
+    }
   };
 
   self.nextScene = function()

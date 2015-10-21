@@ -25,7 +25,7 @@ var Component = function(type, offset, wavelength, amplitude)
     self.offset = offset;
     self.wavelength = wavelength;
     self.amplitude = amplitude;
-    self._dirty = true;
+    self.dirty();
   }
 
   self._dirty = true;
@@ -58,7 +58,10 @@ var Component = function(type, offset, wavelength, amplitude)
   }
 
   self.dirty   = function() { self._dirty = true; }
-  self.cleanse = function() { self._dirty = false; }
+  self.cleanse = function()
+  {
+    self._dirty = false;
+  }
   self.isDirty = function() { return self._dirty; }
 }
 
@@ -220,6 +223,10 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.offset_slider.desired_val = self.default_offset;
     self.wavelength_slider.desired_val = self.default_wavelength;
     self.amplitude_slider.desired_val = self.default_amplitude;
+    self.component.offset = self.default_offset;
+    self.component.wavelength = self.default_wavelength;
+    self.component.amplitude = self.default_amplitude;
+    self.component.dirty();
   }
 
   self.reset = function()
@@ -245,6 +252,38 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.amplitude_slider.draw(canv);
     canv.context.strokeStyle = "#000000";
     canv.context.strokeRect(self.x,self.y,self.w,self.h);
+  }
+}
+
+var Validator = function(myC, gC, min_x, max_x, res)
+{
+  var self = this;
+
+  self.myC = myC;
+  self.gC  = gC;
+
+  self.min_x = min_x;
+  self.max_x = max_x;
+
+  self.res = res;
+
+  self.validate = function(wiggle_room)
+  {
+    if(!self.myC.isDirty() && !self.gC.isDirty()) return false; //neither dirty, don't check
+
+    var delta = 0;
+    var t;
+    var s0;
+    var s1;
+    for(var i = 0; i < res; i++)
+    {
+      t = i/(self.res-1);
+      s0 = self.myC.f(lerp(self.min_x,self.max_x,t));
+      s1 = self.gC.f( lerp(self.min_x,self.max_x,t));
+      delta += Math.abs(s0-s1);
+    }
+    //console.log(delta);
+    return delta < wiggle_room;
   }
 }
 
@@ -274,6 +313,8 @@ var Level = function()
 
   self.myE0_enabled = true;
   self.myE1_enabled = true;
+
+  self.allowed_wiggle_room = 0; //make sure you change this- will never be perfect
 }
 
 var GamePlayScene = function(game, stage)
@@ -297,6 +338,8 @@ var GamePlayScene = function(game, stage)
   var gComp;
   var gDisplay;
 
+  var validator;
+
   var cur_level;
   var n_levels;
   var levels;
@@ -317,6 +360,8 @@ var GamePlayScene = function(game, stage)
     gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
     gDisplay = new GraphDrawer(gComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+
+    validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
 
     myE0.register(presser, dragger);
     myE1.register(presser, dragger);
@@ -351,33 +396,39 @@ var GamePlayScene = function(game, stage)
 
     level.myE0_enabled = true;
     level.myE1_enabled = true;
+
+    level.allowed_wiggle_room = 5;
+
     levels.push(level);
 
     //Lvl 1
     n_levels++;
     level = new Level();
-    level.myC0_type = COMP_TYPE_NONE;
+    level.myC0_type = COMP_TYPE_SIN;
     level.myC0_offset = graph_default_offset;
     level.myC0_wavelength = graph_default_wavelength;
     level.myC0_amplitude = graph_default_amplitude;
 
-    level.myC1_type = COMP_TYPE_NONE;
+    level.myC1_type = COMP_TYPE_SIN;
     level.myC1_offset = graph_default_offset;
     level.myC1_wavelength = graph_default_wavelength;
     level.myC1_amplitude = graph_default_amplitude;
 
-    level.gC0_type = COMP_TYPE_NONE;
+    level.gC0_type = COMP_TYPE_SIN;
     level.gC0_offset = graph_default_offset;
-    level.gC0_wavelength = graph_default_wavelength;
-    level.gC0_amplitude = graph_default_amplitude;
+    level.gC0_wavelength = 10;
+    level.gC0_amplitude = 2;
 
-    level.gC1_type = COMP_TYPE_NONE;
-    level.gC1_offset = graph_default_offset;
-    level.gC1_wavelength = graph_default_wavelength;
-    level.gC1_amplitude = graph_default_amplitude;
+    level.gC1_type = COMP_TYPE_SIN;
+    level.gC1_offset = 5;
+    level.gC1_wavelength = 2;
+    level.gC1_amplitude = 10;
 
     level.myE0_enabled = true;
     level.myE1_enabled = true;
+
+    level.allowed_wiggle_room = 5;
+
     levels.push(level);
 
     self.beginLevel(levels[cur_level]);
@@ -405,6 +456,12 @@ var GamePlayScene = function(game, stage)
 
     myE0.tick();
     myE1.tick();
+
+    if(validator.validate(levels[cur_level].allowed_wiggle_room))
+    {
+      cur_level = (cur_level+1)%n_levels;
+      self.beginLevel(levels[cur_level]);
+    }
   };
 
   self.draw = function()
