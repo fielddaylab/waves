@@ -209,6 +209,11 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2, max_x*2, self.default_wavelength, function(n) { self.component.wavelength = n; self.component.dirty(); });
   self.amplitude_slider  = new SmoothSliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y/2,  self.default_amplitude, function(n) {  self.component.amplitude = n; self.component.dirty(); });
 
+  self.isDragging = function()
+  {
+    return self.offset_slider.dragging || self.wavelength_slider.dragging || self.amplitude_slider.dragging;
+  }
+
   self.register = function(presser, dragger)
   {
     presser.register(self.reset_button);
@@ -276,9 +281,13 @@ var Validator = function(myC, gC, min_x, max_x, res)
 
   self.res = res;
 
+  self._dirty = true;
+
+  self.valid = false;
+
   self.validate = function(wiggle_room)
   {
-    if(!self.myC.isDirty() && !self.gC.isDirty()) return false; //neither dirty, don't check
+    if(!self.isDirty() && !self.myC.isDirty() && !self.gC.isDirty()) return self.valid; //last known result
 
     var delta = 0;
     var t;
@@ -292,8 +301,13 @@ var Validator = function(myC, gC, min_x, max_x, res)
       delta += Math.abs(s0-s1);
     }
     //console.log(delta);
-    return delta < wiggle_room;
+    self.valid = delta < wiggle_room;
+    return self.valid;
   }
+
+  self.dirty   = function() { self._dirty = true; };
+  self.cleanse = function() { self._dirty = false; };
+  self.isDirty = function() { return self._dirty; };
 }
 
 var Level = function()
@@ -468,8 +482,9 @@ var GamePlayScene = function(game, stage)
     myE0.tick();
     myE1.tick();
 
-    if(validator.validate(levels[cur_level].allowed_wiggle_room))
+    if(validator.validate(levels[cur_level].allowed_wiggle_room) && !myE0.isDragging() && !myE1.isDragging()) //valid, and not currently interacting
     {
+      validator.dirty();
       cur_level = (cur_level+1)%n_levels;
       self.beginLevel(levels[cur_level]);
     }

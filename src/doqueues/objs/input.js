@@ -239,23 +239,29 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.w = w;
   self.h = h;
 
+  self.slit_x = self.x + self.w/20;
+  self.slit_w = self.w - self.w/10;
+
   self.min_val = min_val;
   self.max_val = max_val;
   self.val = val;
 
+  self.dragging = false;
   self.dragStart = function(evt)
   {
+    self.dragging = true;
     self.drag(evt);
   }
   self.drag = function(evt)
   {
-    if(evt.doX < self.x) evt.doX = self.x;
-    if(evt.doX > self.x+self.w) evt.doX = self.x+self.w;
-    self.val = self.min_val+(self.max_val-self.min_val)*((evt.doX-self.x)/self.w);
+    if(evt.doX < self.slit_x) evt.doX = self.slit_x;
+    if(evt.doX > self.slit_x+self.slit_w) evt.doX = self.slit_x+self.slit_w;
+    self.val = self.min_val+(self.max_val-self.min_val)*((evt.doX-self.slit_x)/self.slit_w);
     callback(self.val);
   }
   self.dragFinish = function()
   {
+    self.dragging = false;
   }
   self.set = function(n)
   {
@@ -266,9 +272,9 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.draw = function(canv)
   {
     canv.context.fillStyle = "#333333";
-    canv.context.fillRect(self.x,self.y+self.h/3,self.w,self.h/3);
+    canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
     canv.context.fillStyle = "#000000";
-    var switch_x = self.x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.w);
+    var switch_x = self.slit_x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.slit_w);
     canv.context.strokeRect(switch_x-(self.w/20),self.y,(self.w/10),self.h);
   }
 
@@ -287,23 +293,29 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.w = w;
   self.h = h;
 
+  self.slit_x = self.x + self.w/20;
+  self.slit_w = self.w - self.w/10;
+
   self.min_val = min_val;
   self.max_val = max_val;
   self.desired_val = val;
   self.val = val;
 
+  self.dragging = false;
   self.dragStart = function(evt)
   {
+    self.dragging = true;
     self.drag(evt);
   }
   self.drag = function(evt)
   {
-    if(evt.doX < self.x) evt.doX = self.x;
-    if(evt.doX > self.x+self.w) evt.doX = self.x+self.w;
-    self.desired_val = self.min_val+(self.max_val-self.min_val)*((evt.doX-self.x)/self.w);
+    if(evt.doX < self.slit_x) evt.doX = self.slit_x;
+    if(evt.doX > self.slit_x+self.slit_w) evt.doX = self.slit_x+self.slit_w;
+    self.desired_val = self.min_val+(self.max_val-self.min_val)*((evt.doX-self.slit_x)/self.slit_w);
   }
   self.dragFinish = function()
   {
+    self.dragging = false;
   }
   self.set = function(n)
   {
@@ -323,9 +335,9 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.draw = function(canv)
   {
     canv.context.fillStyle = "#333333";
-    canv.context.fillRect(self.x,self.y+self.h/3,self.w,self.h/3);
+    canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
     canv.context.fillStyle = "#000000";
-    var switch_x = self.x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.w);
+    var switch_x = self.slit_x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.slit_w);
     canv.context.strokeRect(switch_x-(self.w/20),self.y,(self.w/10),self.h);
   }
 
