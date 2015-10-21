@@ -146,9 +146,18 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
       var t;
       self.canv.context.strokeStyle = self.color;
       self.canv.context.strokeRect(0,0,self.w,self.h);
+
+      //draw 0 line
+      self.canv.context.strokeStyle = "#555555";
+      self.canv.context.lineWidth = 0.5;
       self.canv.context.beginPath();
+      self.canv.context.moveTo(0,self.h/2+0.5);
+      self.canv.context.lineTo(self.w,self.h/2+0.5);
+      self.canv.context.stroke();
 
-
+      self.canv.context.strokeStyle = self.color;
+      self.canv.context.lineWidth = 2;
+      self.canv.context.beginPath();
       sample = self.composition.f(self.min_x);
       self.canv.context.moveTo(0,(self.h/2)-((sample/self.max_y)*((self.h/2)*(3/4))));
       for(var i = 1; i < self.n_samples; i++)
