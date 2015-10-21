@@ -79,6 +79,10 @@ function cdist(a,b)
   return dist;
 }
 
+function mapRange(from_min,from_max,from_pt,to_min,to_max)
+{
+  return ((from_pt-from_min)/(from_max-from_min))*(to_max-to_min)+to_min;
+}
 function mapPt(from,to,pt)
 {
   pt.x = ((pt.x-from.x)/from.w)*to.w+to.x;

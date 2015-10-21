@@ -1,3 +1,9 @@
+var graph_n_samples = 500;
+var graph_min_x = -50;
+var graph_max_x =  50;
+var graph_min_y = -50;
+var graph_max_y =  50;
+
 var ENUM = 0;
 var COMP_TYPE_NONE   = ENUM; ENUM++;
 var COMP_TYPE_SIN    = ENUM; ENUM++;
@@ -58,8 +64,6 @@ var Composition = function(c0, c1)
   self.c0 = c0;
   self.c1 = c1;
 
-  self._dirty = true;
-
   self.f = function(x)
   {
     var y = 0;
@@ -70,17 +74,17 @@ var Composition = function(c0, c1)
 
   self.dirty = function()
   {
-    self._dirty = true;
     self.c0.dirty();
     self.c1.dirty();
   }
   self.cleanse = function()
   {
-    self._dirty = false;
+    self.c0.cleanse();
+    self.c1.cleanse();
   }
   self.isDirty = function()
   {
-    return self._dirty || self.c0.isDirty() || self.c1.isDirty();
+    return self.c0.isDirty() || self.c1.isDirty();
   }
 }
 
@@ -149,12 +153,15 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
       self.canv.context.strokeStyle = self.color;
       self.canv.context.strokeRect(0,0,self.w,self.h);
       self.canv.context.beginPath();
-      self.canv.context.moveTo(0,0);
-      for(var i = 0; i < self.n_samples; i++)
+
+
+      sample = self.composition.f(self.min_x);
+      self.canv.context.moveTo(0,(self.h/2)-((sample/self.max_y)*((self.h/2)*(3/4))));
+      for(var i = 1; i < self.n_samples; i++)
       {
-        t = i*(1/(self.n_samples-1));
-        sample = self.composition.f(t*2-1);
-        self.canv.context.lineTo(t*self.w,(self.h/2)-((sample/self.max_y)*((self.h/2)*(3/4))));
+        t = i/(self.n_samples-1);
+        sample = self.composition.f(lerp(self.min_x,self.max_x,t));
+        self.canv.context.lineTo(t*self.w,mapRange(self.min_y,self.max_y,sample,self.h,0));
       }
       self.canv.context.stroke();
 
@@ -178,7 +185,7 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   }
 }
 
-var ComponentEditor = function(component, n_samples, x,y,w,h)
+var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y, x,y,w,h)
 {
   var self = this;
   self.component = component;
@@ -189,15 +196,15 @@ var ComponentEditor = function(component, n_samples, x,y,w,h)
   self.w = w;
   self.h = h;
 
-  self.default_offset = 0;
-  self.default_wavelength = 10;
-  self.default_amplitude = 5;
+  self.default_offset = (min_x+max_x)/2;
+  self.default_wavelength = (2+(max_x*2))/2;
+  self.default_amplitude = max_y/4;
 
-  self.graph = new GraphDrawer(self.component, self.n_samples, -10, 10, -5, 5, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
+  self.graph = new GraphDrawer(self.component, self.n_samples, min_x, max_x, min_y, max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
   self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { console.log("reset:"+on); });
-  self.offset_slider     = new SliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, -20, 20,     self.default_offset, function(n) { self.component.offset = n; self.component.dirty(); });
-  self.wavelength_slider = new SliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,   2, 20, self.default_wavelength, function(n) { self.component.wavelength = n; self.component.dirty(); });
-  self.amplitude_slider  = new SliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20, -20, 20,  self.default_amplitude, function(n) { self.component.amplitude = n; self.component.dirty(); });
+  self.offset_slider     = new SliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,   max_x,     self.default_offset, function(n) { self.component.offset = n; self.component.dirty(); });
+  self.wavelength_slider = new SliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2, max_x*2, self.default_wavelength, function(n) { self.component.wavelength = n; self.component.dirty(); });
+  self.amplitude_slider  = new SliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y/2,  self.default_amplitude, function(n) { self.component.amplitude = n; self.component.dirty(); });
 
   self.register = function(presser, dragger)
   {
@@ -257,9 +264,9 @@ var GamePlayScene = function(game, stage)
     C0 = new Component(COMP_TYPE_SIN, 0, 5, 5);
     C1 = new Component(COMP_TYPE_NONE, 0, 0, 0);
     Comp = new Composition(C0, C1);
-    Display = new GraphDrawer(Comp, 100, -10, 10, -5, 5, 10, 10, self.c.width-20, ((self.c.height-20)/2));
-    E0 = new ComponentEditor(C0, 100,                  10, self.c.height/2+10, (self.c.width/2)-20, (self.c.height/2)-20);
-    E1 = new ComponentEditor(C1, 100, (self.c.width/2)+10, self.c.height/2+10, (self.c.width/2)-20, (self.c.height/2)-20);
+    Display = new GraphDrawer(Comp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+    E0      = new ComponentEditor(C0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
+    E1      = new ComponentEditor(C1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, (self.c.width/2)+10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
 
     E0.register(presser, dragger);
     E1.register(presser, dragger);
@@ -276,8 +283,7 @@ var GamePlayScene = function(game, stage)
     Display.draw(self.dc);
     E0.draw(self.dc);
     E1.draw(self.dc);
-    C0.cleanse();
-    C1.cleanse();
+
     Comp.cleanse();
     Display.cleanse();
   };
