@@ -4,7 +4,7 @@ var graph_max_x =  50;
 var graph_min_y = -50;
 var graph_max_y =  50;
 var graph_default_offset = (graph_min_x+graph_max_x)/2;
-var graph_default_wavelength = (2+(graph_max_x*2))/2;
+var graph_default_wavelength = graph_max_x;
 var graph_default_amplitude = graph_max_y/4;
 
 var ENUM = 0;
@@ -25,6 +25,7 @@ var Component = function(type, offset, wavelength, amplitude)
     self.offset = offset;
     self.wavelength = wavelength;
     self.amplitude = amplitude;
+    self._dirty = true;
   }
 
   self._dirty = true;
@@ -187,7 +188,7 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.h = h;
 
   self.default_offset = (min_x+max_x)/2;
-  self.default_wavelength = (2+(max_x*2))/2;
+  self.default_wavelength = max_x;
   self.default_amplitude = max_y/4;
 
   self.graph = new GraphDrawer(self.component, self.n_samples, min_x, max_x, min_y, max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
@@ -209,6 +210,16 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.default_offset = offset;
     self.default_wavelength = wavelength;
     self.default_amplitude = amplitude;
+  }
+
+  self.hardReset = function()
+  {
+    self.offset_slider.val = self.default_offset;
+    self.wavelength_slider.val = self.default_wavelength;
+    self.amplitude_slider.val = self.default_amplitude;
+    self.offset_slider.desired_val = self.default_offset;
+    self.wavelength_slider.desired_val = self.default_wavelength;
+    self.amplitude_slider.desired_val = self.default_amplitude;
   }
 
   self.reset = function()
@@ -237,6 +248,34 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   }
 }
 
+var Level = function()
+{
+  var self = this;
+
+  self.myC0_type = COMP_TYPE_NONE;
+  self.myC0_offset = graph_default_offset;
+  self.myC0_wavelength = graph_default_wavelength;
+  self.myC0_amplitude = graph_default_amplitude;
+
+  self.myC1_type = COMP_TYPE_NONE;
+  self.myC1_offset = graph_default_offset;
+  self.myC1_wavelength = graph_default_wavelength;
+  self.myC1_amplitude = graph_default_amplitude;
+
+  self.gC0_type = COMP_TYPE_NONE;
+  self.gC0_offset = graph_default_offset;
+  self.gC0_wavelength = graph_default_wavelength;
+  self.gC0_amplitude = graph_default_amplitude;
+
+  self.gC1_type = COMP_TYPE_NONE;
+  self.gC1_offset = graph_default_offset;
+  self.gC1_wavelength = graph_default_wavelength;
+  self.gC1_amplitude = graph_default_amplitude;
+
+  self.myE0_enabled = true;
+  self.myE1_enabled = true;
+}
+
 var GamePlayScene = function(game, stage)
 {
   var self = this;
@@ -258,6 +297,10 @@ var GamePlayScene = function(game, stage)
   var gComp;
   var gDisplay;
 
+  var cur_level;
+  var n_levels;
+  var levels;
+
   self.ready = function()
   {
     dragger = new Dragger({source:stage.dispCanv.canvas});
@@ -277,7 +320,83 @@ var GamePlayScene = function(game, stage)
 
     myE0.register(presser, dragger);
     myE1.register(presser, dragger);
+
+    var level;
+    cur_level = 0;
+    n_levels = 0;
+    levels = [];
+
+    //Lvl 0
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;
+    level.myC0_offset = graph_default_offset;
+    level.myC0_wavelength = graph_default_wavelength;
+    level.myC0_amplitude = graph_default_amplitude;
+
+    level.myC1_type = COMP_TYPE_NONE;
+    level.myC1_offset = graph_default_offset;
+    level.myC1_wavelength = graph_default_wavelength;
+    level.myC1_amplitude = graph_default_amplitude;
+
+    level.gC0_type = COMP_TYPE_NONE;
+    level.gC0_offset = graph_default_offset;
+    level.gC0_wavelength = graph_default_wavelength;
+    level.gC0_amplitude = graph_default_amplitude;
+
+    level.gC1_type = COMP_TYPE_NONE;
+    level.gC1_offset = graph_default_offset;
+    level.gC1_wavelength = graph_default_wavelength;
+    level.gC1_amplitude = graph_default_amplitude;
+
+    level.myE0_enabled = true;
+    level.myE1_enabled = true;
+    levels.push(level);
+
+    //Lvl 1
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_NONE;
+    level.myC0_offset = graph_default_offset;
+    level.myC0_wavelength = graph_default_wavelength;
+    level.myC0_amplitude = graph_default_amplitude;
+
+    level.myC1_type = COMP_TYPE_NONE;
+    level.myC1_offset = graph_default_offset;
+    level.myC1_wavelength = graph_default_wavelength;
+    level.myC1_amplitude = graph_default_amplitude;
+
+    level.gC0_type = COMP_TYPE_NONE;
+    level.gC0_offset = graph_default_offset;
+    level.gC0_wavelength = graph_default_wavelength;
+    level.gC0_amplitude = graph_default_amplitude;
+
+    level.gC1_type = COMP_TYPE_NONE;
+    level.gC1_offset = graph_default_offset;
+    level.gC1_wavelength = graph_default_wavelength;
+    level.gC1_amplitude = graph_default_amplitude;
+
+    level.myE0_enabled = true;
+    level.myE1_enabled = true;
+    levels.push(level);
+
+    self.beginLevel(levels[cur_level]);
   };
+
+  self.beginLevel = function(level)
+  {
+    myC0.type = level.myC0_type; myC0.dirty();
+    myC1.type = level.myC1_type; myC0.dirty();
+    myE0.setDefaults(level.myC0_offset, level.myC0_wavelength, level.myC0_amplitude);
+    myE1.setDefaults(level.myC1_offset, level.myC1_wavelength, level.myC1_amplitude);
+    myE0.hardReset();
+    myE1.hardReset();
+    myE0.enabled = level.myE0_enabled;
+    myE1.enabled = level.myE1_enabled;
+
+    gC0.set(level.gC0_type, level.gC0_offset, level.gC0_wavelength, level.gC0_amplitude);
+    gC1.set(level.gC1_type, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
+  }
 
   self.tick = function()
   {
