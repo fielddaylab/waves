@@ -32,7 +32,7 @@
 var g;
 function begin()
 {
-  g = new Game({width:640,height:320,container:"stage_container"});
+  g = new Game({width:640,height:480,container:"stage_container"});
   g.begin();
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
@@ -43,9 +43,9 @@ window.addEventListener("load",begin,false);
 <body>
 
 <div id="content" style="display:block; margin:50px auto; width:640px; position:relative;">
-  <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
-  <div id="stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
-  <div id="shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
+  <div id="debug_div" style="display:block; width:640px; height:480px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
+  <div id="stage_container" style="display:block; width:640px; height:480px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
+  <div id="shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:482px; pointer-events:none; user-select:none;">
     <img id="shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
   </div>
 </div>

@@ -114,6 +114,7 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   self.canv; //gets initialized in position
 
   self.color = "#000000";
+  self.lineWidth = 2;
   self._dirty = true;
 
   self.position = function(x,y,w,h)
@@ -156,10 +157,10 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
       self.canv.context.stroke();
 
       self.canv.context.strokeStyle = self.color;
-      self.canv.context.lineWidth = 2;
+      self.canv.context.lineWidth = self.lineWidth;
       self.canv.context.beginPath();
       sample = self.composition.f(self.min_x);
-      self.canv.context.moveTo(0,(self.h/2)-((sample/self.max_y)*((self.h/2)*(3/4))));
+      self.canv.context.moveTo(0,mapRange(self.min_y,self.max_y,sample,self.h,0));
       for(var i = 1; i < self.n_samples; i++)
       {
         t = i/(self.n_samples-1);
@@ -205,9 +206,9 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
 
   self.graph = new GraphDrawer(self.component, self.n_samples, min_x, max_x, min_y, max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
   self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { self.reset(); });
-  self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,   max_x,     self.default_offset, function(n) { if(!self.enabled) { self.offset_slider.val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
-  self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2, max_x*2, self.default_wavelength, function(n) { if(!self.enabled) { self.wavelength_slider.val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
-  self.amplitude_slider  = new SmoothSliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y/2,  self.default_amplitude, function(n) { if(!self.enabled) { self.amplitude_slider.val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
+  self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,       max_x,     self.default_offset, function(n) { if(!self.enabled) { self.offset_slider.val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
+  self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2,     max_x*2, self.default_wavelength, function(n) { if(!self.enabled) { self.wavelength_slider.val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
+  self.amplitude_slider  = new SmoothSliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled) { self.amplitude_slider.val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
 
   self.enabled = true;
   self.visible = true;
@@ -351,6 +352,7 @@ var Level = function()
   self.myE1_visible = true;
 
   self.allowed_wiggle_room = 0; //make sure you change this- will never be perfect
+  self.playground = false;
 }
 
 //In creating levels, the goal inputs must be aligned to the integer pixels allowed by the UI (to prevent un-winnable levels)
@@ -379,6 +381,7 @@ var GamePlayScene = function(game, stage)
   var gC1;
   var gComp;
   var gDisplay;
+  var readyButton;
 
   var validator;
 
@@ -402,12 +405,16 @@ var GamePlayScene = function(game, stage)
     gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
     gDisplay = new GraphDrawer(gComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+    gDisplay.lineWidth = 4;
     gDisplay.color = "#00BB00";
+
+    readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground) self.nextLevel(); });
 
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
 
     myE0.register(presser, dragger);
     myE1.register(presser, dragger);
+    presser.register(readyButton);
 
     var level;
     cur_level = 0;
@@ -426,14 +433,32 @@ var GamePlayScene = function(game, stage)
     level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = false;
+    level.gC0_type = COMP_TYPE_NONE;                       level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0,    r(maxPix/2)); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
+    level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.allowed_wiggle_room = 500;
+    level.playground = true;
+    levels.push(level);
+
+    //lvl1
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
+    level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,    r(maxPix/2));
+    level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = false;
     level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_NONE;
     level.gC0_offset      = pix2Off(myE0, r(maxPix/2)+40); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
     level.gC0_wavelength  = pix2Wav(myE0,    r(maxPix/2)); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
     level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
     level.allowed_wiggle_room = 500;
+    level.playground = false;
     levels.push(level);
 
-    //lvl1
+    //lvl2
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_NONE;
@@ -447,9 +472,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_wavelength  = pix2Wav(myE0, r(maxPix/2)-90); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
     level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
     level.allowed_wiggle_room = 500;
+    level.playground = false;
     levels.push(level);
 
-    //lvl2
+    //lvl3
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_NONE;
@@ -463,24 +489,76 @@ var GamePlayScene = function(game, stage)
     level.gC0_wavelength  = pix2Wav(myE0,    r(maxPix/2)); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
     level.gC0_amplitude   = pix2Amp(myE0,         maxPix); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
     level.allowed_wiggle_room = 500;
+    level.playground = false;
     levels.push(level);
 
-    //lvl3
+    //lvl4
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
+    level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,    r(maxPix/2));
+    level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = false;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = pix2Off(myE0, r(maxPix/2)-10); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0, r(maxPix/2)-20); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
+    level.gC0_amplitude   = pix2Amp(myE0,      maxPix-40); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl5
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
+    level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,    r(maxPix/2));
+    level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = false;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = pix2Off(myE0, r(maxPix/2)+80); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0, r(maxPix/2)+60); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
+    level.gC0_amplitude   = pix2Amp(myE0,             20); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl6
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1, r(maxPix/2)+65);
+    level.myC0_wavelength = pix2Wav(myE0,             30); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
+    level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
+    level.myE0_enabled = true;                             level.myE1_enabled = true;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.gC0_type = COMP_TYPE_NONE;                       level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0,    r(maxPix/2)); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
+    level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.allowed_wiggle_room = 500;
+    level.playground = true;
+    levels.push(level);
+
+    //lvl7
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1, r(maxPix/2)+65);
     level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
-    level.myC0_amplitude  = pix2Amp(myE0,              0); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = true;
     level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1, r(maxPix/2)+65);
-    level.gC0_wavelength  = pix2Wav(myE0,              0); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
-    level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0,             10); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
+    level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,         maxPix);
     level.allowed_wiggle_room = 500;
+    level.playground = false;
     levels.push(level);
-
 
     self.beginLevel(levels[cur_level]);
   };
@@ -502,6 +580,12 @@ var GamePlayScene = function(game, stage)
     gC1.set(level.gC1_type, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
   }
 
+  self.nextLevel = function()
+  {
+    cur_level = (cur_level+1)%n_levels;
+    self.beginLevel(levels[cur_level]);
+  }
+
   var t = 0;
   self.tick = function()
   {
@@ -511,24 +595,32 @@ var GamePlayScene = function(game, stage)
     myE0.tick();
     myE1.tick();
 
-    if(validator.validate(levels[cur_level].allowed_wiggle_room) && !myE0.isDragging() && !myE1.isDragging()) //valid, and not currently interacting
+    if(!levels[cur_level].playground)
     {
-      validator.dirty();
-      cur_level = (cur_level+1)%n_levels;
-      self.beginLevel(levels[cur_level]);
+      if(validator.validate(levels[cur_level].allowed_wiggle_room) && !myE0.isDragging() && !myE1.isDragging()) //valid, and not currently interacting
+      {
+        validator.dirty();
+        self.nextLevel();
+      }
     }
     t += 0.05;
-    while(t > Math.PI) t-=Math.PI;
+    if(t > Math.PI) t-=Math.PI;
   };
 
   self.draw = function()
   {
-    self.dc.context.globalAlpha = (Math.sin(t)+1)/2;
-    gDisplay.draw(self.dc);
-    self.dc.context.globalAlpha = 1;
+    if(!levels[cur_level].playground)
+    {
+      self.dc.context.globalAlpha = (Math.sin(t)+1)/2;
+      gDisplay.draw(self.dc);
+      self.dc.context.globalAlpha = 1;
+    }
     myDisplay.draw(self.dc);
     myE0.draw(self.dc);
     myE1.draw(self.dc);
+
+    if(levels[cur_level].playground)
+      readyButton.draw(self.dc);
 
     myComp.cleanse();
     myDisplay.cleanse();
