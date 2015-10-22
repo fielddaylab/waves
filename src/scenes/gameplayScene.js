@@ -609,7 +609,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_enabled = true;                             level.myE1_enabled = true;
     level.myE0_visible = true;                             level.myE1_visible = true;
     level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
-    level.myE0_toggle_default = false;                     level.myE1_toggle_default = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
     level.gC0_type = COMP_TYPE_NONE;                       level.gC1_type = COMP_TYPE_NONE;
     level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
     level.gC0_wavelength  = pix2Wav(myE0,    r(maxPix/2)); level.gC1_wavelength  = pix2Wav(myE1,    r(maxPix/2));
@@ -628,7 +628,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = true;
     level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
-    level.myE0_toggle_default = false;                     level.myE1_toggle_default = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
     level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1, r(maxPix/2)+65);
     level.gC0_wavelength  = pix2Wav(myE0,             10); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
@@ -647,7 +647,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = true;
     level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
-    level.myE0_toggle_default = false;                     level.myE1_toggle_default = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
     level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
     level.gC0_wavelength  = pix2Wav(myE0,             10); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
@@ -666,7 +666,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = true;
     level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
-    level.myE0_toggle_default = false;                     level.myE1_toggle_default = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
     level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = pix2Off(myE0, r(maxPix/2)+10); level.gC1_offset      = pix2Off(myE1, r(maxPix/2)-40);
     level.gC0_wavelength  = pix2Wav(myE0,             10); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
@@ -685,7 +685,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = true;
     level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
-    level.myE0_toggle_default = false;                     level.myE1_toggle_default = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
     level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = pix2Off(myE0, r(maxPix/2)-30); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
     level.gC0_wavelength  = pix2Wav(myE0,      maxPix-50); level.gC1_wavelength  = pix2Wav(myE1,             10);
