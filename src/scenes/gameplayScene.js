@@ -571,8 +571,8 @@ var GamePlayScene = function(game, stage)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
-    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1, r(maxPix/2)+65);
-    level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
+    level.myC0_offset     = pix2Off(myE0, r(maxPix/2)-20); level.myC1_offset     = pix2Off(myE1, r(maxPix/2)+65);
+    level.myC0_wavelength = pix2Wav(myE0,             10); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
     level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = true;
@@ -585,6 +585,40 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     //lvl8
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
+    level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
+    level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0,             10); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
+    level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,         maxPix);
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl9
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1, r(maxPix/2)-40);
+    level.myC0_wavelength = pix2Wav(myE0,             10); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
+    level.myC0_amplitude  = pix2Amp(myE0,              0); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = pix2Off(myE0, r(maxPix/2)+10); level.gC1_offset      = pix2Off(myE1, r(maxPix/2)-40);
+    level.gC0_wavelength  = pix2Wav(myE0,             10); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
+    level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,         maxPix);
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl10
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
