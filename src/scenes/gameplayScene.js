@@ -111,6 +111,9 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   self.min_y = min_y;
   self.max_y = max_y;
 
+  self.draw_zero_x = false;
+  self.draw_zero_y = false;
+
   self.canv; //gets initialized in position
 
   self.color = "#000000";
@@ -146,13 +149,25 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
       var sample;
       var t;
 
-      //draw 0 line
-      self.canv.context.strokeStyle = "#555555";
-      self.canv.context.lineWidth = 0.5;
-      self.canv.context.beginPath();
-      self.canv.context.moveTo(0,self.h/2+0.5);
-      self.canv.context.lineTo(self.w,self.h/2+0.5);
-      self.canv.context.stroke();
+      if(self.draw_zero_y)
+      {
+        self.canv.context.strokeStyle = "#555555";
+        self.canv.context.lineWidth = 0.5;
+        self.canv.context.beginPath();
+        self.canv.context.moveTo(0,self.h/2+0.5);
+        self.canv.context.lineTo(self.w,self.h/2+0.5);
+        self.canv.context.stroke();
+      }
+      if(self.draw_zero_x)
+      {
+        self.canv.context.strokeStyle = "#555555";
+        self.canv.context.lineWidth = 0.5;
+        self.canv.context.beginPath();
+        var x = mapRange(self.min_x,self.max_x,self.composition.offset,self.w,0)
+        self.canv.context.moveTo(x+0.5,0);
+        self.canv.context.lineTo(x+0.5,self.h);
+        self.canv.context.stroke();
+      }
 
       self.canv.context.strokeStyle = self.color;
       self.canv.context.lineWidth = self.lineWidth;
@@ -206,6 +221,8 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.default_amplitude = max_y/4;
 
   self.graph = new GraphDrawer(self.component, self.n_samples, min_x, max_x, min_y, max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
+  self.graph.draw_zero_x = true;
+  self.graph.draw_zero_y = true;
   self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { self.reset(); });
   self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,       max_x,     self.default_offset, function(n) { if(!self.enabled) { self.offset_slider.val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
   self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2,     max_x*2, self.default_wavelength, function(n) { if(!self.enabled) { self.wavelength_slider.val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
@@ -404,6 +421,7 @@ var GamePlayScene = function(game, stage)
   var gComp;
   var gDisplay;
   var readyButton;
+  var composeButton;
 
   var validator;
   var vDrawer;
@@ -420,18 +438,23 @@ var GamePlayScene = function(game, stage)
     myC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
-    myDisplay = new GraphDrawer(myComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
-    myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
-    myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, (self.c.width/2)+10, self.c.height/2+10, (self.c.width/2)-20,   (self.c.height/2)-20);
+    myDisplay = new GraphDrawer(myComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                     10,                 10,        self.c.width-20, ((self.c.height-20)/2));
+    myDisplay.draw_zero_x = false;
+    myDisplay.draw_zero_y = true;
+    myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
 
     gC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
     gDisplay = new GraphDrawer(gComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+    gDisplay.draw_zero_x = false;
+    gDisplay.draw_zero_y = true;
     gDisplay.lineWidth = 4;
     gDisplay.color = "#00BB00";
 
     readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground) self.nextLevel(); });
+    composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { if(levels[cur_level].myE1_visible) self.animateComposition(); });
 
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
@@ -439,6 +462,7 @@ var GamePlayScene = function(game, stage)
     myE0.register(presser, dragger);
     myE1.register(presser, dragger);
     presser.register(readyButton);
+    presser.register(composeButton);
 
     var level;
     cur_level = 0;
@@ -661,6 +685,11 @@ var GamePlayScene = function(game, stage)
     self.beginLevel(levels[cur_level]);
   }
 
+  self.animateComposition = function()
+  {
+    console.log("whoop");
+  }
+
   var t = 0;
   self.tick = function()
   {
@@ -686,7 +715,7 @@ var GamePlayScene = function(game, stage)
   {
     if(!levels[cur_level].playground)
     {
-      self.dc.context.globalAlpha = (Math.sin(t)+1)/2;
+      self.dc.context.globalAlpha = ((Math.sin(t)+1)/2)*0.8;
       gDisplay.draw(self.dc);
       self.dc.context.globalAlpha = 1;
     }
@@ -698,6 +727,9 @@ var GamePlayScene = function(game, stage)
       readyButton.draw(self.dc);
     else
       vDrawer.draw(self.dc);
+
+    if(levels[cur_level].myE1_visible)
+      composeButton.draw(self.dc);
 
     myComp.cleanse();
     myDisplay.cleanse();
