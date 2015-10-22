@@ -170,7 +170,7 @@ function ButtonBox(x,y,w,h,callback)
     canv.context.fillStyle = "#00F400";
 
     canv.context.fillRect(self.x,self.y,self.w,self.h);
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
+    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
   }
 
   self.print = function()
@@ -221,7 +221,7 @@ function ToggleBox(x,y,w,h,val,callback)
     else        canv.context.fillStyle = "#FFFFFF";
 
     canv.context.fillRect(self.x,self.y,self.w,self.h);
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
+    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
   }
 
   self.print = function()
@@ -284,7 +284,7 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
     canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
     canv.context.fillStyle = "#000000";
     var switch_x = self.slit_x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.slit_w);
-    canv.context.strokeRect(switch_x-(self.w/20),self.y,(self.w/10),self.h);
+    canv.context.strokeRect(switch_x-(self.w/20)+0.5,self.y+0.5,(self.w/10),self.h);
   }
 
   self.print = function()
@@ -356,7 +356,7 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
     canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
     canv.context.fillStyle = "#000000";
     var switch_x = self.slit_x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.slit_w);
-    canv.context.strokeRect(switch_x-(self.w/20),self.y,(self.w/10),self.h);
+    canv.context.strokeRect(switch_x-(self.w/20)+0.5,self.y+0.5,(self.w/10),self.h);
   }
 
   self.print = function()

@@ -145,8 +145,6 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
 
       var sample;
       var t;
-      self.canv.context.strokeStyle = self.color;
-      self.canv.context.strokeRect(0,0,self.w,self.h);
 
       //draw 0 line
       self.canv.context.strokeStyle = "#555555";
@@ -173,6 +171,9 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
     }
 
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
+    canv.context.lineWidth = 1;
+    canv.context.strokeStyle = "#000000";
+    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
   }
 
   self.dirty = function()
@@ -270,8 +271,9 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.offset_slider.draw(canv);
     self.wavelength_slider.draw(canv);
     self.amplitude_slider.draw(canv);
+    canv.context.lineWidth = 1;
     canv.context.strokeStyle = "#000000";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
+    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
 
     if(!self.enabled)
     {
@@ -296,12 +298,13 @@ var Validator = function(myC, gC, min_x, max_x, res)
   self._dirty = true;
 
   self.valid = false;
+  self.delta = 999999;
 
   self.validate = function(wiggle_room)
   {
     if(!self.isDirty() && !self.myC.isDirty() && !self.gC.isDirty()) return self.valid; //last known result
 
-    var delta = 0;
+    self.delta = 0;
     var t;
     var s0;
     var s1;
@@ -310,16 +313,35 @@ var Validator = function(myC, gC, min_x, max_x, res)
       t = i/(self.res-1);
       s0 = self.myC.f(lerp(self.min_x,self.max_x,t));
       s1 = self.gC.f( lerp(self.min_x,self.max_x,t));
-      delta += Math.abs(s0-s1);
+      self.delta += Math.abs(s0-s1);
     }
-    //console.log(delta);
-    self.valid = delta < wiggle_room;
+    //console.log(self.delta);
+    self.valid = self.delta < wiggle_room;
     return self.valid;
   }
 
   self.dirty   = function() { self._dirty = true; };
   self.cleanse = function() { self._dirty = false; };
   self.isDirty = function() { return self._dirty; };
+}
+
+var ValidatorDrawer = function(x, y, w, h, validator)
+{
+  var self = this;
+
+  self.x = x;
+  self.y = y;
+  self.w = w;
+  self.h = h;
+
+  self.draw = function(canv)
+  {
+    canv.context.fillStyle = "#000000";
+    var len = self.w-(self.w*validator.delta/9999);
+    if(len < 0) len = 0;
+    if(len > self.w) len = self.w;
+    canv.context.fillRect(self.x,self.y,len,self.h);
+  }
 }
 
 var Level = function()
@@ -384,6 +406,7 @@ var GamePlayScene = function(game, stage)
   var readyButton;
 
   var validator;
+  var vDrawer;
 
   var cur_level;
   var n_levels;
@@ -411,6 +434,7 @@ var GamePlayScene = function(game, stage)
     readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground) self.nextLevel(); });
 
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
+    vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
     myE0.register(presser, dragger);
     myE1.register(presser, dragger);
@@ -570,7 +594,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_enabled = true;                             level.myE1_enabled = false;
     level.myE0_visible = true;                             level.myE1_visible = true;
     level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
-    level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_offset      = pix2Off(myE0, r(maxPix/2)-30); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
     level.gC0_wavelength  = pix2Wav(myE0,      maxPix-50); level.gC1_wavelength  = pix2Wav(myE1,             10);
     level.gC0_amplitude   = pix2Amp(myE0,    r(maxPix/2)); level.gC1_amplitude   = pix2Amp(myE1,      maxPix-70);
     level.allowed_wiggle_room = 500;
@@ -638,6 +662,8 @@ var GamePlayScene = function(game, stage)
 
     if(levels[cur_level].playground)
       readyButton.draw(self.dc);
+    else
+      vDrawer.draw(self.dc);
 
     myComp.cleanse();
     myDisplay.cleanse();
