@@ -208,29 +208,38 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   }
 }
 
-var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y, x,y,w,h)
+var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y, color, x,y,w,h)
 {
   var self = this;
   self.component = component;
   self.n_samples = n_samples; if(self.n_samples < 2) self.n_samples = 2; //left and right side of graph at minimum
+
+  self.min_x = min_x;
+  self.max_x = max_x;
+  self.min_y = min_y;
+  self.max_y = max_y;
+
+  self.color = color;
 
   self.x = x;
   self.y = y;
   self.w = w;
   self.h = h;
 
-  self.default_offset = (min_x+max_x)/2;
-  self.default_wavelength = max_x;
-  self.default_amplitude = max_y/4;
+  self.default_offset = (self.min_x+self.max_x)/2;
+  self.default_wavelength = self.max_x;
+  self.default_amplitude = self.max_y/4;
 
-  self.graph = new GraphDrawer(self.component, self.n_samples, min_x, max_x, min_y, max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
+  self.graph = new GraphDrawer(self.component, self.n_samples, self.min_x, self.max_x, self.min_y, self.max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
+  self.graph.color = self.color;
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.reset(); });
   self.toggle_button = new ToggleBox(self.x+self.w-10-20, self.y+10, 20, 20, true, function(on) { if(!self.toggle_enabled) return; self.component.enabled = on; self.component.dirty(); });
-  self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, min_x,       max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
-  self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,     2,     max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
-  self.amplitude_slider  = new SmoothSliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,     0, max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
+
+  self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, self.min_x,       self.max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
+  self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,          2,     self.max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
+  self.amplitude_slider  = new SmoothSliderBox(self.x+10, self.y+self.h-10-20,         self.w-20, 20,          0, self.max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
 
   self.enabled = true;
   self.visible = true;
@@ -454,10 +463,11 @@ var GamePlayScene = function(game, stage)
     myC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
     myDisplay = new GraphDrawer(myComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                     10,                 10,        self.c.width-20, ((self.c.height-20)/2));
+    myDisplay.color = "#FF00FF";
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_y = true;
-    myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
-    myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
 
     gC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
@@ -785,6 +795,16 @@ var GamePlayScene = function(game, stage)
       gDisplay.draw(self.dc);
       self.dc.context.globalAlpha = 1;
     }
+
+    var redComponent = "00";
+    var blueComponent = "00";
+    if(myE0.visible && myE0.component.enabled)
+      redComponent = "FF";
+    if(myE1.visible && myE1.component.enabled)
+      blueComponent = "FF";
+
+    myDisplay.color = "#"+redComponent+"00"+blueComponent;
+
     myDisplay.draw(self.dc);
     myE0.draw(self.dc);
     myE1.draw(self.dc);
