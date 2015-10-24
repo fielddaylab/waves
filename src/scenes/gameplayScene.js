@@ -116,6 +116,8 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   self.max_y = max_y;
 
   self.draw_zero_x = false;
+  self.draw_zero_x_at_composition = true;
+  self.draw_zero_x_at_offset = 0;
   self.draw_zero_y = false;
 
   self.canv; //gets initialized in position
@@ -167,7 +169,11 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
         self.canv.context.strokeStyle = "#555555";
         self.canv.context.lineWidth = 0.5;
         self.canv.context.beginPath();
-        var x = mapRange(self.max_x,self.min_x,self.composition.offset,self.w,0)
+        var x;
+        if(self.draw_zero_x_at_composition)
+          x = mapRange(self.max_x,self.min_x,self.composition.offset,self.w,0)
+        else
+          x = mapRange(self.max_x,self.min_x,self.draw_zero_x_at_offset,self.w,0)
         self.canv.context.moveTo(x+0.5,0);
         self.canv.context.lineTo(x+0.5,self.h);
         self.canv.context.stroke();
@@ -486,6 +492,7 @@ var GamePlayScene = function(game, stage)
     myDisplay = new GraphDrawer(myComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                     10,                 10,        self.c.width-20, ((self.c.height-20)/2));
     myDisplay.color = "#FF00FF";
     myDisplay.draw_zero_x = false;
+    myDisplay.draw_zero_x_at_composition = false;
     myDisplay.draw_zero_y = true;
     myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
     myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
@@ -799,6 +806,21 @@ var GamePlayScene = function(game, stage)
 
     myE0.tick();
     myE1.tick();
+
+    if(myE0.isDragging())
+    {
+      myDisplay.draw_zero_x = true;
+      myDisplay.draw_zero_x_at_offset = myE0.component.offset;
+    }
+    else if(myE1.isDragging())
+    {
+      myDisplay.draw_zero_x = true;
+      myDisplay.draw_zero_x_at_offset = myE1.component.offset;
+    }
+    else
+    {
+      myDisplay.draw_zero_x = false;
+    }
 
     if(!levels[cur_level].playground)
     {
