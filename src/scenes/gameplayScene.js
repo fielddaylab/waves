@@ -297,6 +297,7 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.amplitude_slider.tick();
 
     var old_contribution = self.component.contribution;
+    /*
     if(Math.abs(self.component.contribution-self.goal_contribution) > 0.0751)
     {
       if(self.component.contribution < self.goal_contribution)
@@ -304,6 +305,9 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
       if(self.component.contribution > self.goal_contribution)
         self.component.contribution -= 0.075;
     }
+    */
+    if(Math.abs(self.component.contribution-self.goal_contribution) > 0.001)
+      self.component.contribution = lerp(self.component.contribution, self.goal_contribution, 0.2);
     else
     {
       self.component.contribution = self.goal_contribution;
