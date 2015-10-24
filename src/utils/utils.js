@@ -119,3 +119,21 @@ var ptNear = function(ptx, pty, x, y, r)
   return w2+h2 < d2;
 }
 
+var decToHex = function(dec, dig)
+{
+  var r = "";
+  dig--;
+  var mod = Math.pow(16,dig);
+
+  var index = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+  for(; dig >= 0; dig--)
+  {
+    var v = Math.floor(dec/mod);
+    r += index[v];
+    dec -= Math.pow(16,dig)*v;
+    mod /= 16;
+  }
+
+  return r;
+}
+

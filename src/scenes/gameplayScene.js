@@ -19,6 +19,7 @@ var Component = function(type, offset, wavelength, amplitude)
   self.wavelength = wavelength;
   self.amplitude = amplitude;
   self.enabled = true;
+  self.contribution = 1.0;
 
   self.set = function(type, offset, wavelength, amplitude)
   {
@@ -57,7 +58,7 @@ var Component = function(type, offset, wavelength, amplitude)
       default:
         break;
     }
-    return y;
+    return y*self.contribution;
   }
 
   self.dirty   = function() { self._dirty = true; }
@@ -235,7 +236,8 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   self.reset_button = new ButtonBox(self.x+10, self.y+10, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.reset(); });
-  self.toggle_button = new ToggleBox(self.x+self.w-10-20, self.y+10, 20, 20, true, function(on) { if(!self.toggle_enabled) return; self.component.enabled = on; self.component.dirty(); });
+  self.toggle_button = new ToggleBox(self.x+self.w-10-20, self.y+10, 20, 20, true, function(on) { if(!self.toggle_enabled) return; if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
+  self.goal_contribution = 1;
 
   self.offset_slider     = new SmoothSliderBox(self.x+10, self.y+self.h/2+10,          self.w-20, 20, self.min_x,       self.max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
   self.wavelength_slider = new SmoothSliderBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-20, 20,          2,     self.max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
@@ -293,6 +295,21 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.offset_slider.tick();
     self.wavelength_slider.tick();
     self.amplitude_slider.tick();
+
+    var old_contribution = self.component.contribution;
+    if(Math.abs(self.component.contribution-self.goal_contribution) > 0.0751)
+    {
+      if(self.component.contribution < self.goal_contribution)
+        self.component.contribution += 0.075;
+      if(self.component.contribution > self.goal_contribution)
+        self.component.contribution -= 0.075;
+    }
+    else
+    {
+      self.component.contribution = self.goal_contribution;
+    }
+    if(old_contribution != self.component.contribution)
+      self.component.dirty();
   }
 
   self.draw = function(canv)
@@ -743,10 +760,14 @@ var GamePlayScene = function(game, stage)
     myE0.visible = level.myE0_visible;
     myE0.toggle_enabled = level.myE0_toggle_enabled;
     myE0.toggle_default = level.myE0_toggle_default; myE0.toggle_button.set(level.myE0_toggle_default);
+    if(myE0.toggle_default) myE0.component.contribution = 1;
+    else                    myE0.component.contribution = 0;
     myE1.enabled = level.myE1_enabled;
     myE1.visible = level.myE1_visible;
     myE1.toggle_enabled = level.myE1_toggle_enabled;
     myE1.toggle_default = level.myE1_toggle_default; myE1.toggle_button.set(level.myE1_toggle_default);
+    if(myE1.toggle_default) myE1.component.contribution = 1;
+    else                    myE1.component.contribution = 0;
 
     gC0.set(level.gC0_type, level.gC0_offset, level.gC0_wavelength, level.gC0_amplitude);
     gC1.set(level.gC1_type, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
@@ -799,9 +820,9 @@ var GamePlayScene = function(game, stage)
     var redComponent = "00";
     var blueComponent = "00";
     if(myE0.visible && myE0.component.enabled)
-      redComponent = "FF";
+      redComponent = decToHex(Math.floor(myE0.component.contribution*255),2);
     if(myE1.visible && myE1.component.enabled)
-      blueComponent = "FF";
+      blueComponent = decToHex(Math.floor(myE1.component.contribution*255),2);
 
     myDisplay.color = "#"+redComponent+"00"+blueComponent;
 
