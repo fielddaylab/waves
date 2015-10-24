@@ -36,7 +36,7 @@ var Component = function(type, offset, wavelength, amplitude)
   {
     if(!self.enabled) return 0;
 
-    x += self.offset;
+    x -= self.offset;
     var y = 0;
 
     switch(self.type)
@@ -167,7 +167,7 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
         self.canv.context.strokeStyle = "#555555";
         self.canv.context.lineWidth = 0.5;
         self.canv.context.beginPath();
-        var x = mapRange(self.min_x,self.max_x,self.composition.offset,self.w,0)
+        var x = mapRange(self.max_x,self.min_x,self.composition.offset,self.w,0)
         self.canv.context.moveTo(x+0.5,0);
         self.canv.context.lineTo(x+0.5,self.h);
         self.canv.context.stroke();
