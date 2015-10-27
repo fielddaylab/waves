@@ -137,7 +137,7 @@ function NumberBox(x,y,w,h,val,delta,callback)
 }
 
 function ButtonBox(x,y,w,h,callback)
-//register to presser
+//register to presser *or* clicker
 {
   var self = this;
   self.x = x;
@@ -155,6 +155,13 @@ function ButtonBox(x,y,w,h,callback)
   {
     self.down = false;
     if(ptWithinObj(evt.doX, evt.doY, self)) self.hit();
+  }
+
+  self.click = function(evt)
+  {
+    self.down = true;
+    if(ptWithinObj(evt.doX, evt.doY, self)) self.hit();
+    self.down = false;
   }
 
   self.hit = function()
@@ -180,7 +187,7 @@ function ButtonBox(x,y,w,h,callback)
 }
 
 function ToggleBox(x,y,w,h,val,callback)
-//register to presser
+//register to presser *or* clicker
 {
   var self = this;
   self.x = x;
@@ -199,6 +206,13 @@ function ToggleBox(x,y,w,h,val,callback)
   {
     self.down = false;
     if(ptWithinObj(evt.doX, evt.doY, self)) self.toggle();
+  }
+
+  self.click = function(evt)
+  {
+    self.down = true;
+    if(ptWithinObj(evt.doX, evt.doY, self)) self.toggle();
+    self.down = false;
   }
 
   self.toggle = function()
