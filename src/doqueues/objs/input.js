@@ -277,6 +277,10 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   {
     return self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
   }
+  self.pixelAtVal = function(v)
+  {
+    return ((v-self.min_val)/(self.max_val-self.min_val))*self.slit_w;
+  }
 
   self.draw = function(canv)
   {
@@ -339,6 +343,10 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   {
     return self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
   }
+  self.pixelAtVal = function(v)
+  {
+    return ((v-self.min_val)/(self.max_val-self.min_val))*self.slit_w;
+  }
 
   self.tick = function()
   {
@@ -364,3 +372,84 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
     console.log("("+self.x+","+self.y+","+self.w+","+self.h+") min:"+self.min_val+" max:"+self.max_val+" v:"+self.val+" "+"");
   }
 }
+
+function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback)
+//register to dragger, ticker
+{
+  var self = this;
+  self.x = x;
+  self.y = y;
+  self.w = w;
+  self.h = h;
+
+  self.slit_x = self.x + self.w/20;
+  self.slit_w = self.w - self.w/10;
+
+  self.min_val = min_val;
+  self.max_val = max_val;
+  self.desired_val = val;
+  self.val = val;
+
+  self.dragging = false;
+  self.dragStart = function(evt)
+  {
+    self.dragging = true;
+    self.drag(evt);
+  }
+  self.drag = function(evt)
+  {
+    if(evt.doX < self.slit_x) evt.doX = self.slit_x;
+    if(evt.doX > self.slit_x+self.maxPixel()) evt.doX = self.slit_x+self.maxPixel();
+    self.desired_val = self.valAtPixel(evt.doX-self.slit_x);
+  }
+  self.dragFinish = function()
+  {
+    self.dragging = false;
+  }
+  self.set = function(n)
+  {
+    self.desired_val = n;
+  }
+
+  self.maxPixel = function()
+  {
+    return self.slit_w;
+  }
+  self.valAtPixel = function(p)
+  {
+    var t = (p/self.slit_w)*(p/self.slit_w);
+    return self.min_val+(self.max_val-self.min_val)*t;
+  }
+  self.pixelAtVal = function(v)
+  {
+    var t = (v-self.min_val)/(self.max_val-self.min_val);
+    return Math.sqrt(t)*self.slit_w;
+  }
+
+  self.tick = function()
+  {
+    if(self.val == self.desired_val) return;
+    if(Math.abs(self.val-self.desired_val) < 0.001)
+      self.val = self.desired_val;
+    else
+      self.val = self.val+(self.desired_val-self.val)/3;
+    callback(self.val);
+  }
+
+  self.draw = function(canv)
+  {
+    canv.context.fillStyle = "#333333";
+    canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
+    canv.context.fillStyle = "#000000";
+    var t = (self.val-self.min_val)/(self.max_val-self.min_val);
+    t = Math.sqrt(t);
+    var switch_x = self.slit_x+(t*self.slit_w);
+    canv.context.strokeRect(switch_x-(self.w/20)+0.5,self.y+0.5,(self.w/10),self.h);
+  }
+
+  self.print = function()
+  {
+    console.log("("+self.x+","+self.y+","+self.w+","+self.h+") min:"+self.min_val+" max:"+self.max_val+" v:"+self.val+" "+"");
+  }
+}
+
