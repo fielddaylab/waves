@@ -543,7 +543,7 @@ var GamePlayScene = function(game, stage)
     gDisplay.lineWidth = 4;
     gDisplay.color = "#00BB00";
 
-    readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground) self.nextLevel(); });
+    readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room) self.nextLevel(); });
     composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { if(levels[cur_level].myE1_visible) self.animateComposition(); });
 
     skipButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { self.nextLevel(); });
@@ -828,6 +828,8 @@ var GamePlayScene = function(game, stage)
 
     myC0.dirty();
     myC1.dirty();
+
+    validator.dirty();
   }
 
   self.nextLevel = function()
@@ -877,13 +879,8 @@ var GamePlayScene = function(game, stage)
     }
 
     if(!levels[cur_level].playground)
-    {
-      if(validator.validate(levels[cur_level].allowed_wiggle_room) && !myE0.isDragging() && !myE1.isDragging()) //valid, and not currently interacting
-      {
-        validator.dirty();
-        self.nextLevel();
-      }
-    }
+      validator.validate(levels[cur_level].allowed_wiggle_room)
+
     t += 0.05;
     if(t > Math.PI) t-=Math.PI;
   };
@@ -910,9 +907,9 @@ var GamePlayScene = function(game, stage)
     myE0.draw(self.dc);
     myE1.draw(self.dc);
 
-    if(levels[cur_level].playground)
+    if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room)
       readyButton.draw(self.dc);
-    else
+    if(!levels[cur_level].playground)
       vDrawer.draw(self.dc);
 
     skipButton.draw(self.dc);
