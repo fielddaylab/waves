@@ -215,6 +215,114 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   }
 }
 
+var CompositionAnimationDrawer = function(component_a, component_b, n_samples, min_x, max_x, min_y, max_y, x, y, w, h)
+{
+  var self = this;
+  self.component_a = component_a;
+  self.component_b = component_b;
+  self.n_samples = n_samples; if(self.n_samples < 2) self.n_samples = 2; //left and right side of graph at minimum
+
+  self.x = x;
+  self.y = y;
+  self.w = w;
+  self.h = h;
+
+  self.min_x = min_x;
+  self.max_x = max_x;
+  self.min_y = min_y;
+  self.max_y = max_y;
+
+  self.canv; //gets initialized in position
+
+  self.lineWidth = 2;
+  self._dirty = true;
+
+  self.visible = true;
+
+  self.position = function(x,y,w,h)
+  {
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.canv = new Canv(
+      {
+        width:self.w,
+        height:self.h,
+        fillStyle:"#000000",
+        strokeStyle:"#000000",
+        smoothing:true
+      }
+    );
+    self._dirty = true;
+  }
+  self.position(self.x,self.y,self.w,self.h);
+
+  self.draw = function(canv)
+  {
+    if(self.isDirty())
+    {
+      self.canv.clear();
+
+      var sample;
+      var t;
+      var x;
+      var y_a;
+      var y_b;
+
+      self.canv.context.strokeStyle = self.color;
+      self.canv.context.lineWidth = self.lineWidth;
+      for(var i = 0; i < self.n_samples/4; i++)
+      {
+        t = i/((self.n_samples/4)-1);
+        x = t*self.w;
+
+        sample = self.component_a.f(lerp(self.min_x,self.max_x,t));
+        y_a = mapRange(self.min_y,self.max_y,sample,self.h,0);
+        self.canv.context.fillStyle = "#FF0000";
+        self.canv.context.fillRect(x-1,self.h/2,1,y_a-self.h/2);
+
+        sample = self.component_b.f(lerp(self.min_x,self.max_x,t));
+        y_b = mapRange(self.min_y,self.max_y,sample,self.h,0);
+        self.canv.context.fillStyle = "#0000FF";
+        self.canv.context.fillRect(x+1,self.h/2+(y_a-self.h/2),1,y_b-self.h/2);
+      }
+
+      self._dirty = false;
+    }
+
+    if(!self.visible) return;
+    canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
+    canv.context.lineWidth = 1;
+    canv.context.strokeStyle = "#000000";
+    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
+  }
+
+/*
+  self.progress = 0;
+  self.drawn_progress = 0;
+  self.intended_progress = self.w;
+  self.tick = function()
+  {
+    if(self.progress < self.intended_progress) { self.progress++; self.dirty(); }
+  }
+*/
+
+  self.dirty = function()
+  {
+    self._dirty = true;
+  }
+  self.cleanse = function()
+  {
+    self._dirty = false;
+  }
+  self.isDirty = function()
+  {
+    return self._dirty || self.component_a.isDirty() || self.component_b.isDirty();
+  }
+}
+
 var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y, color, x,y,w,h)
 {
   var self = this;
@@ -500,6 +608,8 @@ var GamePlayScene = function(game, stage)
   var myE0;
   var myE1;
 
+  var animDisplay;
+
   var gC0;
   var gC1;
   var gComp;
@@ -534,6 +644,9 @@ var GamePlayScene = function(game, stage)
     myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
     myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
 
+    animDisplay = new CompositionAnimationDrawer(myC0, myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, 10, 10, self.c.width-20, (self.c.height-20)/2);
+    animDisplay.visible = false;
+
     gC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
@@ -543,8 +656,9 @@ var GamePlayScene = function(game, stage)
     gDisplay.lineWidth = 4;
     gDisplay.color = "#00BB00";
 
+
     readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room) self.nextLevel(); });
-    composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { if(levels[cur_level].myE1_visible) self.animateComposition(); });
+    composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { /*if(levels[cur_level].myE1_visible)*/ self.animateComposition(); });
 
     skipButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { self.nextLevel(); });
     printButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { self.print(); });
@@ -837,7 +951,6 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
-
     self.beginLevel(levels[cur_level]);
   };
 
@@ -893,7 +1006,7 @@ var GamePlayScene = function(game, stage)
 
   self.animateComposition = function()
   {
-    console.log("whoop");
+    animDisplay.visible = !animDisplay.visible;
   }
 
   var t = 0;
@@ -920,6 +1033,8 @@ var GamePlayScene = function(game, stage)
     {
       myDisplay.draw_zero_x = false;
     }
+
+    //animDisplay.tick();
 
     if(!levels[cur_level].playground)
       validator.validate(levels[cur_level].allowed_wiggle_room)
@@ -949,6 +1064,7 @@ var GamePlayScene = function(game, stage)
     myDisplay.draw(self.dc);
     myE0.draw(self.dc);
     myE1.draw(self.dc);
+    animDisplay.draw(self.dc);
 
     if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room)
       readyButton.draw(self.dc);
@@ -958,13 +1074,14 @@ var GamePlayScene = function(game, stage)
     skipButton.draw(self.dc);
     printButton.draw(self.dc);
 
-    if(levels[cur_level].myE1_visible)
+    //if(levels[cur_level].myE1_visible)
       composeButton.draw(self.dc);
 
     myComp.cleanse();
     myDisplay.cleanse();
     gComp.cleanse();
     gDisplay.cleanse();
+    animDisplay.cleanse();
   };
 
   self.cleanup = function()
