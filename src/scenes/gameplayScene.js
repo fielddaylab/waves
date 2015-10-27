@@ -245,9 +245,16 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.toggle_button = new ToggleBox(self.x+self.w-10-30, self.y+self.h-10-30, 30, 30, true, function(on) { if(!self.toggle_enabled) return; if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
   self.goal_contribution = 1;
 
-  self.offset_slider     = new SmoothSliderBox(    self.x+10, self.y+self.h/2+10,          self.w-60, 20, self.min_x,       self.max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
-  self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10, self.y+self.h/2+self.h/4-10, self.w-60, 20,          2,     self.max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
-  self.amplitude_slider  = new SmoothSliderBox(    self.x+10, self.y+self.h-10-20,         self.w-60, 20,          0, self.max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
+  self.offset_slider     = new SmoothSliderBox(    self.x+10+30, self.y+self.h/2+10,          self.w-10-self.reset_button.w-10-20-10-10-30, 20, self.min_x,       self.max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
+  self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10+30, self.y+self.h/2+self.h/4-10, self.w-10-self.reset_button.w-10-20-10-10-30, 20,          2,     self.max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
+  self.amplitude_slider  = new SmoothSliderBox(    self.x+10+30, self.y+self.h-10-20,         self.w-10-self.reset_button.w-10-20-10-10-30, 20,          0, self.max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
+
+  self.offset_dec_button = new ButtonBox(self.x+10, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
+  self.offset_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
+  self.wavelength_dec_button = new ButtonBox(self.x+10, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); });
+  self.wavelength_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); });
+  self.amplitude_dec_button = new ButtonBox(self.x+10, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); });
+  self.amplitude_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); });
 
   self.enabled = true;
   self.visible = true;
@@ -259,13 +266,31 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     return self.offset_slider.dragging || self.wavelength_slider.dragging || self.amplitude_slider.dragging;
   }
 
-  self.register = function(clicker, dragger)
+  self.register = function(dragger, presser, clicker)
   {
-    clicker.register(self.reset_button);
-    clicker.register(self.toggle_button);
     dragger.register(self.offset_slider);
     dragger.register(self.wavelength_slider);
     dragger.register(self.amplitude_slider);
+
+    presser.register(self.reset_button);
+    clicker.register(self.reset_button);
+
+    presser.register(self.toggle_button);
+    clicker.register(self.toggle_button);
+
+    presser.register(self.offset_dec_button);
+    clicker.register(self.offset_dec_button);
+    presser.register(self.offset_inc_button);
+    clicker.register(self.offset_inc_button);
+    presser.register(self.wavelength_dec_button);
+    clicker.register(self.wavelength_dec_button);
+    presser.register(self.wavelength_inc_button);
+    clicker.register(self.wavelength_inc_button);
+    presser.register(self.amplitude_dec_button);
+    clicker.register(self.amplitude_dec_button);
+    presser.register(self.amplitude_inc_button);
+    clicker.register(self.amplitude_inc_button);
+
   }
 
   self.setDefaults = function(offset, wavelength, amplitude)
@@ -327,9 +352,18 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     if(!self.visible) return;
 
     self.graph.draw(canv);
+
     self.reset_button.draw(canv);
     if(self.toggle_enabled)
       self.toggle_button.draw(canv);
+
+    self.offset_dec_button.draw(canv);
+    self.offset_inc_button.draw(canv);
+    self.wavelength_dec_button.draw(canv);
+    self.wavelength_inc_button.draw(canv);
+    self.amplitude_dec_button.draw(canv);
+    self.amplitude_inc_button.draw(canv);
+
     canv.context.lineWidth = 1;
     canv.context.strokeStyle = "#000000";
     self.offset_slider.draw(canv);
@@ -518,8 +552,12 @@ var GamePlayScene = function(game, stage)
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
-    myE0.register(clicker, dragger);
-    myE1.register(clicker, dragger);
+    myE0.register(dragger, presser, clicker);
+    myE1.register(dragger, presser, clicker);
+    presser.register(readyButton);
+    presser.register(composeButton);
+    presser.register(skipButton);
+    presser.register(printButton);
     clicker.register(readyButton);
     clicker.register(composeButton);
     clicker.register(skipButton);

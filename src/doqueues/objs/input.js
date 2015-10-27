@@ -154,14 +154,11 @@ function ButtonBox(x,y,w,h,callback)
   self.unpress = function(evt)
   {
     self.down = false;
-    if(ptWithinObj(evt.doX, evt.doY, self)) self.hit();
   }
 
   self.click = function(evt)
   {
-    self.down = true;
     if(ptWithinObj(evt.doX, evt.doY, self)) self.hit();
-    self.down = false;
   }
 
   self.hit = function()
@@ -205,14 +202,11 @@ function ToggleBox(x,y,w,h,val,callback)
   self.unpress = function(evt)
   {
     self.down = false;
-    if(ptWithinObj(evt.doX, evt.doY, self)) self.toggle();
   }
 
   self.click = function(evt)
   {
-    self.down = true;
     if(ptWithinObj(evt.doX, evt.doY, self)) self.toggle();
-    self.down = false;
   }
 
   self.toggle = function()
@@ -289,11 +283,17 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   }
   self.valAtPixel = function(p)
   {
-    return self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
+    var r = self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
+    if(r < self.min_val) r = self.min_val;
+    if(r > self.max_val) r = self.max_val;
+    return r;
   }
   self.pixelAtVal = function(v)
   {
-    return ((v-self.min_val)/(self.max_val-self.min_val))*self.slit_w;
+    var r = ((v-self.min_val)/(self.max_val-self.min_val))*self.slit_w;
+    if(r < 0) r = 0;
+    if(r > self.w) r = self.w-1;
+    return r;
   }
 
   self.draw = function(canv)
@@ -355,11 +355,17 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   }
   self.valAtPixel = function(p)
   {
-    return self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
+    var r = self.min_val+(self.max_val-self.min_val)*(p/self.slit_w);
+    if(r < self.min_val) r = self.min_val;
+    if(r > self.max_val) r = self.max_val;
+    return r;
   }
   self.pixelAtVal = function(v)
   {
-    return ((v-self.min_val)/(self.max_val-self.min_val))*self.slit_w;
+    var r = ((v-self.min_val)/(self.max_val-self.min_val))*self.slit_w;
+    if(r < 0) r = 0;
+    if(r > self.w) r = self.w-1;
+    return r;
   }
 
   self.tick = function()
@@ -432,12 +438,18 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback)
   self.valAtPixel = function(p)
   {
     var t = (p/self.slit_w)*(p/self.slit_w);
-    return self.min_val+(self.max_val-self.min_val)*t;
+    var r = self.min_val+(self.max_val-self.min_val)*t;
+    if(r < self.min_val) r = self.min_val;
+    if(r > self.max_val) r = self.max_val;
+    return r;
   }
   self.pixelAtVal = function(v)
   {
     var t = (v-self.min_val)/(self.max_val-self.min_val);
-    return Math.sqrt(t)*self.slit_w;
+    var r = Math.sqrt(t)*self.slit_w;
+    if(r < 0) r = 0;
+    if(r > self.w) r = self.w-1;
+    return r;
   }
 
   self.tick = function()
