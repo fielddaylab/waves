@@ -708,7 +708,7 @@ var GamePlayScene = function(game, stage)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
-    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1, r(maxPix/2)+65);
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,         maxPix);
     level.myC0_wavelength = pix2Wav(myE0,             50); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
     level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
     level.myE0_enabled = true;                             level.myE1_enabled = true;
@@ -799,6 +799,45 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
+    //lvl12
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0,              0); level.myC1_offset     = pix2Off(myE1,         maxPix);
+    level.myC0_wavelength = pix2Wav(myE0,         maxPix); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
+    level.myC0_amplitude  = pix2Amp(myE0,         maxPix); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,         maxPix);
+    level.gC0_wavelength  = pix2Wav(myE0,         maxPix); level.gC1_wavelength  = pix2Wav(myE1,         maxPix);
+    level.gC0_amplitude   = pix2Amp(myE0,         maxPix); level.gC1_amplitude   = pix2Amp(myE1,         maxPix);
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl13
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0,             72); level.myC1_offset     = pix2Off(myE1,             72);
+    level.myC0_wavelength = pix2Wav(myE0,             72); level.myC1_wavelength = pix2Wav(myE1,             72);
+    level.myC0_amplitude  = pix2Amp(myE0,             72); level.myC1_amplitude  = pix2Amp(myE1,             72);
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = pix2Off(myE0,             53); level.gC1_offset      = pix2Off(myE1,             72);
+    level.gC0_wavelength  = pix2Wav(myE0,             72); level.gC1_wavelength  = pix2Wav(myE1,             72);
+    level.gC0_amplitude   = pix2Amp(myE0,             72); level.gC1_amplitude   = pix2Amp(myE1,             72);
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+
     self.beginLevel(levels[cur_level]);
   };
 
@@ -844,6 +883,10 @@ var GamePlayScene = function(game, stage)
     console.log("offset: "+myE0.offset_slider.pixelAtVal(myE0.offset_slider.val));
     console.log("wavelength: "+myE0.wavelength_slider.pixelAtVal(myE0.wavelength_slider.val));
     console.log("amplitude: "+myE0.amplitude_slider.pixelAtVal(myE0.amplitude_slider.val));
+    console.log("myE1: (on lvl "+cur_level+")");
+    console.log("offset: "+myE1.offset_slider.pixelAtVal(myE1.offset_slider.val));
+    console.log("wavelength: "+myE1.wavelength_slider.pixelAtVal(myE1.wavelength_slider.val));
+    console.log("amplitude: "+myE1.amplitude_slider.pixelAtVal(myE1.amplitude_slider.val));
     console.log("error: "+validator.delta);
     console.log("");
   }
