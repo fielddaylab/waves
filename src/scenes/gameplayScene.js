@@ -266,10 +266,11 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
 
       var sample;
       var t;
-      var p;
       var x;
       var y_a;
       var y_b;
+      var h;
+      var allowed_dist;
 
       for(var i = 0; i < self.progress && i < self.n_samples*2; i++)
       {
@@ -281,13 +282,16 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
         y_a = mapRange(self.min_y,self.max_y,sample,self.h,0);
         if(i < self.n_samples)
         {
-          if(self.progress > i + self.frames_per_sample)
-            p = 1.0;
-          else
-            p = (self.progress-i)/self.frames_per_sample
+          h = y_a-self.h/2;
+          allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample * self.h/2);
+          if(self.progress < (i+self.frames_per_sample) && Math.abs(h) > allowed_dist)
+          {
+            if(h < 0) h = -allowed_dist;
+            else      h = allowed_dist;
+          }
 
           self.canv.context.fillStyle = "#FF0000";
-          self.canv.context.fillRect(x-1,self.h/2,1,(y_a-self.h/2)*p);
+          self.canv.context.fillRect(x-1,self.h/2,1,h);
         }
 
         if(i > self.n_samples)
@@ -295,13 +299,16 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
           sample = self.component_b.f(lerp(self.min_x,self.max_x,t));
           y_b = mapRange(self.min_y,self.max_y,sample,self.h,0);
 
-          if(self.progress > i + self.frames_per_sample)
-            p = 1.0;
-          else
-            p = (self.progress-i)/self.frames_per_sample
+          h = y_b-self.h/2;
+          allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample * self.h/2);
+          if(self.progress < (i+self.frames_per_sample) && Math.abs(h) > allowed_dist)
+          {
+            if(h < 0) h = -allowed_dist;
+            else      h = allowed_dist;
+          }
 
           self.canv.context.fillStyle = "#0000FF";
-          self.canv.context.fillRect(x+1,self.h/2+(y_a-self.h/2),1,(y_b-self.h/2)*p);
+          self.canv.context.fillRect(x+1,self.h/2+(y_a-self.h/2),1,h);
         }
       }
 
