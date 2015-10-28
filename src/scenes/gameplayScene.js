@@ -913,6 +913,25 @@ var GamePlayScene = function(game, stage)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0, r(maxPix/2)-30); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
+    level.myC0_wavelength = pix2Wav(myE0,         maxPix); level.myC1_wavelength = pix2Wav(myE1,             40);
+    level.myC0_amplitude  = pix2Amp(myE0,         maxPix); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = pix2Off(myE0, r(maxPix/2)+30); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0,         maxPix); level.gC1_wavelength  = pix2Wav(myE1,             40);
+    level.gC0_amplitude   = pix2Amp(myE0,         maxPix); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl10
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
     level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,         maxPix);
     level.myC0_amplitude  = pix2Amp(myE0,    r(maxPix/2)); level.myC1_amplitude  = pix2Amp(myE1,         maxPix);
@@ -928,7 +947,26 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
-    //lvl10
+    //lvl11
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1,    r(maxPix/2));
+    level.myC0_wavelength = pix2Wav(myE0,    r(maxPix/2)); level.myC1_wavelength = pix2Wav(myE1,             30);
+    level.myC0_amplitude  = pix2Amp(myE0,         maxPix); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = pix2Off(myE0,    r(maxPix/2)); level.gC1_offset      = pix2Off(myE1,    r(maxPix/2));
+    level.gC0_wavelength  = pix2Wav(myE0,      maxPix-20); level.gC1_wavelength  = pix2Wav(myE1,             30);
+    level.gC0_amplitude   = pix2Amp(myE0,         maxPix); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl12
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
@@ -947,7 +985,26 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
-    //lvl11
+    //lvl13
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = pix2Off(myE0,    r(maxPix/2)); level.myC1_offset     = pix2Off(myE1, r(maxPix/2)-40);
+    level.myC0_wavelength = pix2Wav(myE0,         maxPix); level.myC1_wavelength = pix2Wav(myE1,             20);
+    level.myC0_amplitude  = pix2Amp(myE0,              0); level.myC1_amplitude  = pix2Amp(myE1,    r(maxPix/2));
+    level.myE0_enabled = true;                             level.myE1_enabled = false;
+    level.myE0_visible = true;                             level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;                      level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;                      level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;                        level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = pix2Off(myE0, r(maxPix/2)+10); level.gC1_offset      = pix2Off(myE1, r(maxPix/2)-40);
+    level.gC0_wavelength  = pix2Wav(myE0,         maxPix); level.gC1_wavelength  = pix2Wav(myE1,             20);
+    level.gC0_amplitude   = pix2Amp(myE0,         maxPix); level.gC1_amplitude   = pix2Amp(myE1,    r(maxPix/2));
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    levels.push(level);
+
+    //lvl14
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
@@ -966,7 +1023,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
-    //lvl12
+    //lvl15
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
@@ -985,7 +1042,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
-    //lvl13
+    //lvl16
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;                       level.myC1_type = COMP_TYPE_SIN;
