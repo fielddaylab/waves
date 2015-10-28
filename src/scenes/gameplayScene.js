@@ -626,9 +626,10 @@ var GamePlayScene = function(game, stage)
   self.dc = stage.drawCanv;
   self.c = self.dc.canvas;
 
-  var game_dragger;
-  var game_presser;
-  var game_clicker;
+  var lvl_clicker;
+  var play_dragger;
+  var play_presser;
+  var play_clicker;
 
   var nullC;
   var myC0;
@@ -659,11 +660,17 @@ var GamePlayScene = function(game, stage)
   var n_levels;
   var levels;
 
+  var ENUM = 0;
+  var GAME_MODE_LVL  = ENUM; ENUM++;
+  var GAME_MODE_PLAY = ENUM; ENUM++;
+  var game_mode = GAME_MODE_LVL;
+
   self.ready = function()
   {
-    game_dragger = new Dragger({source:stage.dispCanv.canvas});
-    game_presser = new Presser({source:stage.dispCanv.canvas});
-    game_clicker = new Clicker({source:stage.dispCanv.canvas});
+    lvl_clicker = new Clicker({source:stage.dispCanv.canvas});
+    play_dragger = new Dragger({source:stage.dispCanv.canvas});
+    play_presser = new Presser({source:stage.dispCanv.canvas});
+    play_clicker = new Clicker({source:stage.dispCanv.canvas});
 
     nullC = new Component(COMP_TYPE_NONE, 0, 0, 0);
     myC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
@@ -712,16 +719,16 @@ var GamePlayScene = function(game, stage)
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
-    myE0.register(game_dragger, game_presser, game_clicker);
-    myE1.register(game_dragger, game_presser, game_clicker);
-    game_presser.register(readyButton);
-    game_presser.register(composeButton);
-    game_presser.register(skipButton);
-    game_presser.register(printButton);
-    game_clicker.register(readyButton);
-    game_clicker.register(composeButton);
-    game_clicker.register(skipButton);
-    game_clicker.register(printButton);
+    myE0.register(play_dragger, play_presser, play_clicker);
+    myE1.register(play_dragger, play_presser, play_clicker);
+    play_presser.register(readyButton);
+    play_presser.register(composeButton);
+    play_presser.register(skipButton);
+    play_presser.register(printButton);
+    play_clicker.register(readyButton);
+    play_clicker.register(composeButton);
+    play_clicker.register(skipButton);
+    play_clicker.register(printButton);
 
     var level;
     cur_level = 0;
@@ -998,6 +1005,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     self.beginLevel(levels[cur_level]);
+    self.setMode(GAME_MODE_PLAY);
   };
 
   self.beginLevel = function(level)
@@ -1066,12 +1074,28 @@ var GamePlayScene = function(game, stage)
     }
   }
 
+  self.setMode = function(mode)
+  {
+    lvl_clicker.ignore();
+    play_dragger.ignore();
+    play_presser.ignore();
+    play_clicker.ignore();
+    game_mode = mode;
+  }
+
   var t = 0;
   self.tick = function()
   {
-    game_dragger.flush();
-    game_presser.flush();
-    game_clicker.flush();
+    if(game_mode == GAME_MODE_LVL)
+    {
+      lvl_clicker.flush();
+    }
+    else if(game_mode == GAME_MODE_PLAY)
+    {
+      play_dragger.flush();
+      play_presser.flush();
+      play_clicker.flush();
+    }
 
     myE0.tick();
     myE1.tick();
