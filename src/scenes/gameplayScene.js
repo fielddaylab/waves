@@ -236,8 +236,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
 
   self.lineWidth = 2;
   self._dirty = true;
-
-  self.visible = true;
+  self.frames_per_sample = 20;
 
   self.position = function(x,y,w,h)
   {
@@ -267,47 +266,67 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
 
       var sample;
       var t;
+      var p;
       var x;
       var y_a;
       var y_b;
 
-      self.canv.context.strokeStyle = self.color;
-      self.canv.context.lineWidth = self.lineWidth;
-      for(var i = 0; i < self.n_samples/4; i++)
+      for(var i = 0; i < self.progress && i < self.n_samples*2; i++)
       {
-        t = i/((self.n_samples/4)-1);
+        if(i < self.n_samples) t = i/(self.n_samples-1);
+        else t = (i-self.n_samples)/(self.n_samples-1);
         x = t*self.w;
 
         sample = self.component_a.f(lerp(self.min_x,self.max_x,t));
         y_a = mapRange(self.min_y,self.max_y,sample,self.h,0);
-        self.canv.context.fillStyle = "#FF0000";
-        self.canv.context.fillRect(x-1,self.h/2,1,y_a-self.h/2);
+        if(i < self.n_samples)
+        {
+          if(self.progress > i + self.frames_per_sample)
+            p = 1.0;
+          else
+            p = (self.progress-i)/self.frames_per_sample
 
-        sample = self.component_b.f(lerp(self.min_x,self.max_x,t));
-        y_b = mapRange(self.min_y,self.max_y,sample,self.h,0);
-        self.canv.context.fillStyle = "#0000FF";
-        self.canv.context.fillRect(x+1,self.h/2+(y_a-self.h/2),1,y_b-self.h/2);
+          self.canv.context.fillStyle = "#FF0000";
+          self.canv.context.fillRect(x-1,self.h/2,1,(y_a-self.h/2)*p);
+        }
+
+        if(i > self.n_samples)
+        {
+          sample = self.component_b.f(lerp(self.min_x,self.max_x,t));
+          y_b = mapRange(self.min_y,self.max_y,sample,self.h,0);
+
+          if(self.progress > i + self.frames_per_sample)
+            p = 1.0;
+          else
+            p = (self.progress-i)/self.frames_per_sample
+
+          self.canv.context.fillStyle = "#0000FF";
+          self.canv.context.fillRect(x+1,self.h/2+(y_a-self.h/2),1,(y_b-self.h/2)*p);
+        }
       }
 
       self._dirty = false;
     }
 
-    if(!self.visible) return;
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
-    canv.context.lineWidth = 1;
-    canv.context.strokeStyle = "#000000";
-    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
   }
 
-/*
   self.progress = 0;
-  self.drawn_progress = 0;
-  self.intended_progress = self.w;
+  self.intended_progress = 0;
   self.tick = function()
   {
     if(self.progress < self.intended_progress) { self.progress++; self.dirty(); }
+    if(self.progress > self.intended_progress) { self.progress--; self.dirty(); }
   }
-*/
+
+  self.animateForward = function()
+  {
+    self.intended_progress = (self.n_samples*2)+self.frames_per_sample;
+  }
+  self.animateBackward = function()
+  {
+    self.intended_progress = 0;
+  }
 
   self.dirty = function()
   {
@@ -601,6 +620,7 @@ var GamePlayScene = function(game, stage)
   var presser;
   var clicker;
 
+  var nullC;
   var myC0;
   var myC1;
   var myComp;
@@ -608,7 +628,9 @@ var GamePlayScene = function(game, stage)
   var myE0;
   var myE1;
 
-  var animDisplay;
+  var e0AnimDisplay;
+  var e1AnimDisplay;
+  var myAnimDisplay;
 
   var gC0;
   var gC1;
@@ -633,6 +655,7 @@ var GamePlayScene = function(game, stage)
     presser = new Presser({source:stage.dispCanv.canvas});
     clicker = new Clicker({source:stage.dispCanv.canvas});
 
+    nullC = new Component(COMP_TYPE_NONE, 0, 0, 0);
     myC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
@@ -644,8 +667,9 @@ var GamePlayScene = function(game, stage)
     myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
     myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
 
-    animDisplay = new CompositionAnimationDrawer(myC0, myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, 10, 10, self.c.width-20, (self.c.height-20)/2);
-    animDisplay.visible = false;
+    e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, 100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, myE0.x+10, myE0.y+10, myE0.w-20, (myE0.h/2)-10);
+    e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
+    myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, 10, 10, self.c.width-20, (self.c.height-20)/2);
 
     gC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
@@ -655,7 +679,6 @@ var GamePlayScene = function(game, stage)
     gDisplay.draw_zero_y = true;
     gDisplay.lineWidth = 4;
     gDisplay.color = "#00BB00";
-
 
     readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room) self.nextLevel(); });
     composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { /*if(levels[cur_level].myE1_visible)*/ self.animateComposition(); });
@@ -1006,7 +1029,18 @@ var GamePlayScene = function(game, stage)
 
   self.animateComposition = function()
   {
-    animDisplay.visible = !animDisplay.visible;
+    if(myAnimDisplay.intended_progress == 0)
+    {
+      e0AnimDisplay.animateForward();
+      e1AnimDisplay.animateForward();
+      myAnimDisplay.animateForward();
+    }
+    else
+    {
+      e0AnimDisplay.animateBackward();
+      e1AnimDisplay.animateBackward();
+      myAnimDisplay.animateBackward();
+    }
   }
 
   var t = 0;
@@ -1034,7 +1068,9 @@ var GamePlayScene = function(game, stage)
       myDisplay.draw_zero_x = false;
     }
 
-    //animDisplay.tick();
+    e0AnimDisplay.tick();
+    e1AnimDisplay.tick();
+    myAnimDisplay.tick();
 
     if(!levels[cur_level].playground)
       validator.validate(levels[cur_level].allowed_wiggle_room)
@@ -1064,7 +1100,9 @@ var GamePlayScene = function(game, stage)
     myDisplay.draw(self.dc);
     myE0.draw(self.dc);
     myE1.draw(self.dc);
-    animDisplay.draw(self.dc);
+    e0AnimDisplay.draw(self.dc);
+    e1AnimDisplay.draw(self.dc);
+    myAnimDisplay.draw(self.dc);
 
     if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room)
       readyButton.draw(self.dc);
@@ -1081,7 +1119,9 @@ var GamePlayScene = function(game, stage)
     myDisplay.cleanse();
     gComp.cleanse();
     gDisplay.cleanse();
-    animDisplay.cleanse();
+    e0AnimDisplay.cleanse();
+    e1AnimDisplay.cleanse();
+    myAnimDisplay.cleanse();
   };
 
   self.cleanup = function()
