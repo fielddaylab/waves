@@ -567,10 +567,10 @@ var ValidatorDrawer = function(x, y, w, h, validator)
   self.w = w;
   self.h = h;
 
-  self.draw = function(canv)
+  self.draw = function(wiggle_room, canv)
   {
     canv.context.fillStyle = "#000000";
-    var len = self.w-(self.w*validator.delta/9999);
+    var len = self.w-(self.w*(validator.delta-wiggle_room)/9999);
     if(len < 0) len = 0;
     if(len > self.w) len = self.w;
     canv.context.fillRect(self.x,self.y,len,self.h);
@@ -1130,7 +1130,7 @@ var GamePlayScene = function(game, stage)
     if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room)
       readyButton.draw(self.dc);
     if(!levels[cur_level].playground)
-      vDrawer.draw(self.dc);
+      vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
     skipButton.draw(self.dc);
     printButton.draw(self.dc);
