@@ -14,6 +14,7 @@ var Dragger = function(init)
   var evtQueue = [];
   self.register = function(draggable) { draggables.push(draggable); }
   self.unregister = function(draggable) { var i = draggables.indexOf(draggable); if(i != -1) draggables.splice(i,1); }
+  self.ignore = function() { dragging = []; callbackQueue = []; evtQueue = []; }
   self.clear = function() { draggables = []; }
   self.attach = function() //will get auto-called on create
   {

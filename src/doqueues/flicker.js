@@ -14,6 +14,7 @@ var Flicker = function(init)
   var evtQueue = [];
   self.register = function(flickable) { flickables.push(flickable); }
   self.unregister = function(flickable) { var i = flickables.indexOf(flickable); if(i != -1) flickables.splice(i,1); }
+  self.ignore = function() { flicking = []; callbackQueue = []; evtQueue = []; }
   self.clear = function() { flickables = []; }
   self.attach = function() //will get auto-called on creation
   {

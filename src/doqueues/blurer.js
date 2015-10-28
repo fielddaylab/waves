@@ -13,6 +13,7 @@ var Blurer = function(init)
   var evtQueue = [];
   self.register = function(blurable) { blurables.push(blurable); }
   self.unregister = function(blurable) { var i = blurables.indexOf(blurable); if(i != -1) blurables.splice(i,1); }
+  self.ignore = function() { callbackQueue = []; evtQueue = []; }
   self.clear = function() { blurables = []; }
   self.attach = function() //will get auto-called at creation
   {

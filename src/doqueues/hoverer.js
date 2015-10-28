@@ -22,6 +22,7 @@ var Hoverer = function(init)
     var i =    hovering.indexOf(hoverable); if(i != -1)    hovering.splice(i,1);
     var i = nothovering.indexOf(hoverable); if(i != -1) nothovering.splice(i,1);
   }
+  self.ignore = function() { hoverCallbackQueue = []; hoverEvtQueue = []; nothoverCallbackQueue = []; nothoverEvtQueue = []; }
   self.clear = function() { hoverables = []; hovering = []; nothovering = []; }
   self.attach = function() //will get auto-called on creation
   {
