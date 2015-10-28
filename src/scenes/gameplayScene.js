@@ -323,8 +323,9 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
   {
     self.intended_progress = (self.n_samples*2)+self.frames_per_sample;
   }
-  self.animateBackward = function()
+  self.animateBackward = function(head_start)
   {
+    if(head_start && self.progress > self.n_samples) self.progress = self.n_samples+self.frames_per_sample;
     self.intended_progress = 0;
   }
 
@@ -1037,9 +1038,9 @@ var GamePlayScene = function(game, stage)
     }
     else
     {
-      e0AnimDisplay.animateBackward();
-      e1AnimDisplay.animateBackward();
-      myAnimDisplay.animateBackward();
+      e0AnimDisplay.animateBackward(!levels[cur_level].myE1_visible);
+      e1AnimDisplay.animateBackward(!levels[cur_level].myE1_visible);
+      myAnimDisplay.animateBackward(!levels[cur_level].myE1_visible);
     }
   }
 
@@ -1065,6 +1066,7 @@ var GamePlayScene = function(game, stage)
     }
     else
     {
+      if(myDisplay.draw_zero_x) myDisplay.dirty();
       myDisplay.draw_zero_x = false;
     }
 
