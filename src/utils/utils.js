@@ -28,25 +28,22 @@ function doSetPosOnEvent(evt)
   {
     evt.doX = evt.offsetX;
     evt.doY = evt.offsetY;
-    dbugger.log("offsets: "+evt.doX+","+evt.doY);
   }
   else if(evt.touches != undefined && evt.touches[0] != undefined)
   {
-    evt.doX = evt.touches[0].pageX-evt.touches[0].target.offsetLeft;
-    evt.doY = evt.touches[0].pageY-evt.touches[0].target.offsetTop;
-    dbugger.log("touches: "+evt.doX+","+evt.doY);
+    var r = evt.touches[0].target.getBoundingClientRect();
+    evt.doX = evt.touches[0].pageX-r.left;
+    evt.doY = evt.touches[0].pageY-r.top;
   }
   else if(evt.layerX != undefined && evt.originalTarget != undefined)
   {
     evt.doX = evt.layerX-evt.originalTarget.offsetLeft;
     evt.doY = evt.layerY-evt.originalTarget.offsetTop;
-    dbugger.log("layers: "+evt.doX+","+evt.doY);
   }
   else //give up because javascript is terrible
   {
     evt.doX = 0;
     evt.doY = 0;
-    dbugger.log("none: "+evt.doX+","+evt.doY);
   }
 }
 

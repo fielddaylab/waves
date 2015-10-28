@@ -1,3 +1,3 @@
-var platform = "PC"; //"PC" or "MOBILE"
+var platform = "MOBILE"; //"PC" or "MOBILE"
 var debug = true;
 
