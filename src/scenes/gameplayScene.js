@@ -701,6 +701,7 @@ var GamePlayScene = function(game, stage)
 
       var max_p = (myAnimDisplay.n_samples*2)+myAnimDisplay.frames_per_sample;
       if(!levels[cur_level].myE1_visible) max_p = myAnimDisplay.n_samples+myAnimDisplay.frames_per_sample;
+      if(max_p < myAnimDisplay.progress) max_p = myAnimDisplay.progress;
       canv.context.fillRect(composeButton.x,composeButton.y,composeButton.w,(composeButton.h*myAnimDisplay.progress/max_p));
       canv.context.strokeRect(composeButton.x+0.5,composeButton.y+0.5,composeButton.w,composeButton.h);
     }

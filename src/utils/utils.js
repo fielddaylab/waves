@@ -19,11 +19,8 @@ var doMapInitDefaults = function(obj, init, defaults)
 }
 
 //sets doX and doY as x/y offset into the object listening for the event
-var dbugger;
 function doSetPosOnEvent(evt)
 {
-  if(!dbugger) dbugger = new Debugger({source:document.getElementById('debug_div')});
-
   if(evt.offsetX != undefined)
   {
     evt.doX = evt.offsetX;
