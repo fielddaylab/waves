@@ -236,7 +236,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
 
   self.lineWidth = 2;
   self._dirty = true;
-  self.frames_per_sample = 20;
+  self.frames_per_sample = 40;
 
   self.position = function(x,y,w,h)
   {
@@ -283,7 +283,8 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
         if(i < self.n_samples)
         {
           h = y_a-self.h/2;
-          allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample * self.h/2);
+          allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample);
+          allowed_dist *= self.h/2;
           if(self.progress < (i+self.frames_per_sample) && Math.abs(h) > allowed_dist)
           {
             if(h < 0) h = -allowed_dist;
@@ -300,7 +301,8 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
           y_b = mapRange(self.min_y,self.max_y,sample,self.h,0);
 
           h = y_b-self.h/2;
-          allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample * self.h/2);
+          allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample);
+          allowed_dist *= self.h/2;
           if(self.progress < (i+self.frames_per_sample) && Math.abs(h) > allowed_dist)
           {
             if(h < 0) h = -allowed_dist;
