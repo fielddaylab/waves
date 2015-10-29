@@ -33,10 +33,20 @@ var d_levels_last_lvl = 0;
 var d_random_lvl = 0;
 var d_create_lvl = 0;
 
-var ENUM = 0;
+var ENUM;
+
+ENUM = 0;
 var COMP_TYPE_NONE   = ENUM; ENUM++;
 var COMP_TYPE_SIN    = ENUM; ENUM++;
 var COMP_TYPE_SQUARE = ENUM; ENUM++;
+
+ENUM = 0;
+var GAME_MODE_LVL  = ENUM; ENUM++;
+var GAME_MODE_PLAY = ENUM; ENUM++;
+var game_mode = GAME_MODE_LVL;
+
+
+
 var Component = function(type, offset, wavelength, amplitude)
 {
   var self = this;
@@ -652,6 +662,18 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self._dirty = true;
 
   self.buttons = [];
+  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { scene.setMode(GAME_MODE_PLAY); }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button.draw = function(canv)
+  {
+    if(this.down) canv.context.strokeStyle = "#00F400";
+    else          canv.context.strokeStyle = "#000000";
+
+    canv.context.fillStyle = "#00F400";
+
+    canv.context.fillRect(this.off_x,this.off_y,this.w,this.h);
+    canv.context.strokeRect(this.off_x+0.5,this.off_y+0.5,this.w,this.h);
+  }
+
   var bs = 80;
   //sections: s (single), dl (double locked), ds (double single), d (double)
   self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { /* the one level that's always unlocked */ scene.requestLevel(s_play_lvl); });  self.s_play.req_lvl   = -1;                self.buttons.push(self.s_play);
@@ -697,7 +719,8 @@ var ClipBoard = function(x,y,w,h,scene,levels)
     b.x = b.off_x+self.x;
     b.y = b.off_y+self.y;
 
-    b.draw = draw;
+    if(i != 0) //for dismiss button, I know, hack
+      b.draw = draw;
   }
 
   self.draw = function(canv)
@@ -712,26 +735,9 @@ var ClipBoard = function(x,y,w,h,scene,levels)
       self.canv.context.fillRect(10,10,self.w-20,self.h-10);
 
       self.canv.strokeStyle = "#000000";
-      //sections: s (single), dl (double locked), ds (double single), d (double)
-      self.s_play.draw(self.canv);
-      self.s_levels.draw(self.canv);
-      self.s_random.draw(self.canv);
-      self.s_create.draw(self.canv);
 
-      self.dl_play.draw(self.canv);
-      self.dl_levels.draw(self.canv);
-      self.dl_random.draw(self.canv);
-      self.dl_create.draw(self.canv);
-
-      self.ds_play.draw(self.canv);
-      self.ds_levels.draw(self.canv);
-      self.ds_random.draw(self.canv);
-      self.ds_create.draw(self.canv);
-
-      self.d_play.draw(self.canv);
-      self.d_levels.draw(self.canv);
-      self.d_random.draw(self.canv);
-      self.d_create.draw(self.canv);
+      for(var i = 0; i < self.buttons.length; i++)
+        self.buttons[i].draw(self.canv);
     }
 
     if(self.y < canv.canvas.height) //if on screen
@@ -756,25 +762,8 @@ var ClipBoard = function(x,y,w,h,scene,levels)
 
   self.register = function(clicker)
   {
-    clicker.register(self.s_play);
-    clicker.register(self.s_levels);
-    clicker.register(self.s_random);
-    clicker.register(self.s_create);
-
-    clicker.register(self.dl_play);
-    clicker.register(self.dl_levels);
-    clicker.register(self.dl_random);
-    clicker.register(self.dl_create);
-
-    clicker.register(self.ds_play);
-    clicker.register(self.ds_levels);
-    clicker.register(self.ds_random);
-    clicker.register(self.ds_create);
-
-    clicker.register(self.d_play);
-    clicker.register(self.d_levels);
-    clicker.register(self.d_random);
-    clicker.register(self.d_create);
+    for(var i = 0; i < self.buttons.length; i++)
+      clicker.register(self.buttons[i]);
   }
 
   self.dirty   = function() { self._dirty = true; }
@@ -834,11 +823,6 @@ var GamePlayScene = function(game, stage)
   var cur_level;
   var n_levels;
   var levels;
-
-  var ENUM = 0;
-  var GAME_MODE_LVL  = ENUM; ENUM++;
-  var GAME_MODE_PLAY = ENUM; ENUM++;
-  var game_mode = GAME_MODE_LVL;
 
   self.ready = function()
   {
