@@ -7,6 +7,26 @@ var graph_default_offset = (graph_min_x+graph_max_x)/2;
 var graph_default_wavelength = (2+(graph_max_x*2))/2;
 var graph_default_amplitude = graph_max_y/4;
 
+var s_play_lvl = 0;
+var s_levels_lvl = 0;
+var s_random_lvl = 0;
+var s_create_lvl = 0;
+
+var dl_play_lvl = 0;
+var dl_levels_lvl = 0;
+var dl_random_lvl = 0;
+var dl_create_lvl = 0;
+
+var ds_play_lvl = 0;
+var ds_levels_lvl = 0;
+var ds_random_lvl = 0;
+var ds_create_lvl = 0;
+
+var d_play_lvl = 0;
+var d_levels_lvl = 0;
+var d_random_lvl = 0;
+var d_create_lvl = 0;
+
 var ENUM = 0;
 var COMP_TYPE_NONE   = ENUM; ENUM++;
 var COMP_TYPE_SIN    = ENUM; ENUM++;
@@ -120,31 +140,19 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   self.draw_zero_x_at_offset = 0;
   self.draw_zero_y = false;
 
-  self.canv; //gets initialized in position
+  self.canv = new Canv(
+    {
+      width:self.w,
+      height:self.h,
+      fillStyle:"#000000",
+      strokeStyle:"#000000",
+      smoothing:true
+    }
+  );
 
   self.color = "#000000";
   self.lineWidth = 2;
   self._dirty = true;
-
-  self.position = function(x,y,w,h)
-  {
-    self.x = x;
-    self.y = y;
-    self.w = w;
-    self.h = h;
-
-    self.canv = new Canv(
-      {
-        width:self.w,
-        height:self.h,
-        fillStyle:"#000000",
-        strokeStyle:"#000000",
-        smoothing:true
-      }
-    );
-    self._dirty = true;
-  }
-  self.position(self.x,self.y,self.w,self.h);
 
   self.draw = function(canv)
   {
@@ -191,8 +199,6 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
         self.canv.context.lineTo(t*self.w,mapRange(self.min_y,self.max_y,sample,self.h,0));
       }
       self.canv.context.stroke();
-
-      self._dirty = false;
     }
 
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
@@ -614,6 +620,130 @@ var Level = function()
   self.playground = false;
 }
 
+var ClipBoard = function(x,y,w,h,scene)
+{
+  var self = this;
+
+  self.canv;
+
+  self.x = x;
+  self.y = y;
+  self.w = w;
+  self.h = h;
+  self.desired_y = y;
+
+  self.canv = new Canv(
+    {
+      width:self.w,
+      height:self.h,
+      fillStyle:"#000000",
+      strokeStyle:"#000000",
+      smoothing:true
+    }
+  );
+
+  self._dirty = true;
+
+  var bs = 80;
+  //sections: s (single), dl (double locked), ds (double single), d (double)
+  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_play_lvl); });
+  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_levels_lvl);});
+  self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_random_lvl);});
+  self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_create_lvl);});
+
+  self.dl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_play_lvl);});
+  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_levels_lvl);});
+  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_random_lvl);});
+  self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_create_lvl);});
+
+  self.ds_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_play_lvl);});
+  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_levels_lvl);});
+  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_random_lvl);});
+  self.ds_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_create_lvl);});
+
+  self.d_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_play_lvl);});
+  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_levels_lvl);});
+  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_random_lvl);});
+  self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_create_lvl);});
+
+  self.draw = function(canv)
+  {
+    if(self.isDirty())
+    {
+      self.canv.clear();
+
+      self.canv.context.fillStyle = "#000000";
+      self.canv.context.fillRect(0,0,self.w,self.h);
+      self.canv.context.fillStyle = "#FFFFFF";
+      self.canv.context.fillRect(10,10,self.w-20,self.h-10);
+
+      self.canv.strokeStyle = "#000000";
+      //sections: s (single), dl (double locked), ds (double single), d (double)
+      self.s_play.draw(self.canv);
+      self.s_levels.draw(self.canv);
+      self.s_random.draw(self.canv);
+      self.s_create.draw(self.canv);
+
+      self.dl_play.draw(self.canv);
+      self.dl_levels.draw(self.canv);
+      self.dl_random.draw(self.canv);
+      self.dl_create.draw(self.canv);
+
+      self.ds_play.draw(self.canv);
+      self.ds_levels.draw(self.canv);
+      self.ds_random.draw(self.canv);
+      self.ds_create.draw(self.canv);
+
+      self.d_play.draw(self.canv);
+      self.d_levels.draw(self.canv);
+      self.d_random.draw(self.canv);
+      self.d_create.draw(self.canv);
+    }
+
+    if(self.y < canv.canvas.height) //if on screen
+      canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
+  }
+
+  self.tick = function()
+  {
+    if(self.desired_y != self.y)
+    {
+      if(Math.abs(self.desired_y-self.y) < 1) self.y = self.desired_y;
+      else self.y = Math.round(lerp(self.y, self.desired_y, 0.2));
+    }
+  }
+
+  self.register = function(clicker)
+  {
+    clicker.register(self.s_play);
+    clicker.register(self.s_levels);
+    clicker.register(self.s_random);
+    clicker.register(self.s_create);
+
+    clicker.register(self.dl_play);
+    clicker.register(self.dl_levels);
+    clicker.register(self.dl_random);
+    clicker.register(self.dl_create);
+
+    clicker.register(self.ds_play);
+    clicker.register(self.ds_levels);
+    clicker.register(self.ds_random);
+    clicker.register(self.ds_create);
+
+    clicker.register(self.d_play);
+    clicker.register(self.d_levels);
+    clicker.register(self.d_random);
+    clicker.register(self.d_create);
+  }
+
+  self.dirty   = function() { self._dirty = true; }
+  self.cleanse = function()
+  {
+    self._dirty = false;
+  }
+  self.isDirty = function() { return self._dirty; }
+}
+
 //In creating levels, the goal inputs must be aligned to the integer pixels allowed by the UI (to prevent un-winnable levels)
 //Use these to assign valid values to components
 var pix2Off = function(e,p) { return e.offset_slider.valAtPixel(p); }
@@ -631,6 +761,8 @@ var GamePlayScene = function(game, stage)
   var play_presser;
   var play_clicker;
 
+  var clip;
+
   var nullC;
   var myC0;
   var myC1;
@@ -647,6 +779,8 @@ var GamePlayScene = function(game, stage)
   var gC1;
   var gComp;
   var gDisplay;
+
+  var menuButton;
   var readyButton;
   var composeButton;
 
@@ -672,6 +806,8 @@ var GamePlayScene = function(game, stage)
     play_presser = new Presser({source:stage.dispCanv.canvas});
     play_clicker = new Clicker({source:stage.dispCanv.canvas});
 
+    clip = new ClipBoard(20,20,self.c.width-40,self.c.height-20,self);
+
     nullC = new Component(COMP_TYPE_NONE, 0, 0, 0);
     myC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
@@ -681,8 +817,8 @@ var GamePlayScene = function(game, stage)
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
     myDisplay.draw_zero_y = true;
-    myE0      = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
-    myE1      = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    myE0 = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    myE1 = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
 
     e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, 100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, myE0.x+10, myE0.y+10, myE0.w-20, (myE0.h/2)-10);
     e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
@@ -697,7 +833,8 @@ var GamePlayScene = function(game, stage)
     gDisplay.lineWidth = 4;
     gDisplay.color = "#00BB00";
 
-    readyButton = new ButtonBox(10, 10, 80, 20, function(on) { if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room) self.nextLevel(); });
+    menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_LVL); });
+    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room) self.nextLevel(); });
     composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { /*if(levels[cur_level].myE1_visible)*/ self.animateComposition(); });
     composeButton.draw = function(canv)
     {
@@ -719,16 +856,21 @@ var GamePlayScene = function(game, stage)
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
+
+    clip.register(lvl_clicker);
+
     myE0.register(play_dragger, play_presser, play_clicker);
     myE1.register(play_dragger, play_presser, play_clicker);
+    play_presser.register(menuButton);
     play_presser.register(readyButton);
     play_presser.register(composeButton);
-    play_presser.register(skipButton);
-    play_presser.register(printButton);
+    //play_presser.register(skipButton);
+    //play_presser.register(printButton);
+    play_clicker.register(menuButton);
     play_clicker.register(readyButton);
     play_clicker.register(composeButton);
-    play_clicker.register(skipButton);
-    play_clicker.register(printButton);
+    //play_clicker.register(skipButton);
+    //play_clicker.register(printButton);
 
     var level;
     cur_level = 0;
@@ -738,6 +880,7 @@ var GamePlayScene = function(game, stage)
     var maxPix = myE0.offset_slider.maxPixel(); //grab arbitrary slider to find max pix len, useful in determining starting vals
     var r = Math.round;
 
+    s_play_lvl = n_levels;
     //lvl0
     n_levels++;
     level = new Level();
@@ -757,6 +900,7 @@ var GamePlayScene = function(game, stage)
     level.playground = true;
     levels.push(level);
 
+    s_levels_lvl = n_levels;
     //lvl1
     n_levels++;
     level = new Level();
@@ -871,6 +1015,9 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
+    dl_play_lvl = n_levels;
+    ds_play_lvl = n_levels;
+    d_play_lvl = n_levels;
     //lvl7
     n_levels++;
     level = new Level();
@@ -890,6 +1037,7 @@ var GamePlayScene = function(game, stage)
     level.playground = true;
     levels.push(level);
 
+    dl_levels_lvl = n_levels;
     //lvl8
     n_levels++;
     level = new Level();
@@ -1061,6 +1209,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     levels.push(level);
 
+    ds_levels_lvl = n_levels;
     //lvl17
     n_levels++;
     level = new Level();
@@ -1122,6 +1271,13 @@ var GamePlayScene = function(game, stage)
     self.beginLevel(levels[cur_level]);
     self.setMode(GAME_MODE_PLAY);
   };
+
+  self.requestLevel = function(lvl)
+  {
+    cur_level = lvl;
+    self.beginLevel(levels[cur_level]);
+    self.setMode(GAME_MODE_PLAY);
+  }
 
   self.beginLevel = function(level)
   {
@@ -1196,6 +1352,11 @@ var GamePlayScene = function(game, stage)
     play_presser.ignore();
     play_clicker.ignore();
     game_mode = mode;
+
+    if(game_mode == GAME_MODE_LVL)
+      clip.desired_y = 20;
+    else
+      clip.desired_y = 500;
   }
 
   var t = 0;
@@ -1212,6 +1373,7 @@ var GamePlayScene = function(game, stage)
       play_clicker.flush();
     }
 
+    clip.tick();
     myE0.tick();
     myE1.tick();
 
@@ -1272,16 +1434,21 @@ var GamePlayScene = function(game, stage)
     if(!levels[cur_level].playground)
       vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
-    skipButton.draw(self.dc);
-    printButton.draw(self.dc);
+    menuButton.draw(self.dc);
+    //skipButton.draw(self.dc);
+    //printButton.draw(self.dc);
 
     //if(levels[cur_level].myE1_visible)
       composeButton.draw(self.dc);
+
+    clip.draw(self.dc);
 
     myComp.cleanse();
     myDisplay.cleanse();
     gComp.cleanse();
     gDisplay.cleanse();
+    myE0.graph.cleanse();
+    myE1.graph.cleanse();
     e0AnimDisplay.cleanse();
     e1AnimDisplay.cleanse();
     myAnimDisplay.cleanse();
