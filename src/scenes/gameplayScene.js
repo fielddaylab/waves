@@ -1,3 +1,5 @@
+var default_completeness = false;
+
 var graph_n_samples = 500;
 var graph_min_x = -50;
 var graph_max_x =  50;
@@ -449,6 +451,7 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
 
   self.hardReset = function()
   {
+    self.goal_contribution = 1;
     self.offset_slider.val = self.default_offset;
     self.wavelength_slider.val = self.default_wavelength;
     self.amplitude_slider.val = self.default_amplitude;
@@ -879,7 +882,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = true;
     level.return_to_menu = true;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     s_levels_lvl = n_levels;
@@ -901,7 +904,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl2
@@ -922,7 +925,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl3
@@ -943,7 +946,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl4
@@ -964,7 +967,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl5
@@ -985,7 +988,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     s_levels_last_lvl = n_levels;
@@ -1007,7 +1010,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = true;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     dl_play_lvl = n_levels;
@@ -1031,7 +1034,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = true;
     level.return_to_menu = true;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     dl_levels_lvl = n_levels;
@@ -1053,7 +1056,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl9
@@ -1074,7 +1077,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl10
@@ -1095,7 +1098,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl11
@@ -1116,7 +1119,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl12
@@ -1137,7 +1140,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl13
@@ -1158,7 +1161,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl14
@@ -1179,7 +1182,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl15
@@ -1200,7 +1203,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl16
@@ -1221,7 +1224,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     dl_levels_last_lvl = n_levels;
@@ -1244,7 +1247,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = true;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl18
@@ -1265,7 +1268,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
     //lvl19
@@ -1286,7 +1289,7 @@ var GamePlayScene = function(game, stage)
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.return_to_menu = false;
-    level.complete = false;
+    level.complete = default_completeness;
     levels.push(level);
 
 
@@ -1317,7 +1320,7 @@ var GamePlayScene = function(game, stage)
     gDisplay.color = "#00BB00";
 
     menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_LVL); });
-    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room) { levels[cur_level].complete = true; if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
+    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1)) { levels[cur_level].complete = true; if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
     composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { if(levels[cur_level].myE1_visible) self.animateComposition(); });
     composeButton.draw = function(canv)
     {
@@ -1522,7 +1525,7 @@ var GamePlayScene = function(game, stage)
     e1AnimDisplay.draw(self.dc);
     myAnimDisplay.draw(self.dc);
 
-    if(levels[cur_level].playground || validator.delta < levels[cur_level].allowed_wiggle_room)
+    if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1))
       readyButton.draw(self.dc);
     if(!levels[cur_level].playground)
       vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
