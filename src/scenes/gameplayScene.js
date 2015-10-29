@@ -644,27 +644,51 @@ var ClipBoard = function(x,y,w,h,scene)
 
   self._dirty = true;
 
+  self.buttons = [];
   var bs = 80;
   //sections: s (single), dl (double locked), ds (double single), d (double)
-  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_play_lvl); });
-  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_levels_lvl);});
-  self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_random_lvl);});
-  self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_create_lvl);});
+  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_play_lvl); });  self.buttons.push(self.s_play);
+  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_levels_lvl);}); self.buttons.push(self.s_levels);
+  self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_random_lvl);}); self.buttons.push(self.s_random);
+  self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { scene.requestLevel(s_create_lvl);}); self.buttons.push(self.s_create);
 
-  self.dl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_play_lvl);});
-  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_levels_lvl);});
-  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_random_lvl);});
-  self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_create_lvl);});
+  self.dl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_play_lvl);});   self.buttons.push(self.dl_play);
+  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_levels_lvl);}); self.buttons.push(self.dl_levels);
+  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_random_lvl);}); self.buttons.push(self.dl_random);
+  self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { scene.requestLevel(dl_create_lvl);}); self.buttons.push(self.dl_create);
 
-  self.ds_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_play_lvl);});
-  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_levels_lvl);});
-  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_random_lvl);});
-  self.ds_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_create_lvl);});
+  self.ds_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_play_lvl);});   self.buttons.push(self.ds_play);
+  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_levels_lvl);}); self.buttons.push(self.ds_levels);
+  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_random_lvl);}); self.buttons.push(self.ds_random);
+  self.ds_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs, function(on) { scene.requestLevel(ds_create_lvl);}); self.buttons.push(self.ds_create);
 
-  self.d_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_play_lvl);});
-  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_levels_lvl);});
-  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_random_lvl);});
-  self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_create_lvl);});
+  self.d_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_play_lvl);});   self.buttons.push(self.d_play);
+  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_levels_lvl);}); self.buttons.push(self.d_levels);
+  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_random_lvl);}); self.buttons.push(self.d_random);
+  self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs, function(on) { scene.requestLevel(d_create_lvl);}); self.buttons.push(self.d_create);
+
+  //quick hack to fix clicker even though on separate canv
+  var draw = function(canv)
+  {
+    if(this.down) canv.context.strokeStyle = "#00F400";
+    else          canv.context.strokeStyle = "#000000";
+
+    canv.context.fillStyle = "#00F400";
+
+    canv.context.fillRect(this.off_x,this.off_y,this.w,this.h);
+    canv.context.strokeRect(this.off_x+0.5,this.off_y+0.5,this.w,this.h);
+  }
+  for(var i = 0; i < self.buttons.length; i++)
+  {
+    var b = self.buttons[i];
+
+    b.off_x = b.x;
+    b.off_y = b.y;
+    b.x = b.off_x+self.x;
+    b.y = b.off_y+self.y;
+
+    b.draw = draw;
+  }
 
   self.draw = function(canv)
   {
@@ -710,6 +734,13 @@ var ClipBoard = function(x,y,w,h,scene)
     {
       if(Math.abs(self.desired_y-self.y) < 1) self.y = self.desired_y;
       else self.y = Math.round(lerp(self.y, self.desired_y, 0.2));
+
+      for(var i = 0; i < self.buttons.length; i++)
+      {
+        var b = self.buttons[i];
+        b.x = b.off_x+self.x;
+        b.y = b.off_y+self.y;
+      }
     }
   }
 
@@ -1269,7 +1300,7 @@ var GamePlayScene = function(game, stage)
 
 
     self.beginLevel(levels[cur_level]);
-    self.setMode(GAME_MODE_PLAY);
+    self.setMode(GAME_MODE_LVL);
   };
 
   self.requestLevel = function(lvl)
