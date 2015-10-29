@@ -1,5 +1,6 @@
-- level where green line is flatline
-- compose animation
-- complete random gen'd levels
-- sandbox, levels, random (for single, disabled compose, compose)
-- lvl select, intro/help popups
+- popups w/ text
+- "toggle" button should be available (not dark) even when line not enabled
+- can't win with line disabled!
+
+- random gen'd levels
+- create 'n test levels
