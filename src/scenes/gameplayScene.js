@@ -1,4 +1,4 @@
-var default_completeness = true;
+var default_completeness = false;
 
 var graph_n_samples = 500;
 var graph_min_x = -50;
@@ -687,20 +687,16 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_random);
   self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_create.req_lvl].complete) scene.requestLevel(s_create_lvl);}); self.s_create.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_create);
 
-  self.dl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.dl_play.req_lvl].complete)   scene.requestLevel(dl_play_lvl);});   self.dl_play.req_lvl   = s_levels_last_lvl;  self.buttons.push(self.dl_play);
-  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.dl_levels.req_lvl].complete) scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.buttons.push(self.dl_levels);
-  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.dl_random.req_lvl].complete) scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_random);
-  self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.dl_create.req_lvl].complete) scene.requestLevel(dl_create_lvl);}); self.dl_create.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_create);
+  self.d_play    = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs*3+20, function(on) { if(levels[self.d_play.req_lvl].complete)    scene.requestLevel(d_play_lvl);});    self.d_play.req_lvl    = s_levels_last_lvl;  self.buttons.push(self.d_play);
+  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs,      function(on) { if(levels[self.dl_levels.req_lvl].complete) scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.buttons.push(self.dl_levels);
+  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_random);
+  self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs,      function(on) { if(levels[self.dl_create.req_lvl].complete) scene.requestLevel(dl_create_lvl);}); self.dl_create.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_create);
 
-  self.ds_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs, function(on) { if(levels[self.ds_play.req_lvl].complete)   scene.requestLevel(ds_play_lvl);});   self.ds_play.req_lvl   = dl_levels_last_lvl; self.buttons.push(self.ds_play);
-  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = ds_play_lvl;        self.buttons.push(self.ds_levels);
-  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) scene.requestLevel(ds_random_lvl);}); self.ds_random.req_lvl = ds_levels_last_lvl; self.buttons.push(self.ds_random);
-  self.ds_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs, function(on) { if(levels[self.ds_create.req_lvl].complete) scene.requestLevel(ds_create_lvl);}); self.ds_create.req_lvl = ds_levels_last_lvl; self.buttons.push(self.ds_create);
+  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs,     function(on) { if(levels[self.ds_levels.req_lvl].complete) scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = ds_play_lvl;        self.buttons.push(self.ds_levels);
+  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs*2+10, function(on) { if(levels[self.d_random.req_lvl].complete) scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_random);
+  self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs*2+10, function(on) { if(levels[self.d_create.req_lvl].complete) scene.requestLevel(d_create_lvl);}); self.d_create.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_create);
 
-  self.d_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.d_play.req_lvl].complete)   scene.requestLevel(d_play_lvl);});   self.d_play.req_lvl   = ds_levels_last_lvl; self.buttons.push(self.d_play);
   self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = d_play_lvl;         self.buttons.push(self.d_levels);
-  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = d_levels_last_lvl;  self.buttons.push(self.d_random);
-  self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.d_create.req_lvl].complete) scene.requestLevel(d_create_lvl);}); self.d_create.req_lvl = d_levels_last_lvl;  self.buttons.push(self.d_create);
 
   //quick hack to fix clicker even though on separate canv
   var draw = function(canv)
@@ -1384,7 +1380,7 @@ var GamePlayScene = function(game, stage)
     }
 
     skipButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { self.nextLevel(); });
-    printButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { self.print(); });
+    //printButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { self.print(); });
 
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
@@ -1398,12 +1394,12 @@ var GamePlayScene = function(game, stage)
     play_presser.register(readyButton);
     play_presser.register(composeButton);
     //play_presser.register(skipButton);
-    play_presser.register(printButton);
+    //play_presser.register(printButton);
     play_clicker.register(menuButton);
     play_clicker.register(readyButton);
     play_clicker.register(composeButton);
     //play_clicker.register(skipButton);
-    play_clicker.register(printButton);
+    //play_clicker.register(printButton);
 
 
     self.beginLevel(levels[cur_level]);
@@ -1579,7 +1575,7 @@ var GamePlayScene = function(game, stage)
 
     menuButton.draw(self.dc);
     //skipButton.draw(self.dc);
-    printButton.draw(self.dc);
+    //printButton.draw(self.dc);
 
     if(levels[cur_level].myE1_visible)
       composeButton.draw(self.dc);
