@@ -1404,7 +1404,8 @@ var GamePlayScene = function(game, stage)
       canv.context.strokeRect(composeButton.x+0.5,composeButton.y+0.5,composeButton.w,composeButton.h);
     }
 
-    skipButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { self.nextLevel(); });
+    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1)) { levels[cur_level].complete = true; if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
+    skipButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { if(!levels[cur_level].playground == 1 && levels[cur_level].complete) { if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
     if(print_debug)
       printButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { self.print(); });
 
@@ -1419,13 +1420,13 @@ var GamePlayScene = function(game, stage)
     play_presser.register(menuButton);
     play_presser.register(readyButton);
     play_presser.register(composeButton);
-    //play_presser.register(skipButton);
+    play_presser.register(skipButton);
     if(print_debug)
       play_presser.register(printButton);
     play_clicker.register(menuButton);
     play_clicker.register(readyButton);
     play_clicker.register(composeButton);
-    //play_clicker.register(skipButton);
+    play_clicker.register(skipButton);
     if(print_debug)
       play_clicker.register(printButton);
 
@@ -1604,7 +1605,8 @@ var GamePlayScene = function(game, stage)
       vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
     menuButton.draw(self.dc);
-    //skipButton.draw(self.dc);
+    if(!levels[cur_level].playground == 1 && levels[cur_level].complete)
+      skipButton.draw(self.dc);
     if(print_debug)
       printButton.draw(self.dc);
 
