@@ -849,7 +849,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -858,9 +857,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = true;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
@@ -873,7 +873,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.458;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -882,9 +881,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.6;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -896,7 +896,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -905,9 +904,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.3;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 910;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -919,7 +919,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -928,9 +927,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.55;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 1000;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -942,7 +942,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -951,9 +950,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.45;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.4;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.8;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 900;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -965,7 +965,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -974,9 +973,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.9;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.7;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.2;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 300;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -989,7 +989,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.0;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -998,9 +997,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.3;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
@@ -1013,7 +1013,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = true;          level.myE1_random = true;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = false;
     level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
@@ -1022,9 +1021,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = 1;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
@@ -1040,7 +1040,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 1.0;
     level.myC0_wavelength = 0.35;      level.myC1_wavelength = 1.0;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 1.0;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = true;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1049,9 +1048,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = true;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
@@ -1064,7 +1064,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.44;      level.myC1_offset     = 1.0;
     level.myC0_wavelength = 0.3;       level.myC1_wavelength = 1.0;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 1.0;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1073,9 +1072,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 1.0;
     level.gC0_wavelength  = 0.3;       level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 1.0;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 1000;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1087,7 +1087,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.3;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 1.0;       level.myC1_wavelength = 0.3;
     level.myC0_amplitude  = 1.0;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1096,9 +1095,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.65;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.3;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1110,7 +1110,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 1.0;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 1.0;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1119,9 +1118,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.3;       level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 1.0;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1133,7 +1133,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.3;
     level.myC0_amplitude  = 1.0;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1142,9 +1141,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.9;       level.gC1_wavelength  = 0.3;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1156,7 +1156,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.3;
     level.myC0_wavelength = 0.45;      level.myC1_wavelength = 1.0;
     level.myC0_amplitude  = 0.0;       level.myC1_amplitude  = 1.0;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1165,9 +1164,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.6;       level.gC1_offset      = 0.3;
     level.gC0_wavelength  = 0.45;      level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 1.0;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1179,7 +1179,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.3;
     level.myC0_wavelength = 1.0;       level.myC1_wavelength = 0.2;
     level.myC0_amplitude  = 0.0;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1188,9 +1187,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.55;      level.gC1_offset      = 0.3;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.2;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1202,7 +1202,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 1.0;       level.myC1_wavelength = 0.2;
     level.myC0_amplitude  = 1.0;       level.myC1_amplitude  = 0.6;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1211,9 +1210,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.4;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.8;       level.gC1_wavelength  = 0.2;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.6;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1225,7 +1225,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.0;       level.myC1_offset     = 1.0;
     level.myC0_wavelength = 1.0;       level.myC1_wavelength = 1.0;
     level.myC0_amplitude  = 1.0;       level.myC1_amplitude  = 1.0;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1234,9 +1233,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 1.0;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 1.0;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
@@ -1248,7 +1248,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1257,9 +1256,10 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.63;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
@@ -1272,7 +1272,6 @@ var GamePlayScene = function(game, stage)
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.76;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.7;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = false;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1281,22 +1280,46 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.76;
     level.gC0_wavelength  = 0.7;       level.gC1_wavelength  = 0.7;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
+    level.return_to_menu = true;
+    level.complete = default_completeness;
+    levels.push(level);
+
+    dl_random_lvl = n_levels;
+    //lvl19 //double-locked wave random
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
+    level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
+    level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
+    level.myE0_enabled = true;         level.myE1_enabled = false;
+    level.myE0_visible = true;         level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
+    level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
+    level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    level.random = 2;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
 
     ds_levels_lvl = n_levels;
-    //lvl19 //offset change- reach for correct slider (high freq)
+    //lvl20 //offset change- reach for correct slider (high freq)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.9;
     level.myC0_wavelength = 1.0;       level.myC1_wavelength = 0.3;
     level.myC0_amplitude  = 1.0;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = true;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1305,22 +1328,22 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.3;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.3;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 900;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
     ds_levels_last_lvl = n_levels;
-    //lvl20 //offset change- reach for correct slider (low freq)
+    //lvl21 //offset change- reach for correct slider (low freq)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = 0.2;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 1.0;       level.myC1_wavelength = 0.2;
     level.myC0_amplitude  = 1.0;       level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = true;
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
@@ -1329,22 +1352,46 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.6;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.2;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
+    level.return_to_menu = true;
+    level.complete = default_completeness;
+    levels.push(level);
+
+    ds_random_lvl = n_levels;
+    //lvl22 //double-single wave random
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
+    level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
+    level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
+    level.myE0_enabled = true;         level.myE1_enabled = true;
+    level.myE0_visible = true;         level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
+    level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
+    level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    level.random = 3;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
 
     d_levels_lvl = n_levels;
-    //lvl21 //totally random
+    //lvl23 //totally random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;       level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = 0.5;           level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;           level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;           level.myC1_amplitude  = 0.5;
-    level.myE0_random = false;             level.myE1_random = false;
     level.myE0_enabled = true;             level.myE1_enabled = true;
     level.myE0_visible = true;             level.myE1_visible = true;
     level.myE0_toggle_enabled = true;      level.myE1_toggle_enabled = true;
@@ -1353,18 +1400,37 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = Math.random(); level.gC1_offset      = Math.random();
     level.gC0_wavelength  = Math.random(); level.gC1_wavelength  = Math.random();
     level.gC0_amplitude   = Math.random(); level.gC1_amplitude   = Math.random();
-    level.gC0_random = false;              level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
-
-
-
-
-
+    d_random_lvl = n_levels;
+    //lvl24 //double wave random
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
+    level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
+    level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
+    level.myE0_enabled = true;         level.myE1_enabled = true;
+    level.myE0_visible = true;         level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
+    level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
+    level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    level.random = 4;
+    level.create = false;
+    level.return_to_menu = true;
+    level.complete = default_completeness;
+    levels.push(level);
 
 
     lvl_clicker = new Clicker({source:stage.dispCanv.canvas});
@@ -1431,7 +1497,6 @@ var GamePlayScene = function(game, stage)
       play_clicker.register(printButton);
 
 
-    //self.beginLevel(levels[cur_level]);
     self.setMode(GAME_MODE_LVL);
   };
 
@@ -1466,6 +1531,24 @@ var GamePlayScene = function(game, stage)
     gC0.set(level.gC0_type, level.gC0_offset, level.gC0_wavelength, level.gC0_amplitude);
     gC1.set(level.gC1_type, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
 
+    if(level.playground) level.complete = true;
+    switch(level.random)
+    {
+      case 1:
+        myE0.setDefaults(Math.random(), Math.random(), Math.random());
+        gC0.set(C0_type = COMP_TYPE_SIN, Math.random(), Math.random(), Math.random());
+        break;
+      case 2:
+        myE0.setDefaults(Math.random(), Math.random(), Math.random());
+        gC0.set(C0_type = COMP_TYPE_SIN, Math.random(), Math.random(), Math.random());
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      default: break; //nothin!
+    }
+
     myC0.dirty();
     myC1.dirty();
 
@@ -1474,8 +1557,6 @@ var GamePlayScene = function(game, stage)
     e0AnimDisplay.progress = 0; e0AnimDisplay.intended_progress = 0;
     e1AnimDisplay.progress = 0; e1AnimDisplay.intended_progress = 0;
     myAnimDisplay.progress = 0; myAnimDisplay.intended_progress = 0;
-
-    if(level.playground) level.complete = true;
   }
 
   self.nextLevel = function()
