@@ -1,4 +1,5 @@
 var default_completeness = false;
+var print_debug = false;
 
 var graph_n_samples = 500;
 var graph_min_x = -50;
@@ -668,7 +669,7 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { scene.setMode(GAME_MODE_PLAY); }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); scene.setMode(GAME_MODE_PLAY); }); self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
     if(this.down) canv.context.strokeStyle = "#00F400";
@@ -1240,7 +1241,6 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    dl_levels_last_lvl = n_levels;
     //lvl17 //total interference- med freq
     n_levels++;
     level = new Level();
@@ -1264,8 +1264,32 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
+    dl_levels_last_lvl = n_levels;
+    //lvl18 //total interference- wavelength
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
+    level.myC0_offset     = 0.5;       level.myC1_offset     = 0.76;
+    level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.7;
+    level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
+    level.myE0_random = false;         level.myE1_random = false;
+    level.myE0_enabled = true;         level.myE1_enabled = false;
+    level.myE0_visible = true;         level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_SIN;
+    level.gC0_offset      = 0.5;       level.gC1_offset      = 0.76;
+    level.gC0_wavelength  = 0.7;       level.gC1_wavelength  = 0.7;
+    level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
+    level.gC0_random = false;          level.gC1_random = false;
+    level.allowed_wiggle_room = 500;
+    level.playground = false;
+    level.return_to_menu = true;
+    level.complete = default_completeness;
+    levels.push(level);
+
     ds_levels_lvl = n_levels;
-    //lvl18 //offset change- reach for correct slider (high freq)
+    //lvl19 //offset change- reach for correct slider (high freq)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1289,7 +1313,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     ds_levels_last_lvl = n_levels;
-    //lvl19 //offset change- reach for correct slider (low freq)
+    //lvl20 //offset change- reach for correct slider (low freq)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1308,11 +1332,12 @@ var GamePlayScene = function(game, stage)
     level.gC0_random = false;          level.gC1_random = false;
     level.allowed_wiggle_room = 500;
     level.playground = false;
-    level.return_to_menu = false;
+    level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl20 //totally random
+    d_levels_lvl = n_levels;
+    //lvl21 //totally random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;       level.myC1_type = COMP_TYPE_SIN;
@@ -1380,7 +1405,8 @@ var GamePlayScene = function(game, stage)
     }
 
     skipButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { self.nextLevel(); });
-    //printButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { self.print(); });
+    if(print_debug)
+      printButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { self.print(); });
 
     validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
@@ -1394,12 +1420,14 @@ var GamePlayScene = function(game, stage)
     play_presser.register(readyButton);
     play_presser.register(composeButton);
     //play_presser.register(skipButton);
-    //play_presser.register(printButton);
+    if(print_debug)
+      play_presser.register(printButton);
     play_clicker.register(menuButton);
     play_clicker.register(readyButton);
     play_clicker.register(composeButton);
     //play_clicker.register(skipButton);
-    //play_clicker.register(printButton);
+    if(print_debug)
+      play_clicker.register(printButton);
 
 
     //self.beginLevel(levels[cur_level]);
@@ -1577,7 +1605,8 @@ var GamePlayScene = function(game, stage)
 
     menuButton.draw(self.dc);
     //skipButton.draw(self.dc);
-    //printButton.draw(self.dc);
+    if(print_debug)
+      printButton.draw(self.dc);
 
     if(levels[cur_level].myE1_visible)
       composeButton.draw(self.dc);
