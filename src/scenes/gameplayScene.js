@@ -1038,7 +1038,7 @@ var GamePlayScene = function(game, stage)
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = 0.5;       level.myC1_offset     = 1.0;
-    level.myC0_wavelength = 0.2;       level.myC1_wavelength = 1.0;
+    level.myC0_wavelength = 0.35;      level.myC1_wavelength = 1.0;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 1.0;
     level.myE0_random = false;         level.myE1_random = false;
     level.myE0_enabled = true;         level.myE1_enabled = true;
