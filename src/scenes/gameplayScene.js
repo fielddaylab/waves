@@ -1,5 +1,7 @@
-var default_completeness = false;
+var default_completeness = true;
 var print_debug = false;
+
+var dbugger;
 
 var graph_n_samples = 500;
 var graph_min_x = -50;
@@ -38,6 +40,7 @@ var ENUM;
 
 ENUM = 0;
 var COMP_TYPE_NONE   = ENUM; ENUM++;
+var COMP_TYPE_PULSE  = ENUM; ENUM++;
 var COMP_TYPE_SIN    = ENUM; ENUM++;
 var COMP_TYPE_SQUARE = ENUM; ENUM++;
 
@@ -48,21 +51,26 @@ var game_mode = GAME_MODE_LVL;
 
 var nullEditor; //HACK!
 
-var Component = function(type, offset, wavelength, amplitude)
+var Component = function(type, direction, offset, wavelength, amplitude)
 {
   var self = this;
   self.type = type;
+  self.direction = direction;
   self.offset = offset;
   self.wavelength = wavelength;
   self.amplitude = amplitude;
   self.enabled = true;
   self.contribution = 1.0;
 
+  self.timer = 0;
+  self.playing = false;
+
   self._dirty = true;
 
-  self.set = function(type, offset, wavelength, amplitude)
+  self.set = function(type, dir, offset, wavelength, amplitude)
   {
     self.type = type;
+    self.direction = direction;
     self.offset     = nullEditor.pix2Off(Math.round(offset     * nullEditor.offset_slider.maxPixel()     ));
     self.wavelength = nullEditor.pix2Wav(Math.round(wavelength * nullEditor.wavelength_slider.maxPixel() ));
     self.amplitude  = nullEditor.pix2Amp(Math.round(amplitude  * nullEditor.amplitude_slider.maxPixel()  ));
@@ -73,12 +81,23 @@ var Component = function(type, offset, wavelength, amplitude)
   {
     if(!self.enabled) return 0;
 
+    x += self.timer*self.direction;
     x -= self.offset;
     var y = 0;
+
+    //if(self.type == COMP_TYPE_SIN)
+      //self.type = COMP_TYPE_PULSE;
 
     switch(self.type)
     {
       case COMP_TYPE_NONE:
+        break;
+      case COMP_TYPE_PULSE:
+        x /= self.wavelength;
+        if(x < 0) y = 0;
+        else if(x > 1.0) y = 0;
+        else y = Math.sin(x*(2*Math.PI));
+        y *= self.amplitude-(graph_max_y*(3/5))/2;
         break;
       case COMP_TYPE_SIN:
         x /= self.wavelength;
@@ -96,6 +115,18 @@ var Component = function(type, offset, wavelength, amplitude)
         break;
     }
     return y*self.contribution;
+  }
+
+  self.setPlaying = function(p)
+  {
+    self.playing = p;
+    self.timer = 0;
+    self.dirty();
+  }
+
+  self.tick = function()
+  {
+    if(self.playing) { self.timer += 0.3; self.dirty(); }
   }
 
   self.dirty   = function() { self._dirty = true; }
@@ -401,13 +432,15 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.graph.color = self.color;
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
-  self.reset_button  = new ButtonBox(self.x+self.w-10-30, self.y+(self.h/2)+10, 30, 30, function(on) { if(!self.enabled || !self.component.enabled) return; self.reset(); });
-  self.toggle_button = new ToggleBox(self.x+self.w-10-30, self.y+self.h-10-30, 30, 30, true, function(on) { if(!self.toggle_enabled) return; if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
+  var b_h = ((self.h/2)-(4*10))/3;
+  self.reset_button  = new ButtonBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*1)+b_h*0, 30, b_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; self.reset(); });
+  self.toggle_button = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*2)+b_h*1, 30, b_h, true, function(on) { if(!self.toggle_enabled) return; if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
+  self.play_button   = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*3)+b_h*2, 30, b_h, true, function(on) { self.component.setPlaying(!on); });
   self.goal_contribution = 1;
 
-  self.offset_slider     = new SmoothSliderBox(    self.x+10+30, self.y+self.h/2+10,          self.w-10-self.reset_button.w-10-20-10-10-30, 20, self.min_x,       self.max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
-  self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10+30, self.y+self.h/2+self.h/4-10, self.w-10-self.reset_button.w-10-20-10-10-30, 20,          2,     self.max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
-  self.amplitude_slider  = new SmoothSliderBox(    self.x+10+30, self.y+self.h-10-20,         self.w-10-self.reset_button.w-10-20-10-10-30, 20,          0, self.max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
+  self.offset_slider     = new SmoothSliderBox(    self.x+10+30, self.y+self.h/2+10,          self.w-10-self.reset_button.w-10-20-10-10-30, 20, self.min_x,       self.max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
+  self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10+30, self.y+self.h/2+self.h/4-10, self.w-10-self.reset_button.w-10-20-10-10-30, 20,          2,     self.max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
+  self.amplitude_slider  = new SmoothSliderBox(    self.x+10+30, self.y+self.h-10-20,         self.w-10-self.reset_button.w-10-20-10-10-30, 20,          0, self.max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
 
   self.offset_dec_button = new ButtonBox(self.x+10, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
   self.offset_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
@@ -437,6 +470,9 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
 
     presser.register(self.toggle_button);
     clicker.register(self.toggle_button);
+
+    presser.register(self.play_button);
+    clicker.register(self.play_button);
 
     presser.register(self.offset_dec_button);
     clicker.register(self.offset_dec_button);
@@ -523,6 +559,7 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
     self.reset_button.draw(canv);
     if(self.toggle_enabled)
       self.toggle_button.draw(canv);
+    self.play_button.draw(canv);
 
     self.offset_dec_button.draw(canv);
     self.offset_inc_button.draw(canv);
@@ -823,14 +860,15 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
+    dbugger = new Debugger({source:document.getElementById("debug_div")});
     var level;
     cur_level = 0;
     n_levels = 0;
     levels = [];
 
-    nullC = new Component(COMP_TYPE_NONE, 0, 0, 0);
-    myC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
-    myC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    nullC = new Component(COMP_TYPE_NONE, 0, 0, 0, 0);
+    myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    myC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
     myDisplay = new GraphDrawer(myComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                     10,                 10,        self.c.width-20, ((self.c.height-20)/2));
     myDisplay.color = "#FF00FF";
@@ -1444,8 +1482,8 @@ var GamePlayScene = function(game, stage)
     e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
     myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, 10, 10, self.c.width-20, (self.c.height-20)/2);
 
-    gC0 = new Component(COMP_TYPE_SIN, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
-    gC1 = new Component(COMP_TYPE_NONE, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    gC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
+    gC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
     gDisplay = new GraphDrawer(gComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
     gDisplay.draw_zero_x = false;
@@ -1528,19 +1566,19 @@ var GamePlayScene = function(game, stage)
     if(myE1.toggle_default) myE1.component.contribution = 1;
     else                    myE1.component.contribution = 0;
 
-    gC0.set(level.gC0_type, level.gC0_offset, level.gC0_wavelength, level.gC0_amplitude);
-    gC1.set(level.gC1_type, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
+    gC0.set(level.gC0_type,  1, level.gC0_offset, level.gC0_wavelength, level.gC0_amplitude);
+    gC1.set(level.gC1_type, -1, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
 
     if(level.playground) level.complete = true;
     switch(level.random)
     {
       case 1:
         myE0.setDefaults(Math.random(), Math.random(), Math.random());
-        gC0.set(C0_type = COMP_TYPE_SIN, Math.random(), Math.random(), Math.random());
+        gC0.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
         break;
       case 2:
         myE0.setDefaults(Math.random(), Math.random(), Math.random());
-        gC0.set(C0_type = COMP_TYPE_SIN, Math.random(), Math.random(), Math.random());
+        gC0.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
         break;
       case 3:
         break;
@@ -1627,6 +1665,8 @@ var GamePlayScene = function(game, stage)
     clip.tick();
     myE0.tick();
     myE1.tick();
+    myC0.tick();
+    myC1.tick();
 
     if(myE0.isDragging())
     {
