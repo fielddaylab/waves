@@ -1,4 +1,4 @@
-var default_completeness = false;
+var default_completeness = true;
 var print_debug = false;
 
 var dbugger;
@@ -294,7 +294,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
 
   self.lineWidth = 2;
   self._dirty = true;
-  self.frames_per_sample = 40;
+  self.frames_per_sample = 160;
 
   self.position = function(x,y,w,h)
   {
@@ -382,8 +382,8 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
   self.intended_progress = 0;
   self.tick = function()
   {
-    if(self.progress < self.intended_progress) { self.progress++; self.dirty(); }
-    if(self.progress > self.intended_progress) { self.progress--; self.dirty(); }
+    if(self.progress < self.intended_progress) { self.progress+=10; self.dirty(); if(self.progress > self.intended_progress) self.progress = self.intended_progress; }
+    if(self.progress > self.intended_progress) { self.progress-=10; self.dirty(); if(self.progress < self.intended_progress) self.progress = self.intended_progress; }
   }
 
   self.animateForward = function()
