@@ -1,5 +1,5 @@
-var default_completeness = true;
-var print_debug = true;
+var default_completeness = false;
+var print_debug = false;
 
 var dbugger;
 
