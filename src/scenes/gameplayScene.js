@@ -91,20 +91,22 @@ var Component = function(type, direction, offset, wavelength, amplitude)
     x -= self.offset;
     var y = 0;
 
-    //if(self.type == COMP_TYPE_SIN)
-      //self.type = COMP_TYPE_PULSE;
-
     switch(self.type)
     {
       case COMP_TYPE_NONE:
         break;
       case COMP_TYPE_PULSE:
-        x /= self.wavelength;
-        if(x < 0) y = 0;
-        else if(x > 1.0) y = 0;
-        else y = Math.sin(x*(2*Math.PI));
-
-        y *= self.amplitude-graph_max_amplitude/2;
+        while(x < graph_min_x) x += (graph_max_x-graph_min_x);
+        while(x > graph_max_x) x -= (graph_max_x-graph_min_x);
+        x /= (self.wavelength/2);
+        x += 1;
+             if(x < 0) y = 0;
+        else if(x > 2) y = 0;
+        else
+        {
+          y = Math.cos(x*Math.PI);
+          y = -(y-1)*(self.amplitude-graph_max_amplitude/2);
+        }
         break;
       case COMP_TYPE_SIN:
         x /= self.wavelength;
@@ -113,7 +115,6 @@ var Component = function(type, direction, offset, wavelength, amplitude)
         break;
       case COMP_TYPE_SQUARE:
         x /= self.wavelength;
-        x *= 2;
         if(Math.floor(x)%2) y = -1;
         else                y = 1;
         y *= self.amplitude;
