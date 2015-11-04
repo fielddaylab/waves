@@ -1,4 +1,4 @@
-var default_completeness = false;
+var default_completeness = true;
 var print_debug = false;
 
 var dbugger;
@@ -281,6 +281,8 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
   self.w = w;
   self.h = h;
 
+  self.n_samples = graph_n_samples/5;
+
   self.canv; //gets initialized in position
 
   self.lineWidth = 2;
@@ -321,15 +323,15 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
       var h;
       var allowed_dist;
 
-      for(var i = 0; i < self.progress && i < graph_n_samples*2; i++)
+      for(var i = 0; i < self.progress && i < self.n_samples*2; i++)
       {
-        if(i < graph_n_samples) t = i/(graph_n_samples-1);
-        else t = (i-graph_n_samples)/(graph_n_samples-1);
+        if(i < self.n_samples) t = i/(self.n_samples-1);
+        else t = (i-self.n_samples)/(self.n_samples-1);
         x = t*self.w;
 
         sample = self.component_a.f(lerp(graph_min_x,graph_max_x,t));
         y_a = mapRange(graph_min_y,graph_max_y,sample,self.h,0);
-        if(i < graph_n_samples)
+        if(i < self.n_samples)
         {
           h = y_a-self.h/2;
           allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample);
@@ -344,7 +346,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
           self.canv.context.fillRect(x-1,self.h/2,1,h);
         }
 
-        if(i > graph_n_samples)
+        if(i > self.n_samples)
         {
           sample = self.component_b.f(lerp(graph_min_x,graph_max_x,t));
           y_b = mapRange(graph_min_y,graph_max_y,sample,self.h,0);
@@ -379,11 +381,11 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
 
   self.animateForward = function()
   {
-    self.intended_progress = (graph_n_samples*2)+self.frames_per_sample;
+    self.intended_progress = (self.n_samples*2)+self.frames_per_sample;
   }
   self.animateBackward = function(head_start)
   {
-    if(head_start && self.progress > graph_n_samples) self.progress = graph_n_samples+self.frames_per_sample;
+    if(head_start && self.progress > self.n_samples) self.progress = self.n_samples+self.frames_per_sample;
     self.intended_progress = 0;
   }
 
@@ -1465,9 +1467,9 @@ var GamePlayScene = function(game, stage)
 
     clip = new ClipBoard(20,20,self.c.width-40,self.c.height-20,self,levels);
 
-    e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, 100, myE0.x+10, myE0.y+10, myE0.w-20, (myE0.h/2)-10);
-    e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  100, myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
-    myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  100, 10, 10, self.c.width-20, (self.c.height-20)/2);
+    e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, myE0.x+10, myE0.y+10, myE0.w-20, (myE0.h/2)-10);
+    e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
+    myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  10, 10, self.c.width-20, (self.c.height-20)/2);
 
     gC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
