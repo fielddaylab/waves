@@ -1,5 +1,5 @@
-var default_completeness = false;
-var print_debug = false;
+var default_completeness = true;
+var print_debug = true;
 
 var dbugger;
 
@@ -870,7 +870,7 @@ var GamePlayScene = function(game, stage)
     myE1 = new ComponentEditor(myC1, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
 
     s_play_lvl = n_levels;
-    //lvl0 //single-wave playground
+    //lvl? //single-wave playground
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -894,7 +894,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     s_levels_lvl = n_levels;
-    //lvl1 //learn offset
+    //lvl? //learn offset
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -917,7 +917,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl2 //learn wavelength
+    //lvl? //learn wavelength
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -940,7 +940,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl3 //learn amplitude (plus a bit of offset)
+    //lvl? //learn amplitude (plus a bit of offset)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -963,7 +963,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl4 //try all three
+    //lvl? //try all three
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -986,7 +986,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl5 //all three (low amp wave looks different)
+    //lvl? //all three (low amp wave looks different)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -1009,8 +1009,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    s_levels_last_lvl = n_levels;
-    //lvl6 //zero amp wave
+    //lvl? //zero amp wave
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -1029,12 +1028,36 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.create = false;
+    level.return_to_menu = false;
+    level.complete = default_completeness;
+    levels.push(level);
+
+    s_levels_last_lvl = n_levels;
+    //lvl? //pulse
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_PULSE; level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
+    level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
+    level.myC0_amplitude  = 0.7;       level.myC1_amplitude  = 0.5;
+    level.myE0_enabled = true;         level.myE1_enabled = false;
+    level.myE0_visible = true;         level.myE1_visible = false;
+    level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
+    level.myE0_toggle_default = true;  level.myE1_toggle_default = false;
+    level.gC0_type = COMP_TYPE_PULSE;  level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = 0.7;       level.gC1_offset      = 0.5;
+    level.gC0_wavelength  = 0.3;       level.gC1_wavelength  = 0.5;
+    level.gC0_amplitude   = 0.8;       level.gC1_amplitude   = 0.5;
+    level.allowed_wiggle_room = 15;
+    level.playground = false;
+    level.random = false;
+    level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
 
     s_random_lvl = n_levels;
-    //lvl7 //single wave random
+    //lvl? //single wave random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -1061,7 +1084,7 @@ var GamePlayScene = function(game, stage)
     dl_play_lvl = n_levels;
     ds_play_lvl = n_levels;
     d_play_lvl = n_levels;
-    //lvl8 //double wave playground
+    //lvl? //double wave playground
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1085,7 +1108,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     dl_levels_lvl = n_levels;
-    //lvl9 //offset of high freq
+    //lvl? //offset of high freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1108,7 +1131,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl10 //offset of low freq
+    //lvl? //offset of low freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1131,7 +1154,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl11 //wavelength of high freq
+    //lvl? //wavelength of high freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1154,7 +1177,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl12 //wavelength of low freq
+    //lvl? //wavelength of low freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1177,7 +1200,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl13 //zero amp high freq
+    //lvl? //zero amp high freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1200,7 +1223,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl14 //zero amp low freq
+    //lvl? //zero amp low freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1223,7 +1246,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl15 //all three- low freq
+    //lvl? //all three- low freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1246,7 +1269,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl16 //total interference- low freq
+    //lvl? //total interference- low freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1269,7 +1292,7 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    //lvl17 //total interference- med freq
+    //lvl? //total interference- med freq
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1293,7 +1316,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     dl_levels_last_lvl = n_levels;
-    //lvl18 //total interference- wavelength
+    //lvl? //total interference- wavelength
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1317,7 +1340,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     dl_random_lvl = n_levels;
-    //lvl19 //double-locked wave random
+    //lvl? //double-locked wave random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -1341,7 +1364,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     ds_levels_lvl = n_levels;
-    //lvl20 //offset change- reach for correct slider (high freq)
+    //lvl? //offset change- reach for correct slider (high freq)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1365,7 +1388,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     ds_levels_last_lvl = n_levels;
-    //lvl21 //offset change- reach for correct slider (low freq)
+    //lvl? //offset change- reach for correct slider (low freq)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
@@ -1389,7 +1412,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     ds_random_lvl = n_levels;
-    //lvl22 //double-single wave random
+    //lvl? //double-single wave random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
@@ -1413,7 +1436,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     d_levels_lvl = n_levels;
-    //lvl23 //totally random
+    //lvl? //totally random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;       level.myC1_type = COMP_TYPE_SIN;
@@ -1437,7 +1460,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     d_random_lvl = n_levels;
-    //lvl24 //double wave random
+    //lvl? //double wave random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
