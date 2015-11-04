@@ -554,23 +554,27 @@ var ComponentEditor = function(component, color, x,y,w,h)
 
     self.graph.draw(canv);
 
-    self.reset_button.draw(canv);
+    self.reset_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText("reset",self.reset_button.x+5,self.reset_button.y+15);
     if(self.toggle_enabled)
+    {
       self.toggle_button.draw(canv);
-    self.play_button.draw(canv);
+      canv.context.fillStyle = "#000000";
+      canv.context.fillText("on/off",self.toggle_button.x,self.toggle_button.y+15);
+    }
+    self.play_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText("> / ||",self.play_button.x+5,self.play_button.y+15);
 
-    self.offset_dec_button.draw(canv);
-    self.offset_inc_button.draw(canv);
-    self.wavelength_dec_button.draw(canv);
-    self.wavelength_inc_button.draw(canv);
-    self.amplitude_dec_button.draw(canv);
-    self.amplitude_inc_button.draw(canv);
+    self.offset_dec_button.draw(canv);     canv.context.fillStyle = "#000000"; canv.context.fillText("<",self.offset_dec_button.x+10,self.offset_dec_button.y+15);
+    self.offset_inc_button.draw(canv);     canv.context.fillStyle = "#000000"; canv.context.fillText(">",self.offset_inc_button.x+10,self.offset_inc_button.y+15);
+    self.wavelength_dec_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText("<",self.wavelength_dec_button.x+10,self.wavelength_dec_button.y+15);
+    self.wavelength_inc_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText(">",self.wavelength_inc_button.x+10,self.wavelength_inc_button.y+15);
+    self.amplitude_dec_button.draw(canv);  canv.context.fillStyle = "#000000"; canv.context.fillText("<",self.amplitude_dec_button.x+10,self.amplitude_dec_button.y+15);
+    self.amplitude_inc_button.draw(canv);  canv.context.fillStyle = "#000000"; canv.context.fillText(">",self.amplitude_inc_button.x+10,self.amplitude_inc_button.y+15);
 
     canv.context.lineWidth = 1;
     canv.context.strokeStyle = "#000000";
-    self.offset_slider.draw(canv);
-    self.wavelength_slider.draw(canv);
-    self.amplitude_slider.draw(canv);
+    self.offset_slider.draw(canv); canv.context.fillText("offset",self.offset_slider.x,self.offset_slider.y);
+    self.wavelength_slider.draw(canv); canv.context.fillText("wavelength",self.wavelength_slider.x,self.wavelength_slider.y);
+    self.amplitude_slider.draw(canv); canv.context.fillText("amplitude",self.amplitude_slider.x,self.amplitude_slider.y);
     canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
 
     if(!self.enabled)
@@ -1912,13 +1916,17 @@ var GamePlayScene = function(game, stage)
     myAnimDisplay.draw(self.dc);
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
-      readyButton.draw(self.dc);
+    {
+      readyButton.draw(self.dc); readyButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("next",readyButton.x+10,readyButton.y+15);
+    }
     if(!levels[cur_level].playground)
       vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
-    menuButton.draw(self.dc);
+    menuButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("menu",menuButton.x+10,menuButton.y+15);
     if(!levels[cur_level].playground == 1 && levels[cur_level].complete)
-      skipButton.draw(self.dc);
+    {
+      skipButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("skip",skipButton.x+10,skipButton.y+15);
+    }
     if(print_debug)
       printButton.draw(self.dc);
 
