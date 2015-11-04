@@ -1,4 +1,4 @@
-var default_completeness = false;
+var default_completeness = true;
 var print_debug = false;
 
 var dbugger;
@@ -1706,6 +1706,13 @@ var GamePlayScene = function(game, stage)
       if(max_p < myAnimDisplay.progress) max_p = myAnimDisplay.progress;
       canv.context.fillRect(composeButton.x,composeButton.y,composeButton.w,(composeButton.h*myAnimDisplay.progress/max_p));
       canv.context.strokeRect(composeButton.x+0.5,composeButton.y+0.5,composeButton.w,composeButton.h);
+
+      canv.context.fillStyle = "#000000";
+      canv.context.save();
+      canv.context.translate(this.x, this.y);
+      canv.context.rotate(Math.PI/2);
+      canv.context.fillText("show wave contributions", 20, -20);
+      canv.context.restore();
     }
 
     validator = new Validator(myComp, gComp);
