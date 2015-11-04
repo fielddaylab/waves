@@ -1,4 +1,4 @@
-var default_completeness = true;
+var default_completeness = false;
 var print_debug = false;
 
 var dbugger;
@@ -8,9 +8,15 @@ var graph_min_x = -50;
 var graph_max_x =  50;
 var graph_min_y = -50;
 var graph_max_y =  50;
+var graph_min_offset = graph_min_x;
 var graph_default_offset = (graph_min_x+graph_max_x)/2;
+var graph_max_offset = graph_max_x;
+var graph_min_wavelength = 2;
 var graph_default_wavelength = (2+(graph_max_x*2))/2;
+var graph_max_wavelength = graph_max_x*2;
+var graph_min_amplitude = 0;
 var graph_default_amplitude = graph_max_y/4;
+var graph_max_amplitude = graph_max_y*(3/5);
 
 var s_play_lvl = 0;
 var s_levels_lvl = 0;
@@ -81,7 +87,7 @@ var Component = function(type, direction, offset, wavelength, amplitude)
   {
     if(!self.enabled) return 0;
 
-    x += self.timer*self.direction;
+    x += self.timer*-self.direction;
     x -= self.offset;
     var y = 0;
 
@@ -97,7 +103,8 @@ var Component = function(type, direction, offset, wavelength, amplitude)
         if(x < 0) y = 0;
         else if(x > 1.0) y = 0;
         else y = Math.sin(x*(2*Math.PI));
-        y *= self.amplitude-(graph_max_y*(3/5))/2;
+
+        y *= self.amplitude-graph_max_amplitude/2;
         break;
       case COMP_TYPE_SIN:
         x /= self.wavelength;
@@ -167,21 +174,15 @@ var Composition = function(c0, c1)
   }
 }
 
-var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x, y, w, h)
+var GraphDrawer = function(composition, x, y, w, h)
 {
   var self = this;
   self.composition = composition;
-  self.n_samples = n_samples; if(self.n_samples < 2) self.n_samples = 2; //left and right side of graph at minimum
 
   self.x = x;
   self.y = y;
   self.w = w;
   self.h = h;
-
-  self.min_x = min_x;
-  self.max_x = max_x;
-  self.min_y = min_y;
-  self.max_y = max_y;
 
   self.draw_zero_x = false;
   self.draw_zero_x_at_composition = true;
@@ -227,9 +228,9 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
         self.canv.context.beginPath();
         var x;
         if(self.draw_zero_x_at_composition)
-          x = mapRange(self.max_x,self.min_x,self.composition.offset,self.w,0)
+          x = mapRange(graph_max_x,graph_min_x,self.composition.offset,self.w,0)
         else
-          x = mapRange(self.max_x,self.min_x,self.draw_zero_x_at_offset,self.w,0)
+          x = mapRange(graph_max_x,graph_min_x,self.draw_zero_x_at_offset,self.w,0)
         self.canv.context.moveTo(x+0.5,0);
         self.canv.context.lineTo(x+0.5,self.h);
         self.canv.context.stroke();
@@ -238,13 +239,13 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
       self.canv.context.strokeStyle = self.color;
       self.canv.context.lineWidth = self.lineWidth;
       self.canv.context.beginPath();
-      sample = self.composition.f(self.min_x);
-      self.canv.context.moveTo(0,mapRange(self.min_y,self.max_y,sample,self.h,0));
-      for(var i = 1; i < self.n_samples; i++)
+      sample = self.composition.f(graph_min_x);
+      self.canv.context.moveTo(0,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+      for(var i = 1; i < graph_n_samples; i++)
       {
-        t = i/(self.n_samples-1);
-        sample = self.composition.f(lerp(self.min_x,self.max_x,t));
-        self.canv.context.lineTo(t*self.w,mapRange(self.min_y,self.max_y,sample,self.h,0));
+        t = i/(graph_n_samples-1);
+        sample = self.composition.f(lerp(graph_min_x,graph_max_x,t));
+        self.canv.context.lineTo(t*self.w,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
       }
       self.canv.context.stroke();
     }
@@ -269,22 +270,16 @@ var GraphDrawer = function(composition, n_samples, min_x, max_x, min_y, max_y, x
   }
 }
 
-var CompositionAnimationDrawer = function(component_a, component_b, n_samples, min_x, max_x, min_y, max_y, x, y, w, h)
+var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
 {
   var self = this;
   self.component_a = component_a;
   self.component_b = component_b;
-  self.n_samples = n_samples; if(self.n_samples < 2) self.n_samples = 2; //left and right side of graph at minimum
 
   self.x = x;
   self.y = y;
   self.w = w;
   self.h = h;
-
-  self.min_x = min_x;
-  self.max_x = max_x;
-  self.min_y = min_y;
-  self.max_y = max_y;
 
   self.canv; //gets initialized in position
 
@@ -326,15 +321,15 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
       var h;
       var allowed_dist;
 
-      for(var i = 0; i < self.progress && i < self.n_samples*2; i++)
+      for(var i = 0; i < self.progress && i < graph_n_samples*2; i++)
       {
-        if(i < self.n_samples) t = i/(self.n_samples-1);
-        else t = (i-self.n_samples)/(self.n_samples-1);
+        if(i < graph_n_samples) t = i/(graph_n_samples-1);
+        else t = (i-graph_n_samples)/(graph_n_samples-1);
         x = t*self.w;
 
-        sample = self.component_a.f(lerp(self.min_x,self.max_x,t));
-        y_a = mapRange(self.min_y,self.max_y,sample,self.h,0);
-        if(i < self.n_samples)
+        sample = self.component_a.f(lerp(graph_min_x,graph_max_x,t));
+        y_a = mapRange(graph_min_y,graph_max_y,sample,self.h,0);
+        if(i < graph_n_samples)
         {
           h = y_a-self.h/2;
           allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample);
@@ -349,10 +344,10 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
           self.canv.context.fillRect(x-1,self.h/2,1,h);
         }
 
-        if(i > self.n_samples)
+        if(i > graph_n_samples)
         {
-          sample = self.component_b.f(lerp(self.min_x,self.max_x,t));
-          y_b = mapRange(self.min_y,self.max_y,sample,self.h,0);
+          sample = self.component_b.f(lerp(graph_min_x,graph_max_x,t));
+          y_b = mapRange(graph_min_y,graph_max_y,sample,self.h,0);
 
           h = y_b-self.h/2;
           allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample);
@@ -384,11 +379,11 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
 
   self.animateForward = function()
   {
-    self.intended_progress = (self.n_samples*2)+self.frames_per_sample;
+    self.intended_progress = (graph_n_samples*2)+self.frames_per_sample;
   }
   self.animateBackward = function(head_start)
   {
-    if(head_start && self.progress > self.n_samples) self.progress = self.n_samples+self.frames_per_sample;
+    if(head_start && self.progress > graph_n_samples) self.progress = graph_n_samples+self.frames_per_sample;
     self.intended_progress = 0;
   }
 
@@ -406,16 +401,10 @@ var CompositionAnimationDrawer = function(component_a, component_b, n_samples, m
   }
 }
 
-var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y, color, x,y,w,h)
+var ComponentEditor = function(component, color, x,y,w,h)
 {
   var self = this;
   self.component = component;
-  self.n_samples = n_samples; if(self.n_samples < 2) self.n_samples = 2; //left and right side of graph at minimum
-
-  self.min_x = min_x;
-  self.max_x = max_x;
-  self.min_y = min_y;
-  self.max_y = max_y;
 
   self.color = color;
 
@@ -424,11 +413,11 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.w = w;
   self.h = h;
 
-  self.default_offset = (self.min_x+self.max_x)/2;
-  self.default_wavelength = self.max_x;
-  self.default_amplitude = self.max_y/4;
+  self.default_offset = graph_default_offset;
+  self.default_wavelength = graph_default_wavelength;
+  self.default_amplitude = graph_default_amplitude;
 
-  self.graph = new GraphDrawer(self.component, self.n_samples, self.min_x, self.max_x, self.min_y, self.max_y, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
+  self.graph = new GraphDrawer(self.component, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
   self.graph.color = self.color;
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
@@ -438,9 +427,9 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   self.play_button   = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*3)+b_h*2, 30, b_h, true, function(on) { self.component.setPlaying(!on); });
   self.goal_contribution = 1;
 
-  self.offset_slider     = new SmoothSliderBox(    self.x+10+30, self.y+self.h/2+10,          self.w-10-self.reset_button.w-10-20-10-10-30, 20, self.min_x,       self.max_x,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
-  self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10+30, self.y+self.h/2+self.h/4-10, self.w-10-self.reset_button.w-10-20-10-10-30, 20,          2,     self.max_x*2, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
-  self.amplitude_slider  = new SmoothSliderBox(    self.x+10+30, self.y+self.h-10-20,         self.w-10-self.reset_button.w-10-20-10-10-30, 20,          0, self.max_y*(3/5),  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
+  self.offset_slider     = new SmoothSliderBox(    self.x+10+30, self.y+self.h/2+10,          self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_offset,         graph_max_offset,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
+  self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10+30, self.y+self.h/2+self.h/4-10, self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_wavelength, graph_max_wavelength, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
+  self.amplitude_slider  = new SmoothSliderBox(    self.x+10+30, self.y+self.h-10-20,         self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
 
   self.offset_dec_button = new ButtonBox(self.x+10, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
   self.offset_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
@@ -583,17 +572,14 @@ var ComponentEditor = function(component, n_samples, min_x, max_x, min_y, max_y,
   }
 }
 
-var Validator = function(myC, gC, min_x, max_x, res)
+var Validator = function(myC, gC)
 {
   var self = this;
 
   self.myC = myC;
   self.gC  = gC;
 
-  self.min_x = min_x;
-  self.max_x = max_x;
-
-  self.res = res;
+  self.res = graph_n_samples/8;
 
   self._dirty = true;
 
@@ -608,11 +594,12 @@ var Validator = function(myC, gC, min_x, max_x, res)
     var t;
     var s0;
     var s1;
-    for(var i = 0; i < res; i++)
+    for(var i = 0; i < self.res; i++)
     {
       t = i/(self.res-1);
-      s0 = self.myC.f(lerp(self.min_x,self.max_x,t));
-      s1 = self.gC.f( lerp(self.min_x,self.max_x,t));
+      var sample_x = lerp(graph_min_x,graph_max_x,t);
+      s0 = self.myC.f(sample_x);
+      s1 = self.gC.f(sample_x);
       self.delta += Math.abs(s0-s1);
     }
     //console.log(self.delta);
@@ -870,14 +857,14 @@ var GamePlayScene = function(game, stage)
     myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
-    myDisplay = new GraphDrawer(myComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                     10,                 10,        self.c.width-20, ((self.c.height-20)/2));
+    myDisplay = new GraphDrawer(myComp, 10, 10, self.c.width-20, ((self.c.height-20)/2));
     myDisplay.color = "#FF00FF";
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
     myDisplay.draw_zero_y = true;
-    nullEditor = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
-    myE0 = new ComponentEditor(myC0, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
-    myE1 = new ComponentEditor(myC1, graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    nullEditor = new ComponentEditor(myC0, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    myE0 = new ComponentEditor(myC0, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    myE1 = new ComponentEditor(myC1, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
 
     s_play_lvl = n_levels;
     //lvl0 //single-wave playground
@@ -919,7 +906,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.6;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 120;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -942,7 +929,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.3;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 910;
+    level.allowed_wiggle_room = 250;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -965,7 +952,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.55;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 1000;
+    level.allowed_wiggle_room = 220;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -988,7 +975,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.45;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.4;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.8;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 900;
+    level.allowed_wiggle_room = 250;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1011,7 +998,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.9;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.7;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.2;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 300;
+    level.allowed_wiggle_room = 70;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1035,7 +1022,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.3;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 130;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1110,7 +1097,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 1.0;
     level.gC0_wavelength  = 0.3;       level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 1.0;
-    level.allowed_wiggle_room = 1000;
+    level.allowed_wiggle_room = 250;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1133,7 +1120,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.65;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.3;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 220;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1156,7 +1143,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.3;       level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 1.0;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 250;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1179,7 +1166,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.9;       level.gC1_wavelength  = 0.3;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 200;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1202,7 +1189,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.6;       level.gC1_offset      = 0.3;
     level.gC0_wavelength  = 0.45;      level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 1.0;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 150;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1225,7 +1212,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.55;      level.gC1_offset      = 0.3;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.2;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 600;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1248,7 +1235,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.4;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.8;       level.gC1_wavelength  = 0.2;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.6;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 210;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1271,7 +1258,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 1.0;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 1.0;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 1.0;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 110;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1294,11 +1281,11 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.63;      level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 110;
     level.playground = false;
     level.random = false;
     level.create = false;
-    level.return_to_menu = true;
+    level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
@@ -1318,7 +1305,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.76;
     level.gC0_wavelength  = 0.7;       level.gC1_wavelength  = 0.7;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 110;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1366,7 +1353,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.3;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.3;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 900;
+    level.allowed_wiggle_room = 300;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1390,7 +1377,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.6;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.2;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 200;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1478,14 +1465,14 @@ var GamePlayScene = function(game, stage)
 
     clip = new ClipBoard(20,20,self.c.width-40,self.c.height-20,self,levels);
 
-    e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, 100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, myE0.x+10, myE0.y+10, myE0.w-20, (myE0.h/2)-10);
-    e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
-    myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  100, graph_min_x, graph_max_x, graph_min_y, graph_max_y, 10, 10, self.c.width-20, (self.c.height-20)/2);
+    e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, 100, myE0.x+10, myE0.y+10, myE0.w-20, (myE0.h/2)-10);
+    e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  100, myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
+    myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  100, 10, 10, self.c.width-20, (self.c.height-20)/2);
 
     gC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
-    gDisplay = new GraphDrawer(gComp,   graph_n_samples, graph_min_x, graph_max_x, graph_min_y, graph_max_y,                  10,                 10,     self.c.width-20, ((self.c.height-20)/2));
+    gDisplay = new GraphDrawer(gComp, 10, 10, self.c.width-20, ((self.c.height-20)/2));
     gDisplay.draw_zero_x = false;
     gDisplay.draw_zero_y = true;
     gDisplay.lineWidth = 4;
@@ -1511,9 +1498,9 @@ var GamePlayScene = function(game, stage)
     readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1)) { levels[cur_level].complete = true; if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
     skipButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { if(!levels[cur_level].playground == 1 && levels[cur_level].complete) { if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
     if(print_debug)
-      printButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { self.print(); });
+      printButton = new ButtonBox(self.c.width-10-80, 90, 80, 20, function(on) { self.print(); });
 
-    validator = new Validator(myComp, gComp, graph_min_x, graph_max_x, graph_n_samples);
+    validator = new Validator(myComp, gComp);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
 
@@ -1605,6 +1592,7 @@ var GamePlayScene = function(game, stage)
 
   self.print = function()
   {
+    dbugger.log(validator.delta);
     console.log("myE0: (on lvl "+cur_level+")");
     console.log("offset: "+myE0.offset_slider.pixelAtVal(myE0.offset_slider.val)/144);
     console.log("wavelength: "+myE0.wavelength_slider.pixelAtVal(myE0.wavelength_slider.val)/144);
