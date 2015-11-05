@@ -208,6 +208,7 @@ var GraphDrawer = function(composition, x, y, w, h)
 
   self.color = "#000000";
   self.lineWidth = 2;
+  self.dotted = false;
   self._dirty = true;
 
   self.draw = function(canv)
@@ -245,14 +246,35 @@ var GraphDrawer = function(composition, x, y, w, h)
 
       self.canv.context.strokeStyle = self.color;
       self.canv.context.lineWidth = self.lineWidth;
+
       self.canv.context.beginPath();
       sample = self.composition.f(graph_min_x);
       self.canv.context.moveTo(0,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+
+      var pen_down = true;
       for(var i = 1; i < graph_n_samples; i++)
       {
-        t = i/(graph_n_samples-1);
-        sample = self.composition.f(lerp(graph_min_x,graph_max_x,t));
-        self.canv.context.lineTo(t*self.w,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+        if(!self.dotted || i%4 < 3)
+        {
+          t = i/(graph_n_samples-1);
+          sample = self.composition.f(lerp(graph_min_x,graph_max_x,t));
+
+          if(!pen_down)
+          {
+            self.canv.context.beginPath();
+            self.canv.context.moveTo(t*self.w,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+            pen_down = true;
+          }
+          else self.canv.context.lineTo(t*self.w,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+        }
+        else
+        {
+          if(pen_down)
+          {
+            self.canv.context.stroke();
+            pen_down = false;
+          }
+        }
       }
       self.canv.context.stroke();
     }
@@ -1708,6 +1730,7 @@ var GamePlayScene = function(game, stage)
     gDisplay.draw_zero_y = true;
     gDisplay.lineWidth = 4;
     gDisplay.color = "#00BB00";
+    gDisplay.dotted = true;
 
     menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_LVL); });
 
@@ -1920,14 +1943,15 @@ var GamePlayScene = function(game, stage)
       validator.validate(levels[cur_level].allowed_wiggle_room)
 
     t += 0.05;
-    if(t > Math.PI) t-=Math.PI;
+    if(t > 4*Math.PI) t-=4*Math.PI;
   };
 
   self.draw = function()
   {
     if(!levels[cur_level].playground)
     {
-      self.dc.context.globalAlpha = ((Math.sin(t)+1)/2)*0.8;
+      //pulsing goal
+      self.dc.context.globalAlpha = 1-(Math.pow(((Math.sin(t*2)+1)/2),2)/2);
       gDisplay.draw(self.dc);
       self.dc.context.globalAlpha = 1;
     }
@@ -1952,8 +1976,8 @@ var GamePlayScene = function(game, stage)
     {
       readyButton.draw(self.dc); readyButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("next",readyButton.x+10,readyButton.y+15);
     }
-    if(!levels[cur_level].playground)
-      vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
+    //if(!levels[cur_level].playground)
+      //vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
     menuButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("menu",menuButton.x+10,menuButton.y+15);
     if(!levels[cur_level].playground == 1 && levels[cur_level].complete)
