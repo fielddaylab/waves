@@ -1215,6 +1215,29 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
+    //lvl? //pulse total destruction
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_PULSE; level.myC1_type = COMP_TYPE_PULSE;
+    level.myC0_offset     = 0.7;       level.myC1_offset     = 0.4;
+    level.myC0_wavelength = 0.4;       level.myC1_wavelength = 0.5;
+    level.myC0_amplitude  = 0.65;      level.myC1_amplitude  = 0.25;
+    level.myE0_enabled = true;         level.myE1_enabled = false;
+    level.myE0_visible = true;         level.myE1_visible = true;
+    level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
+    level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
+    level.gC0_type = COMP_TYPE_PULSE;  level.gC1_type = COMP_TYPE_PULSE;
+    level.gC0_offset      = 0.4;       level.gC1_offset      = 0.4;
+    level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
+    level.gC0_amplitude   = 0.75;      level.gC1_amplitude   = 0.25;
+    level.allowed_wiggle_room = 15;
+    level.playground = false;
+    level.random = false;
+    level.create = false;
+    level.return_to_menu = false;
+    level.complete = default_completeness;
+    levels.push(level);
+
     pl_levels_last_lvl = n_levels;
     //lvl? //pulse weird offset
     n_levels++;
@@ -1240,7 +1263,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     pl_random_lvl = n_levels;
-    //lvl? //double-locked wave random
+    //lvl? //pulse random
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_PULSE; level.myC1_type = COMP_TYPE_NONE;
