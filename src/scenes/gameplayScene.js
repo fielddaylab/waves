@@ -757,11 +757,12 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title_a = "wave interference"; self.dl_random.title_b = "random";  self.buttons.push(self.dl_random);
   //self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_create.req_lvl].complete) scene.requestLevel(dl_create_lvl);}); self.dl_create.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_create);
 
-  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs,     function(on) { if(levels[self.ds_levels.req_lvl].complete) scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title_a = "wave interference"; self.ds_levels.title_b = "levels medium"; self.buttons.push(self.ds_levels);
-  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_random.req_lvl].complete) scene.requestLevel(d_random_lvl);});   self.d_random.req_lvl  = d_levels_last_lvl;  self.d_random.title_a  = "wave interference"; self.d_random.title_b  = "random";        self.buttons.push(self.d_random);
+  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title_a = "wave interference"; self.ds_levels.title_b = "levels medium";  self.buttons.push(self.ds_levels);
+  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) scene.requestLevel(ds_random_lvl);}); self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title_a = "wave interference"; self.ds_random.title_b  = "random medium"; self.buttons.push(self.ds_random);
   //self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_create.req_lvl].complete) scene.requestLevel(d_create_lvl);}); self.d_create.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_create);
 
-  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title_a = "wave interference"; self.d_levels.title_b = "levels hard"; self.buttons.push(self.d_levels);
+  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title_a = "wave interference"; self.d_levels.title_b = "levels hard";   self.buttons.push(self.d_levels);
+  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title_a = "wave interference"; self.d_random.title_b = "random hard"; self.buttons.push(self.d_random);
 
   //quick hack to fix clicker even though on separate canv
   var draw = function(canv)
@@ -1288,7 +1289,7 @@ var GamePlayScene = function(game, stage)
     //lvl? //pulse random
     n_levels++;
     level = new Level();
-    level.myC0_type = COMP_TYPE_PULSE; level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_type = COMP_TYPE_PULSE; level.myC1_type = COMP_TYPE_PULSE;
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
@@ -1296,7 +1297,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
     level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
-    level.gC0_type = COMP_TYPE_PULSE;  level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_type = COMP_TYPE_PULSE;  level.gC1_type = COMP_TYPE_PULSE;
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
@@ -1570,7 +1571,7 @@ var GamePlayScene = function(game, stage)
     //lvl? //double-locked wave random
     n_levels++;
     level = new Level();
-    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
@@ -1578,7 +1579,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
     level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
-    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
@@ -1642,7 +1643,7 @@ var GamePlayScene = function(game, stage)
     //lvl? //double-single wave random
     n_levels++;
     level = new Level();
-    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
@@ -1650,7 +1651,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
     level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
-    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
@@ -1690,7 +1691,7 @@ var GamePlayScene = function(game, stage)
     //lvl? //double wave random
     n_levels++;
     level = new Level();
-    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
     level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
     level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
     level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
@@ -1698,7 +1699,7 @@ var GamePlayScene = function(game, stage)
     level.myE0_visible = true;         level.myE1_visible = true;
     level.myE0_toggle_enabled = true;  level.myE1_toggle_enabled = true;
     level.myE0_toggle_default = true;  level.myE1_toggle_default = true;
-    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_SIN;
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
@@ -1799,8 +1800,6 @@ var GamePlayScene = function(game, stage)
     myC1.type = level.myC1_type;
     myE0.setDefaults(level.myC0_offset, level.myC0_wavelength, level.myC0_amplitude);
     myE1.setDefaults(level.myC1_offset, level.myC1_wavelength, level.myC1_amplitude);
-    myE0.hardReset();
-    myE1.hardReset();
     myE0.enabled = level.myE0_enabled;
     myE0.visible = level.myE0_visible;
     myE0.toggle_enabled = level.myE0_toggle_enabled;
@@ -1820,22 +1819,66 @@ var GamePlayScene = function(game, stage)
     gC1.set(level.gC1_type, -1, level.gC1_offset, level.gC1_wavelength, level.gC1_amplitude);
 
     if(level.playground) level.complete = true;
+    var a;
+    var w;
+    var o;
     switch(level.random)
     {
-      case 1:
+      case 1: //single wave
         myE0.setDefaults(Math.random(), Math.random(), Math.random());
         gC0.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
         break;
-      case 2:
+      case 2: //pulse interference
+        myE0.setDefaults(Math.random(), Math.random(), Math.random());
+        gC0.set(COMP_TYPE_PULSE, 1, Math.random(), Math.random(), Math.random());
+        a = Math.random();
+        w = Math.random();
+        o = Math.random();
+        myE1.setDefaults(a, w, o);
+        gC1.set(COMP_TYPE_PULSE, 1, a, w, o);
+        break;
+      case 3: //wave interference (locked)
         myE0.setDefaults(Math.random(), Math.random(), Math.random());
         gC0.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
+        a = Math.random();
+        w = Math.random();
+        o = Math.random();
+        myE1.setDefaults(a, w, o);
+        gC1.set(COMP_TYPE_SIN, 1, a, w, o);
         break;
-      case 3:
+      case 4: //wave interference (only change one)
+        if(Math.random() < .5)
+        {
+          myE0.setDefaults(Math.random(), Math.random(), Math.random());
+          gC0.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
+          a = Math.random();
+          w = Math.random();
+          o = Math.random();
+          myE1.setDefaults(a, w, o);
+          gC1.set(COMP_TYPE_SIN, 1, a, w, o);
+        }
+        else
+        {
+          myE1.setDefaults(Math.random(), Math.random(), Math.random());
+          gC1.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
+          a = Math.random();
+          w = Math.random();
+          o = Math.random();
+          myE0.setDefaults(a, w, o);
+          gC0.set(COMP_TYPE_SIN, 1, a, w, o);
+        }
         break;
-      case 4:
+      case 5: //wave interference (all's fair)
+          myE1.setDefaults(Math.random(), Math.random(), Math.random());
+          gC1.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
+          myE0.setDefaults(Math.random(), Math.random(), Math.random());
+          gC0.set(COMP_TYPE_SIN, 1, Math.random(), Math.random(), Math.random());
         break;
       default: break; //nothin!
     }
+
+    myE0.hardReset();
+    myE1.hardReset();
 
     myC0.dirty();
     myC1.dirty();
