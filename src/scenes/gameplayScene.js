@@ -1,4 +1,4 @@
-var default_completeness = false;
+var default_completeness = true;
 var print_debug = false;
 
 var dbugger;
@@ -288,7 +288,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
   self.w = w;
   self.h = h;
 
-  self.n_samples = graph_n_samples/5;
+  self.n_samples = graph_n_samples/2;
 
   self.canv; //gets initialized in position
 
@@ -368,7 +368,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
           }
 
           self.canv.context.fillStyle = "#0000FF";
-          self.canv.context.fillRect(x+1,self.h/2+(y_a-self.h/2),1,h);
+          self.canv.context.fillRect(x,self.h/2+(y_a-self.h/2),1,h);
         }
       }
 
@@ -720,26 +720,26 @@ var ClipBoard = function(x,y,w,h,scene,levels)
 
   var bs = 70;
   //sections: s (single), pl (pulse locked), dl (double locked), ds (double single), d (double)
-  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { /* the one level that's always unlocked */ scene.requestLevel(s_play_lvl); });  self.s_play.req_lvl   = -1;                self.s_play.title_a = "single wave"; self.s_play.title_b = "playground"; self.buttons.push(self.s_play);
-  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_levels_lvl);}); self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title_a = "single wave";self.s_levels.title_b = "levels";     self.buttons.push(self.s_levels);
-  //self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_random);
+  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { /* the one level that's always unlocked */ scene.requestLevel(s_play_lvl); });  self.s_play.req_lvl   = -1;                self.s_play.title_a = "single wave";   self.s_play.title_b = "playground"; self.buttons.push(self.s_play);
+  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_levels_lvl);}); self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title_a = "single wave"; self.s_levels.title_b = "levels";   self.buttons.push(self.s_levels);
+  self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title_a = "single wave"; self.s_random.title_b = "random";   self.buttons.push(self.s_random);
   //self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_create.req_lvl].complete) scene.requestLevel(s_create_lvl);}); self.s_create.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_create);
 
-  self.pl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl; self.pl_play.title_a = "pulse interference";self.pl_play.title_b = "playground";   self.buttons.push(self.pl_play);
-  self.pl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) scene.requestLevel(pl_levels_lvl);}); self.pl_levels.req_lvl = pl_play_lvl;       self.pl_levels.title_a = "pulse interference";self.pl_levels.title_b = "levels"; self.buttons.push(self.pl_levels);
-  //self.pl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) scene.requestLevel(pl_random_lvl);}); self.pl_random.req_lvl = pl_levels_last_lvl; self.buttons.push(self.pl_random);
+  self.pl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title_a = "pulse interference";   self.pl_play.title_b = "playground";   self.buttons.push(self.pl_play);
+  self.pl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) scene.requestLevel(pl_levels_lvl);}); self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title_a = "pulse interference"; self.pl_levels.title_b = "levels"; self.buttons.push(self.pl_levels);
+  self.pl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) scene.requestLevel(pl_random_lvl);}); self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title_a = "pulse interference"; self.pl_random.title_b = "random"; self.buttons.push(self.pl_random);
   //self.pl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_create.req_lvl].complete) scene.requestLevel(pl_create_lvl);}); self.pl_create.req_lvl = pl_levels_last_lvl; self.buttons.push(self.pl_create);
 
-  self.d_play    = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs*3+20, function(on) { if(levels[self.d_play.req_lvl].complete)    scene.requestLevel(d_play_lvl);});    self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title_a = "wave interference";self.d_play.title_b = "playground"; self.buttons.push(self.d_play);
-  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_levels.req_lvl].complete) scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title_a = "wave interference";self.dl_levels.title_b = "levels";    self.buttons.push(self.dl_levels);
-  //self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_random);
+  self.d_play    = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs*3+20, function(on) { if(levels[self.d_play.req_lvl].complete)    scene.requestLevel(d_play_lvl);});    self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title_a = "wave interference";    self.d_play.title_b = "playground"; self.buttons.push(self.d_play);
+  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_levels.req_lvl].complete) scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title_a = "wave interference"; self.dl_levels.title_b = "levels";  self.buttons.push(self.dl_levels);
+  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title_a = "wave interference"; self.dl_random.title_b = "random";  self.buttons.push(self.dl_random);
   //self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_create.req_lvl].complete) scene.requestLevel(dl_create_lvl);}); self.dl_create.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_create);
 
-  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs,     function(on) { if(levels[self.ds_levels.req_lvl].complete) scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title_a = "wave interference";self.ds_levels.title_b = "levels medium"; self.buttons.push(self.ds_levels);
-  //self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_random.req_lvl].complete) scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_random);
+  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs,     function(on) { if(levels[self.ds_levels.req_lvl].complete) scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title_a = "wave interference"; self.ds_levels.title_b = "levels medium"; self.buttons.push(self.ds_levels);
+  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_random.req_lvl].complete) scene.requestLevel(d_random_lvl);});   self.d_random.req_lvl  = d_levels_last_lvl;  self.d_random.title_a  = "wave interference"; self.d_random.title_b  = "random";        self.buttons.push(self.d_random);
   //self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_create.req_lvl].complete) scene.requestLevel(d_create_lvl);}); self.d_create.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_create);
 
-  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title_a = "wave interference";self.d_levels.title_b = "levels hard"; self.buttons.push(self.d_levels);
+  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title_a = "wave interference"; self.d_levels.title_b = "levels hard"; self.buttons.push(self.d_levels);
 
   //quick hack to fix clicker even though on separate canv
   var draw = function(canv)
@@ -1539,7 +1539,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
     level.allowed_wiggle_room = 500;
     level.playground = false;
-    level.random = 2;
+    level.random = 3;
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
@@ -1611,7 +1611,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
     level.allowed_wiggle_room = 500;
     level.playground = false;
-    level.random = 3;
+    level.random = 4;
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
@@ -1659,7 +1659,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
     level.allowed_wiggle_room = 500;
     level.playground = false;
-    level.random = 4;
+    level.random = 5;
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
