@@ -1,4 +1,4 @@
-var default_completeness = true;
+var default_completeness = false;
 var print_debug = false;
 
 var dbugger;
@@ -725,7 +725,7 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   //self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_random);
   //self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_create.req_lvl].complete) scene.requestLevel(s_create_lvl);}); self.s_create.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_create);
 
-  self.pl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { /* the one level that's always unlocked */  scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl; self.pl_play.title_a = "pulse interference";self.pl_play.title_b = "playground";   self.buttons.push(self.pl_play);
+  self.pl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl; self.pl_play.title_a = "pulse interference";self.pl_play.title_b = "playground";   self.buttons.push(self.pl_play);
   self.pl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) scene.requestLevel(pl_levels_lvl);}); self.pl_levels.req_lvl = pl_play_lvl;       self.pl_levels.title_a = "pulse interference";self.pl_levels.title_b = "levels"; self.buttons.push(self.pl_levels);
   //self.pl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) scene.requestLevel(pl_random_lvl);}); self.pl_random.req_lvl = pl_levels_last_lvl; self.buttons.push(self.pl_random);
   //self.pl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_create.req_lvl].complete) scene.requestLevel(pl_create_lvl);}); self.pl_create.req_lvl = pl_levels_last_lvl; self.buttons.push(self.pl_create);
