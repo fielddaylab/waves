@@ -1,4 +1,4 @@
-var default_completeness = true;
+var default_completeness = 1;
 var print_debug = false;
 
 var dbugger;
@@ -874,13 +874,14 @@ var GamePlayScene = function(game, stage)
   var gC1;
   var gComp;
   var gDisplay;
+  var g2Display;
 
   var menuButton;
   var readyButton;
-  var composeButton;
-
   var skipButton;
   var printButton;
+
+  var composeButton;
 
   var validator;
   var vDrawer;
@@ -1073,6 +1074,29 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
+    //lvl? //*make* zero amp wave
+    n_levels++;
+    level = new Level();
+    level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_NONE;
+    level.myC0_offset     = 0.5;       level.myC1_offset     = 0.5;
+    level.myC0_wavelength = 0.5;       level.myC1_wavelength = 0.5;
+    level.myC0_amplitude  = 0.5;       level.myC1_amplitude  = 0.5;
+    level.myE0_enabled = true;         level.myE1_enabled = false;
+    level.myE0_visible = true;         level.myE1_visible = false;
+    level.myE0_toggle_enabled = false; level.myE1_toggle_enabled = false;
+    level.myE0_toggle_default = true;  level.myE1_toggle_default = false;
+    level.gC0_type = COMP_TYPE_SIN;    level.gC1_type = COMP_TYPE_NONE;
+    level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
+    level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
+    level.gC0_amplitude   = 0.0;       level.gC1_amplitude   = 0.5;
+    level.allowed_wiggle_room = 130;
+    level.playground = false;
+    level.random = false;
+    level.create = false;
+    level.return_to_menu = false;
+    level.complete = default_completeness;
+    levels.push(level);
+
     s_levels_last_lvl = n_levels;
     //lvl? //pulse
     n_levels++;
@@ -1113,7 +1137,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 200;
     level.playground = false;
     level.random = 1;
     level.create = false;
@@ -1126,8 +1150,8 @@ var GamePlayScene = function(game, stage)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_PULSE; level.myC1_type = COMP_TYPE_PULSE;
-    level.myC0_offset     = 0.2;       level.myC1_offset     = 0.8;
-    level.myC0_wavelength = 0.3;       level.myC1_wavelength = 0.3;
+    level.myC0_offset     = 0.3;       level.myC1_offset     = 0.7;
+    level.myC0_wavelength = 0.4;       level.myC1_wavelength = 0.3;
     level.myC0_amplitude  = 0.75;      level.myC1_amplitude  = 0.25;
     level.myE0_enabled = true;         level.myE1_enabled = true;
     level.myE0_visible = true;         level.myE1_visible = true;
@@ -1301,7 +1325,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 20;
     level.playground = false;
     level.random = 2;
     level.create = false;
@@ -1466,7 +1490,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.55;      level.gC1_offset      = 0.3;
     level.gC0_wavelength  = 1.0;       level.gC1_wavelength  = 0.2;
     level.gC0_amplitude   = 1.0;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 600;
+    level.allowed_wiggle_room = 160;
     level.playground = false;
     level.random = false;
     level.create = false;
@@ -1583,7 +1607,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 300;
     level.playground = false;
     level.random = 3;
     level.create = false;
@@ -1655,7 +1679,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 300;
     level.playground = false;
     level.random = 4;
     level.create = false;
@@ -1664,6 +1688,7 @@ var GamePlayScene = function(game, stage)
     levels.push(level);
 
     d_levels_lvl = n_levels;
+    d_levels_last_lvl = n_levels;
     //lvl? //totally random
     n_levels++;
     level = new Level();
@@ -1703,7 +1728,7 @@ var GamePlayScene = function(game, stage)
     level.gC0_offset      = 0.5;       level.gC1_offset      = 0.5;
     level.gC0_wavelength  = 0.5;       level.gC1_wavelength  = 0.5;
     level.gC0_amplitude   = 0.5;       level.gC1_amplitude   = 0.5;
-    level.allowed_wiggle_room = 500;
+    level.allowed_wiggle_room = 400;
     level.playground = false;
     level.random = 5;
     level.create = false;
@@ -1729,14 +1754,20 @@ var GamePlayScene = function(game, stage)
     gDisplay = new GraphDrawer(gComp, 10, 10, self.c.width-20, ((self.c.height-20)/2));
     gDisplay.draw_zero_x = false;
     gDisplay.draw_zero_y = true;
-    gDisplay.lineWidth = 4;
-    gDisplay.color = "#00BB00";
-    gDisplay.dotted = true;
+    gDisplay.lineWidth = 8;
+    gDisplay.color = "#88FF88";
+    gDisplay.dotted = false;
+    g2Display = new GraphDrawer(gComp, 10, 10, self.c.width-20, ((self.c.height-20)/2));
+    g2Display.draw_zero_x = false;
+    g2Display.draw_zero_y = false;
+    g2Display.lineWidth = 2;
+    g2Display.color = "#FFFFFF";
+    g2Display.dotted = false;
 
     menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_LVL); });
 
-    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing)) { levels[cur_level].complete = true; if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
-    skipButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { if(!levels[cur_level].playground == 1 && levels[cur_level].complete) { if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
+    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing)) { levels[cur_level].complete++; if(levels[cur_level].random) self.beginLevel(levels[cur_level]); else if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
+    skipButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { if(levels[cur_level].random) { self.beginLevel(levels[cur_level]); } else if(!levels[cur_level].playground == 1 && levels[cur_level].complete) { if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
     if(print_debug)
       printButton = new ButtonBox(self.c.width-10-80, 90, 80, 20, function(on) { self.print(); });
 
@@ -1996,6 +2027,7 @@ var GamePlayScene = function(game, stage)
       //pulsing goal
       self.dc.context.globalAlpha = 1-(Math.pow(((Math.sin(t*2)+1)/2),2)/2);
       gDisplay.draw(self.dc);
+      g2Display.draw(self.dc);
       self.dc.context.globalAlpha = 1;
     }
 
@@ -2023,9 +2055,13 @@ var GamePlayScene = function(game, stage)
       //vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
     menuButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("menu",menuButton.x+10,menuButton.y+15);
-    if(!levels[cur_level].playground == 1 && levels[cur_level].complete)
+    if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
-      skipButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("skip",skipButton.x+10,skipButton.y+15);
+      skipButton.draw(self.dc); self.dc.context.fillStyle = "#000000";
+      if(levels[cur_level].random)
+        self.dc.context.fillText("re-roll",skipButton.x+10,skipButton.y+15);
+      else
+        self.dc.context.fillText("skip",skipButton.x+10,skipButton.y+15);
     }
     if(print_debug)
       printButton.draw(self.dc);
@@ -2040,6 +2076,7 @@ var GamePlayScene = function(game, stage)
     myDisplay.cleanse();
     gComp.cleanse();
     gDisplay.cleanse();
+    g2Display.cleanse();
     myE0.graph.cleanse();
     myE1.graph.cleanse();
     e0AnimDisplay.cleanse();

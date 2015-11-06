@@ -6,3 +6,7 @@
 
 - random gen'd levels
 - create 'n test levels
+
+- random display n completes
+- hit "skip" counts +1 complete *if* complete
+- start playgrounds/certain levels with vis on
