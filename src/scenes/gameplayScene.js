@@ -905,6 +905,8 @@ var Blurb = function(scene)
     var searched = 0;
     var tentative_search = 0;
 
+    if(self.txt.length) self.txt += " (click to dismiss)";
+
     //stage.drawCanv.context.font=whaaaat;
     while(found < self.txt.length)
     {
