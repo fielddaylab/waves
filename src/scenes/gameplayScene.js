@@ -897,6 +897,7 @@ var Blurb = function(scene)
   self.img_y = 0;
   self.img_w = 0;
   self.img_h = 0;
+  self.img_el;
 
   self.format = function(canv)
   {
@@ -905,7 +906,7 @@ var Blurb = function(scene)
     var searched = 0;
     var tentative_search = 0;
 
-    if(self.txt.length) self.txt += " (click to dismiss)";
+    if(self.txt && self.txt.length) self.txt += " (click to dismiss)";
 
     //stage.drawCanv.context.font=whaaaat;
     while(found < self.txt.length)
@@ -924,6 +925,14 @@ var Blurb = function(scene)
       self.lines.push(self.txt.substring(found,searched));
       found = searched;
     }
+
+    if(self.img && self.img.length)
+    {
+      self.img_el = new Image();
+      self.img_el.src = "assets/"+self.img+".png";
+    }
+    else
+      self.img_el = undefined;
   }
 
   self.draw = function(canv)
@@ -937,6 +946,11 @@ var Blurb = function(scene)
     for(var i = 0; i < self.lines.length; i++)
     {
       canv.context.fillText(self.lines[i],self.x+10,self.y+15+(i*20),self.w);
+    }
+
+    if(self.img_el)
+    {
+      canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
     }
   }
 
@@ -1093,11 +1107,11 @@ var GamePlayScene = function(game, stage)
     level.blurb_intro_txt_y = 270;
     level.blurb_intro_txt_w = 400;
     level.blurb_intro_txt_h = 130;
-    level.blurb_intro_img = "";
-    level.blurb_intro_img_x = 0;
-    level.blurb_intro_img_y = 0;
-    level.blurb_intro_img_w = 0;
-    level.blurb_intro_img_h = 0;
+    level.blurb_intro_img = "offset";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     //lvl? //learn wavelength
@@ -1121,6 +1135,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Wavelength is a thing";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "wavelength";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     //lvl? //learn amplitude (plus a bit of offset)
@@ -1144,6 +1173,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Amplitude is great too. But you'll also need offset?";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "amplitude";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     //lvl? //try all three
@@ -1285,11 +1329,11 @@ var GamePlayScene = function(game, stage)
     level.blurb_intro_txt_y = 270;
     level.blurb_intro_txt_w = 400;
     level.blurb_intro_txt_h = 130;
-    level.blurb_intro_img = "";
-    level.blurb_intro_img_x = 0;
-    level.blurb_intro_img_y = 0;
-    level.blurb_intro_img_w = 0;
-    level.blurb_intro_img_h = 0;
+    level.blurb_intro_img = "pulse";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     s_random_lvl = n_levels;
@@ -1402,11 +1446,11 @@ var GamePlayScene = function(game, stage)
     level.blurb_intro_txt_y = 270;
     level.blurb_intro_txt_w = 400;
     level.blurb_intro_txt_h = 130;
-    level.blurb_intro_img = "";
-    level.blurb_intro_img_x = 0;
-    level.blurb_intro_img_y = 0;
-    level.blurb_intro_img_w = 0;
-    level.blurb_intro_img_h = 0;
+    level.blurb_intro_img = "constructive";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     //lvl? //pulse destructive (change offset)
@@ -1440,11 +1484,11 @@ var GamePlayScene = function(game, stage)
     level.blurb_intro_txt_y = 270;
     level.blurb_intro_txt_w = 400;
     level.blurb_intro_txt_h = 130;
-    level.blurb_intro_img = "";
-    level.blurb_intro_img_x = 0;
-    level.blurb_intro_img_y = 0;
-    level.blurb_intro_img_w = 0;
-    level.blurb_intro_img_h = 0;
+    level.blurb_intro_img = "destructive";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     //lvl? //pulse bottoms out
@@ -1524,11 +1568,11 @@ var GamePlayScene = function(game, stage)
     level.blurb_intro_txt_y = 270;
     level.blurb_intro_txt_w = 400;
     level.blurb_intro_txt_h = 130;
-    level.blurb_intro_img = "";
-    level.blurb_intro_img_x = 0;
-    level.blurb_intro_img_y = 0;
-    level.blurb_intro_img_w = 0;
-    level.blurb_intro_img_h = 0;
+    level.blurb_intro_img = "cancel";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     pl_levels_last_lvl = n_levels;
@@ -1652,11 +1696,11 @@ var GamePlayScene = function(game, stage)
     level.blurb_intro_txt_y = 270;
     level.blurb_intro_txt_w = 400;
     level.blurb_intro_txt_h = 130;
-    level.blurb_intro_img = "";
-    level.blurb_intro_img_x = 0;
-    level.blurb_intro_img_y = 0;
-    level.blurb_intro_img_w = 0;
-    level.blurb_intro_img_h = 0;
+    level.blurb_intro_img = "highlowfq";
+    level.blurb_intro_img_x = 250;
+    level.blurb_intro_img_y = 300;
+    level.blurb_intro_img_w = 100;
+    level.blurb_intro_img_h = 100;
     levels.push(level);
 
     //lvl? //offset of low freq
