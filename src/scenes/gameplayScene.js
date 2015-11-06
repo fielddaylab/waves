@@ -1,6 +1,6 @@
-var default_completeness = 1;
+var default_completeness = 0;
 var print_debug = false;
-var placer_debug = true;
+var placer_debug = false;
 
 var dbugger;
 
@@ -887,6 +887,7 @@ var Blurb = function(scene)
   self.w = 0;
   self.h = 0;
   self.txt = "";
+  self.lines;
   self.txt_x = 0;
   self.txt_y = 0;
   self.txt_w = 0;
@@ -897,16 +898,43 @@ var Blurb = function(scene)
   self.img_w = 0;
   self.img_h = 0;
 
+  self.format = function(canv)
+  {
+    self.lines = [];
+    var found = 0;
+    var searched = 0;
+    var tentative_search = 0;
+
+    //stage.drawCanv.context.font=whaaaat;
+    while(found < self.txt.length)
+    {
+      searched = self.txt.indexOf(" ",found);
+      if(searched == -1) searched = self.txt.length;
+      tentative_search = self.txt.indexOf(" ",searched+1);
+      if(tentative_search == -1) tentative_search = self.txt.length;
+      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.txt_w && searched != self.txt.length)
+      {
+        searched = tentative_search;
+        tentative_search = self.txt.indexOf(" ",searched+1);
+        if(tentative_search == -1) tentative_search = self.txt.length;
+      }
+      if(self.txt.substring(searched, searched+1) == " ") searched++;
+      self.lines.push(self.txt.substring(found,searched));
+      found = searched;
+    }
+  }
+
   self.draw = function(canv)
   {
     canv.context.fillStyle = "#FFFFFF";
     canv.context.fillRect(self.x,self.y,self.w,self.h);
     canv.context.strokeStyle = "#000000";
     canv.context.strokeRect(self.x,self.y,self.w,self.h);
-    if(self.txt && self.txt != "")
+
+    canv.context.fillStyle = "#000000";
+    for(var i = 0; i < self.lines.length; i++)
     {
-      canv.context.fillStyle = "#000000";
-      canv.context.fillText(self.txt,self.x+10,self.y+15,self.w);
+      canv.context.fillText(self.lines[i],self.x+10,self.y+15+(i*20),self.w);
     }
   }
 
@@ -1053,6 +1081,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Use the sliders to match the red wave to the green.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     //lvl? //learn wavelength
@@ -1168,6 +1211,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "A wave with 0 amplitude has no meaningful wavelength nor offset.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     //lvl? //*make* zero amp wave
@@ -1215,6 +1273,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "A pulse is one motion of a wave.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     s_random_lvl = n_levels;
@@ -1239,6 +1312,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Complete as many random levels as you'd like, then return to menu.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     pl_play_lvl = n_levels;
@@ -1263,6 +1351,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "This is a playground. Waves can 'interfere' with interesting results.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     pl_levels_lvl = n_levels;
@@ -1287,6 +1390,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "When two positive waves interfere, it results in a bigger wave.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     //lvl? //pulse destructive (change offset)
@@ -1310,6 +1428,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "When a positive and a negative wave interferes, it results in a smaller wave.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     //lvl? //pulse bottoms out
@@ -1379,6 +1512,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Two opposite waves completely cancel each other out.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     pl_levels_last_lvl = n_levels;
@@ -1403,6 +1551,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Try making the resulting wave by changing amplitude, wavelength, and frequency.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     pl_random_lvl = n_levels;
@@ -1477,6 +1640,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Since waves are just repeated pulses, all the rules of interference are the same.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     //lvl? //offset of low freq
@@ -1500,6 +1678,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 210;
+    level.blurb_intro_y = 270;
+    level.blurb_intro_w = 400;
+    level.blurb_intro_h = 130;
+    level.blurb_intro_txt = "Since waves are just repeated pulses, all the rules of interference are the same.";
+    level.blurb_intro_txt_x = 210;
+    level.blurb_intro_txt_y = 270;
+    level.blurb_intro_txt_w = 400;
+    level.blurb_intro_txt_h = 130;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     //lvl? //wavelength of high freq
@@ -1993,6 +2186,7 @@ var GamePlayScene = function(game, stage)
       blurb.img_y = levels[cur_level].blurb_intro_img_y;
       blurb.img_w = levels[cur_level].blurb_intro_img_w;
       blurb.img_h = levels[cur_level].blurb_intro_img_h;
+      blurb.format(stage.drawCanv);
       self.setMode(GAME_MODE_BLURB);
     }
   }
@@ -2015,6 +2209,7 @@ var GamePlayScene = function(game, stage)
       blurb.img_y = levels[cur_level].blurb_outro_img_y;
       blurb.img_w = levels[cur_level].blurb_outro_img_w;
       blurb.img_h = levels[cur_level].blurb_outro_img_h;
+      blurb.format(stage.drawCanv);
       self.setMode(GAME_MODE_BLURB);
     }
   }
