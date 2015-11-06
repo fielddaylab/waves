@@ -1,12 +1,9 @@
-- dl: destruct by changing wavelength/amplitude
-
 - popups w/ text
-- "toggle" button should be available (not dark) even when line not enabled
-- tweak avail wiggle room
 
-- random gen'd levels
 - create 'n test levels
 
 - random display n completes
 - hit "skip" counts +1 complete *if* complete
 - start playgrounds/certain levels with vis on
+- - or levels with "viz recommended!" ?
+- "toggle" button should be available (not dark) even when line not enabled

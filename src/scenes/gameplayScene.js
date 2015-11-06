@@ -57,8 +57,9 @@ var COMP_TYPE_SIN    = ENUM; ENUM++;
 var COMP_TYPE_SQUARE = ENUM; ENUM++;
 
 ENUM = 0;
-var GAME_MODE_LVL  = ENUM; ENUM++;
-var GAME_MODE_PLAY = ENUM; ENUM++;
+var GAME_MODE_LVL   = ENUM; ENUM++;
+var GAME_MODE_PLAY  = ENUM; ENUM++;
+var GAME_MODE_BLURB = ENUM; ENUM++;
 var game_mode = GAME_MODE_LVL;
 
 var nullEditor; //HACK!
@@ -699,8 +700,40 @@ var Level = function()
   self.myE1_toggle_enabled = true;
   self.myE1_toggle_default = true;
 
-  self.allowed_wiggle_room = 0; //make sure you change this- will never be perfect
+  self.allowed_wiggle_room = 0; //make sure you change this- incredibly strict
   self.playground = false;
+
+  self.blurb_intro = false;
+  self.blurb_intro_x = 0;
+  self.blurb_intro_y = 0;
+  self.blurb_intro_w = 0;
+  self.blurb_intro_h = 0;
+  self.blurb_intro_txt = "";
+  self.blurb_intro_txt_x = 0;
+  self.blurb_intro_txt_y = 0;
+  self.blurb_intro_txt_w = 0;
+  self.blurb_intro_txt_h = 0;
+  self.blurb_intro_img = "";
+  self.blurb_intro_img_x = 0;
+  self.blurb_intro_img_y = 0;
+  self.blurb_intro_img_w = 0;
+  self.blurb_intro_img_h = 0;
+
+  self.blurb_outro = false;
+  self.blurb_outro_x = 0;
+  self.blurb_outro_y = 0;
+  self.blurb_outro_w = 0;
+  self.blurb_outro_h = 0;
+  self.blurb_outro_txt = "";
+  self.blurb_outro_txt_x = 0;
+  self.blurb_outro_txt_y = 0;
+  self.blurb_outro_txt_w = 0;
+  self.blurb_outro_txt_h = 0;
+  self.blurb_outro_img = "";
+  self.blurb_outro_img_x = 0;
+  self.blurb_outro_img_y = 0;
+  self.blurb_outro_img_w = 0;
+  self.blurb_outro_img_h = 0;
 }
 
 var ClipBoard = function(x,y,w,h,scene,levels)
@@ -728,7 +761,7 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); scene.setMode(GAME_MODE_PLAY); }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else scene.setMode(GAME_MODE_PLAY); }); self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
     if(this.down) canv.context.strokeStyle = "#00F400";
@@ -845,6 +878,35 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self.isDirty = function() { return self._dirty; }
 }
 
+var Blurb = function()
+{
+  var self = this;
+  self.x = 0;
+  self.y = 0;
+  self.w = 0;
+  self.h = 0;
+  self.txt = "";
+  self.txt_x = 0;
+  self.txt_y = 0;
+  self.txt_w = 0;
+  self.txt_h = 0;
+  self.img = "";
+  self.img_x = 0;
+  self.img_y = 0;
+  self.img_w = 0;
+  self.img_h = 0;
+
+  self.draw = function(canv)
+  {
+    canv.context.drawRect(self.x,self.y,self.w,self.h);
+  }
+
+  self.click = function(evt)
+  {
+
+  }
+}
+
 var GamePlayScene = function(game, stage)
 {
   var self = this;
@@ -852,6 +914,7 @@ var GamePlayScene = function(game, stage)
   self.c = self.dc.canvas;
 
   var lvl_clicker;
+  var blurb_clicker;
   var play_dragger;
   var play_presser;
   var play_clicker;
@@ -875,6 +938,8 @@ var GamePlayScene = function(game, stage)
   var gComp;
   var gDisplay;
   var g2Display;
+
+  var blurb;
 
   var menuButton;
   var readyButton;
@@ -1141,7 +1206,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = 1;
     level.create = false;
-    level.return_to_menu = true;
+    level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
@@ -1329,7 +1394,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = 2;
     level.create = false;
-    level.return_to_menu = true;
+    level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
@@ -1611,7 +1676,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = 3;
     level.create = false;
-    level.return_to_menu = true;
+    level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
@@ -1683,7 +1748,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = 4;
     level.create = false;
-    level.return_to_menu = true;
+    level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
@@ -1732,12 +1797,13 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = 5;
     level.create = false;
-    level.return_to_menu = true;
+    level.return_to_menu = false;
     level.complete = default_completeness;
     levels.push(level);
 
 
     lvl_clicker = new Clicker({source:stage.dispCanv.canvas});
+    blurb_clicker = new Clicker({source:stage.dispCanv.canvas});
     play_dragger = new Dragger({source:stage.dispCanv.canvas});
     play_presser = new Presser({source:stage.dispCanv.canvas});
     play_clicker = new Clicker({source:stage.dispCanv.canvas});
@@ -1766,8 +1832,50 @@ var GamePlayScene = function(game, stage)
 
     menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_LVL); });
 
-    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20, function(on) { if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing)) { levels[cur_level].complete++; if(levels[cur_level].random) self.beginLevel(levels[cur_level]); else if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
-    skipButton = new ButtonBox(self.c.width-10-80, 50, 80, 20, function(on) { if(levels[cur_level].random) { self.beginLevel(levels[cur_level]); } else if(!levels[cur_level].playground == 1 && levels[cur_level].complete) { if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL); else self.nextLevel(); } });
+    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20,
+      function(on)
+      {
+        if( //if this is showing
+          levels[cur_level].playground ||
+          (
+            validator.delta < levels[cur_level].allowed_wiggle_room &&
+            myE0.goal_contribution == 1 &&
+            myE1.goal_contribution == 1 &&
+            !myC0.playing && !myC1.playing
+          )
+        )
+        {
+          levels[cur_level].complete++;
+
+          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL);
+          else
+          {
+            if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
+            self.populateWithLevel(levels[cur_level]);
+          }
+        }
+      }
+    );
+    skipButton = new ButtonBox(self.c.width-10-80, 50, 80, 20,
+      function(on)
+      {
+        if( //if this is showing
+          levels[cur_level].random ||
+          (
+            !levels[cur_level].playground &&
+            levels[cur_level].complete
+          )
+        )
+        {
+          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL);
+          else
+          {
+            if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
+            self.populateWithLevel(levels[cur_level]);
+          }
+        }
+      }
+    );
     if(print_debug)
       printButton = new ButtonBox(self.c.width-10-80, 90, 80, 20, function(on) { self.print(); });
 
@@ -1796,7 +1904,6 @@ var GamePlayScene = function(game, stage)
     validator = new Validator(myComp, gComp);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
-
     clip.register(lvl_clicker);
 
     myE0.register(play_dragger, play_presser, play_clicker);
@@ -1821,11 +1928,56 @@ var GamePlayScene = function(game, stage)
   self.requestLevel = function(lvl)
   {
     cur_level = lvl;
-    self.beginLevel(levels[cur_level]);
+    self.populateWithLevel(levels[cur_level]);
     self.setMode(GAME_MODE_PLAY);
+    self.popBlurbIntro();
   }
 
-  self.beginLevel = function(level)
+  self.popBlurbIntro = function()
+  {
+    if(levels[cur_level].blurb_intro)
+    {
+      blurb.x = levels[cur_level].blurb_intro_x;
+      blurb.y = levels[cur_level].blurb_intro_y;
+      blurb.w = levels[cur_level].blurb_intro_w;
+      blurb.h = levels[cur_level].blurb_intro_h;
+      blurb.txt = levels[cur_level].blurb_intro_txt;
+      blurb.txt_x = levels[cur_level].blurb_intro_txt_x;
+      blurb.txt_y = levels[cur_level].blurb_intro_txt_y;
+      blurb.txt_w = levels[cur_level].blurb_intro_txt_w;
+      blurb.txt_h = levels[cur_level].blurb_intro_txt_h;
+      blurb.img = levels[cur_level].blurb_intro_img;
+      blurb.img_x = levels[cur_level].blurb_intro_img_x;
+      blurb.img_y = levels[cur_level].blurb_intro_img_y;
+      blurb.img_w = levels[cur_level].blurb_intro_img_w;
+      blurb.img_h = levels[cur_level].blurb_intro_img_h;
+      self.setMode(GAME_MODE_BLURB);
+    }
+  }
+
+  self.popBlurbOutro = function()
+  {
+    if(levels[cur_level].blurb_outro)
+    {
+      blurb.x = levels[cur_level].blurb_outro_x;
+      blurb.y = levels[cur_level].blurb_outro_y;
+      blurb.w = levels[cur_level].blurb_outro_w;
+      blurb.h = levels[cur_level].blurb_outro_h;
+      blurb.txt = levels[cur_level].blurb_outro_txt;
+      blurb.txt_x = levels[cur_level].blurb_outro_txt_x;
+      blurb.txt_y = levels[cur_level].blurb_outro_txt_y;
+      blurb.txt_w = levels[cur_level].blurb_outro_txt_w;
+      blurb.txt_h = levels[cur_level].blurb_outro_txt_h;
+      blurb.img = levels[cur_level].blurb_outro_img;
+      blurb.img_x = levels[cur_level].blurb_outro_img_x;
+      blurb.img_y = levels[cur_level].blurb_outro_img_y;
+      blurb.img_w = levels[cur_level].blurb_outro_img_w;
+      blurb.img_h = levels[cur_level].blurb_outro_img_h;
+      self.setMode(GAME_MODE_BLURB);
+    }
+  }
+
+  self.populateWithLevel = function(level)
   {
     myC0.type = level.myC0_type;
     myC1.type = level.myC1_type;
@@ -1921,12 +2073,6 @@ var GamePlayScene = function(game, stage)
     myAnimDisplay.progress = 0; myAnimDisplay.intended_progress = 0;
   }
 
-  self.nextLevel = function()
-  {
-    cur_level = (cur_level+1)%n_levels;
-    self.beginLevel(levels[cur_level]);
-  }
-
   self.print = function()
   {
     dbugger.log(validator.delta);
@@ -1964,12 +2110,14 @@ var GamePlayScene = function(game, stage)
     play_dragger.ignore();
     play_presser.ignore();
     play_clicker.ignore();
+    blurb_clicker.ignore();
+
     game_mode = mode;
 
     clip.dirty();
     if(game_mode == GAME_MODE_LVL)
       clip.desired_y = 20;
-    else
+    else if(game_mode == GAME_MODE_PLAY)
       clip.desired_y = 500;
   }
 
@@ -1985,6 +2133,10 @@ var GamePlayScene = function(game, stage)
       play_dragger.flush();
       play_presser.flush();
       play_clicker.flush();
+    }
+    else if(game_mode == GAME_MODE_BLURB)
+    {
+      blurb_clicker.flush();
     }
 
     clip.tick();
