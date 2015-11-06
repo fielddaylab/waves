@@ -1,5 +1,6 @@
 var default_completeness = 1;
 var print_debug = false;
+var placer_debug = true;
 
 var dbugger;
 
@@ -898,7 +899,15 @@ var Blurb = function(scene)
 
   self.draw = function(canv)
   {
+    canv.context.fillStyle = "#FFFFFF";
     canv.context.fillRect(self.x,self.y,self.w,self.h);
+    canv.context.strokeStyle = "#000000";
+    canv.context.strokeRect(self.x,self.y,self.w,self.h);
+    if(self.txt && self.txt != "")
+    {
+      canv.context.fillStyle = "#000000";
+      canv.context.fillText(self.txt,self.x+10,self.y+15,self.w);
+    }
   }
 
   self.click = function(evt)
@@ -918,7 +927,10 @@ var GamePlayScene = function(game, stage)
   var play_dragger;
   var play_presser;
   var play_clicker;
+  var placer_clicker;
+  var placer_dragger;
 
+  var placer;
   var clip;
 
   var nullC;
@@ -958,6 +970,10 @@ var GamePlayScene = function(game, stage)
   self.ready = function()
   {
     dbugger = new Debugger({source:document.getElementById("debug_div")});
+    if(placer_debug)
+    {
+      placer = new Placer({},100,100,100,100);
+    }
     var level;
     cur_level = 0;
     n_levels = 0;
@@ -999,15 +1015,15 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb_intro = true;
-    level.blurb_intro_x = 100;
-    level.blurb_intro_y = 100;
-    level.blurb_intro_w = 100;
-    level.blurb_intro_h = 100;
-    level.blurb_intro_txt = "This is a playground";
-    level.blurb_intro_txt_x = 150;
-    level.blurb_intro_txt_y = 150;
-    level.blurb_intro_txt_w = 50;
-    level.blurb_intro_txt_h = 50;
+    level.blurb_intro_x = 310;
+    level.blurb_intro_y = 25;
+    level.blurb_intro_w = 235;
+    level.blurb_intro_h = 70;
+    level.blurb_intro_txt = "This is a playground! When ready, hit next!";
+    level.blurb_intro_txt_x = 310;
+    level.blurb_intro_txt_y = 25;
+    level.blurb_intro_txt_w = 235;
+    level.blurb_intro_txt_h = 70;
     level.blurb_intro_img = "";
     level.blurb_intro_img_x = 0;
     level.blurb_intro_img_y = 0;
@@ -1816,7 +1832,8 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-
+    placer_clicker = new Clicker({source:stage.dispCanv.canvas});
+    placer_dragger = new Dragger({source:stage.dispCanv.canvas});
     lvl_clicker = new Clicker({source:stage.dispCanv.canvas});
     blurb_clicker = new Clicker({source:stage.dispCanv.canvas});
     play_dragger = new Dragger({source:stage.dispCanv.canvas});
@@ -1923,6 +1940,11 @@ var GamePlayScene = function(game, stage)
     validator = new Validator(myComp, gComp);
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
+    if(placer_debug)
+    {
+      placer_clicker.register(placer);
+      placer_dragger.register(placer);
+    }
     clip.register(lvl_clicker);
     blurb_clicker.register(blurb);
 
@@ -2144,6 +2166,11 @@ var GamePlayScene = function(game, stage)
   var t = 0;
   self.tick = function()
   {
+    if(placer_debug)
+    {
+      placer_clicker.flush();
+      placer_dragger.flush();
+    }
     if(game_mode == GAME_MODE_LVL)
     {
       lvl_clicker.flush();
@@ -2245,6 +2272,11 @@ var GamePlayScene = function(game, stage)
 
     if(game_mode == GAME_MODE_BLURB)
       blurb.draw(self.dc);
+
+    if(placer_debug)
+    {
+      placer.draw(self.dc);
+    }
 
     clip.cleanse();
     myComp.cleanse();
