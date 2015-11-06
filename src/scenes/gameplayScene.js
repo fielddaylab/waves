@@ -878,7 +878,7 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self.isDirty = function() { return self._dirty; }
 }
 
-var Blurb = function()
+var Blurb = function(scene)
 {
   var self = this;
   self.x = 0;
@@ -898,12 +898,12 @@ var Blurb = function()
 
   self.draw = function(canv)
   {
-    canv.context.drawRect(self.x,self.y,self.w,self.h);
+    canv.context.fillRect(self.x,self.y,self.w,self.h);
   }
 
   self.click = function(evt)
   {
-
+    scene.setMode(GAME_MODE_PLAY);
   }
 }
 
@@ -998,6 +998,21 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.blurb_intro = true;
+    level.blurb_intro_x = 100;
+    level.blurb_intro_y = 100;
+    level.blurb_intro_w = 100;
+    level.blurb_intro_h = 100;
+    level.blurb_intro_txt = "This is a playground";
+    level.blurb_intro_txt_x = 150;
+    level.blurb_intro_txt_y = 150;
+    level.blurb_intro_txt_w = 50;
+    level.blurb_intro_txt_h = 50;
+    level.blurb_intro_img = "";
+    level.blurb_intro_img_x = 0;
+    level.blurb_intro_img_y = 0;
+    level.blurb_intro_img_w = 0;
+    level.blurb_intro_img_h = 0;
     levels.push(level);
 
     s_levels_lvl = n_levels;
@@ -1830,6 +1845,8 @@ var GamePlayScene = function(game, stage)
     g2Display.color = "#FFFFFF";
     g2Display.dotted = false;
 
+    blurb = new Blurb(self);
+
     menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_LVL); });
 
     readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20,
@@ -1852,6 +1869,7 @@ var GamePlayScene = function(game, stage)
           {
             if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
             self.populateWithLevel(levels[cur_level]);
+            self.popBlurbIntro();
           }
         }
       }
@@ -1872,6 +1890,7 @@ var GamePlayScene = function(game, stage)
           {
             if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
             self.populateWithLevel(levels[cur_level]);
+            self.popBlurbIntro();
           }
         }
       }
@@ -1905,6 +1924,7 @@ var GamePlayScene = function(game, stage)
     vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
 
     clip.register(lvl_clicker);
+    blurb_clicker.register(blurb);
 
     myE0.register(play_dragger, play_presser, play_clicker);
     myE1.register(play_dragger, play_presser, play_clicker);
@@ -2222,6 +2242,9 @@ var GamePlayScene = function(game, stage)
       composeButton.draw(self.dc);
 
     clip.draw(self.dc);
+
+    if(game_mode == GAME_MODE_BLURB)
+      blurb.draw(self.dc);
 
     clip.cleanse();
     myComp.cleanse();
