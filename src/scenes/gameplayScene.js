@@ -1814,7 +1814,7 @@ var GamePlayScene = function(game, stage)
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;   level.myC1_type = COMP_TYPE_SIN;
-    level.myC0_offset     = 0.5;       level.myC1_offset     = 0.3;
+    level.myC0_offset     = 0.0;       level.myC1_offset     = 0.3;
     level.myC0_wavelength = 1.0;       level.myC1_wavelength = 0.2;
     level.myC0_amplitude  = 0.0;       level.myC1_amplitude  = 0.5;
     level.myE0_enabled = true;         level.myE1_enabled = false;
@@ -2024,26 +2024,26 @@ var GamePlayScene = function(game, stage)
 
     d_levels_lvl = n_levels;
     d_levels_last_lvl = n_levels;
-    //lvl? //totally random
+    //lvl? //start at 0
     n_levels++;
     level = new Level();
     level.myC0_type = COMP_TYPE_SIN;       level.myC1_type = COMP_TYPE_SIN;
-    level.myC0_offset     = 0.5;           level.myC1_offset     = 0.5;
-    level.myC0_wavelength = 0.5;           level.myC1_wavelength = 0.5;
-    level.myC0_amplitude  = 0.5;           level.myC1_amplitude  = 0.5;
+    level.myC0_offset     = 0.0;           level.myC1_offset     = 0.0;
+    level.myC0_wavelength = 0.0;           level.myC1_wavelength = 0.0;
+    level.myC0_amplitude  = 0.0;           level.myC1_amplitude  = 0.0;
     level.myE0_enabled = true;             level.myE1_enabled = true;
     level.myE0_visible = true;             level.myE1_visible = true;
     level.myE0_toggle_enabled = true;      level.myE1_toggle_enabled = true;
     level.myE0_toggle_default = true;      level.myE1_toggle_default = true;
     level.gC0_type = COMP_TYPE_SIN;        level.gC1_type = COMP_TYPE_SIN;
-    level.gC0_offset      = Math.random(); level.gC1_offset      = Math.random();
-    level.gC0_wavelength  = Math.random(); level.gC1_wavelength  = Math.random();
-    level.gC0_amplitude   = Math.random(); level.gC1_amplitude   = Math.random();
+    level.gC0_offset      = 0.5;           level.gC1_offset      = 1.0;
+    level.gC0_wavelength  = 0.25;          level.gC1_wavelength  = 1.0;
+    level.gC0_amplitude   = 0.5;           level.gC1_amplitude   = 1.0;
     level.allowed_wiggle_room = 500;
     level.playground = false;
     level.random = false;
     level.create = false;
-    level.return_to_menu = false;
+    level.return_to_menu = true;
     level.complete = default_completeness;
     levels.push(level);
 
