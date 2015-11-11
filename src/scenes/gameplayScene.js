@@ -1,4 +1,4 @@
-var default_completeness = 1;
+var default_completeness = 0;
 var print_debug = false;
 var placer_debug = false;
 
@@ -1297,7 +1297,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "A pulse is simply a single motion of a wave. Its Amplitude, Wavelength, and Offset can be considered in the very same way.";
+    level.blurb_txt = "A pulse is simply a single motion of a wave. Its Amplitude, Wavelength, and Offset can be considered in the very same way as the waves previous.";
     level.blurb_img = "pulse";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1489,7 +1489,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "If two waves with identical Amplitude, Wavelength, and Offset are interfering, the result will be a pulse exactly double in Amplitude of either of the individual waves.";
+    level.blurb_txt = "If two waves with identical Amplitude, Wavelength, and Offset are interfering, the result will be a pulse exactly double in Amplitude of either.";
     levels.push(level);
 
     //lvl? //pulse total destruction
@@ -1702,7 +1702,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "The Wavelength of the smaller wave dictates the size of the little squiggles, and the Wavelength of the larger wave dictates the size of the big squiggles. (\"Squiggles\" is not a technical term, but it probably should be.)";
+    level.blurb_txt = "The Wavelength of the smaller wave dictates the width of the little squiggles, and the Wavelength of the larger wave dictates the width of the big squiggles. (\"Squiggles\" is not a technical term, but it probably should be.)";
     levels.push(level);
 
     //lvl? //wavelength of low freq
@@ -1731,7 +1731,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "If this wave looks intimidating, just try to break the green wave down into its little squiggles + its big squiggles, then create that.";
+    level.blurb_txt = "If this wave looks intimidating, just try to mentally break the green wave down into two- one for its little squiggles, and one for its big squiggles. Then create that.";
     levels.push(level);
 
     //lvl? //zero amp high freq
@@ -1760,7 +1760,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "When there is only one wave, zero Amplitude means a flat line. When there are two, if either of the waves are flat, it will simply not effect the other.";
+    level.blurb_txt = "When there is only one wave, zero Amplitude means a flat line. When there are two, if either of the waves are flat, that wave will simply not effect (interfere with) the other.";
     levels.push(level);
 
     //lvl? //zero amp low freq
@@ -1847,7 +1847,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "Like pulses, if two waves are identical except for their opposite amplitude, they can cancel each other out.";
+    level.blurb_txt = "Like pulses, if two waves are identical except for their opposite amplitude, they can cancel each other out. (Click the wave visualizer to see this in action).";
     levels.push(level);
 
     //lvl? //total interference- med freq
@@ -1901,6 +1901,12 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.blurb = true;
+    level.blurb_x = 210;
+    level.blurb_y = 270;
+    level.blurb_w = 400;
+    level.blurb_h = 130;
+    level.blurb_txt = "If the starting wave looks intimidating, just try to imagine what the red wave would need to look like to cancel out the blue. (The wave visualization might help here.)";
     levels.push(level);
 
     dl_random_lvl = n_levels;
@@ -1949,6 +1955,12 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.blurb = true;
+    level.blurb_x = 210;
+    level.blurb_y = 270;
+    level.blurb_w = 400;
+    level.blurb_h = 130;
+    level.blurb_txt = "Now you can edit either wave. Take a look at the green wave, then the purple wave. Think which wave (the blue or the red) will you need to alter to create the green?";
     levels.push(level);
 
     ds_levels_last_lvl = n_levels;
@@ -1973,6 +1985,12 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.blurb = true;
+    level.blurb_x = 210;
+    level.blurb_y = 270;
+    level.blurb_w = 400;
+    level.blurb_h = 130;
+    level.blurb_txt = "If you can, try to guess what change you will need to make to solve this before touching any of the sliders. Then move the one slider to solve this wave.";
     levels.push(level);
 
     ds_random_lvl = n_levels;
@@ -2022,6 +2040,12 @@ var GamePlayScene = function(game, stage)
     level.create = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.blurb = true;
+    level.blurb_x = 210;
+    level.blurb_y = 270;
+    level.blurb_w = 400;
+    level.blurb_h = 130;
+    level.blurb_txt = "You've seen this green wave before. Edit both waves to construct a solution.";
     levels.push(level);
 
     d_random_lvl = n_levels;
