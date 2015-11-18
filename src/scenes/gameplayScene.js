@@ -58,10 +58,10 @@ var COMP_TYPE_SIN    = ENUM; ENUM++;
 var COMP_TYPE_SQUARE = ENUM; ENUM++;
 
 ENUM = 0;
-var GAME_MODE_LVL   = ENUM; ENUM++;
+var GAME_MODE_MENU  = ENUM; ENUM++;
 var GAME_MODE_PLAY  = ENUM; ENUM++;
 var GAME_MODE_BLURB = ENUM; ENUM++;
-var game_mode = GAME_MODE_LVL;
+var game_mode = GAME_MODE_MENU;
 
 var nullEditor; //HACK!
 
@@ -951,7 +951,7 @@ var GamePlayScene = function(game, stage)
   self.dc = stage.drawCanv;
   self.c = self.dc.canvas;
 
-  var lvl_clicker;
+  var menu_clicker;
   var blurb_clicker;
   var play_dragger;
   var play_presser;
@@ -2074,7 +2074,7 @@ var GamePlayScene = function(game, stage)
 
     placer_clicker = new Clicker({source:stage.dispCanv.canvas});
     placer_dragger = new Dragger({source:stage.dispCanv.canvas});
-    lvl_clicker = new Clicker({source:stage.dispCanv.canvas});
+    menu_clicker = new Clicker({source:stage.dispCanv.canvas});
     blurb_clicker = new Clicker({source:stage.dispCanv.canvas});
     play_dragger = new Dragger({source:stage.dispCanv.canvas});
     play_presser = new Presser({source:stage.dispCanv.canvas});
@@ -2104,7 +2104,7 @@ var GamePlayScene = function(game, stage)
 
     blurb = new Blurb(self);
 
-    menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_LVL); });
+    menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_MENU); });
 
     readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20,
       function(on)
@@ -2121,7 +2121,7 @@ var GamePlayScene = function(game, stage)
         {
           levels[cur_level].complete++;
 
-          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL);
+          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
           else
           {
             if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
@@ -2142,7 +2142,7 @@ var GamePlayScene = function(game, stage)
           )
         )
         {
-          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_LVL);
+          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
           else
           {
             if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
@@ -2185,7 +2185,7 @@ var GamePlayScene = function(game, stage)
       placer_clicker.register(placer);
       placer_dragger.register(placer);
     }
-    clip.register(lvl_clicker);
+    clip.register(menu_clicker);
     blurb_clicker.register(blurb);
 
     myE0.register(play_dragger, play_presser, play_clicker);
@@ -2204,7 +2204,7 @@ var GamePlayScene = function(game, stage)
       play_clicker.register(printButton);
 
 
-    self.setMode(GAME_MODE_LVL);
+    self.setMode(GAME_MODE_MENU);
   };
 
   self.requestLevel = function(lvl)
@@ -2379,7 +2379,7 @@ var GamePlayScene = function(game, stage)
 
   self.setMode = function(mode)
   {
-    lvl_clicker.ignore();
+    menu_clicker.ignore();
     play_dragger.ignore();
     play_presser.ignore();
     play_clicker.ignore();
@@ -2388,7 +2388,7 @@ var GamePlayScene = function(game, stage)
     game_mode = mode;
 
     clip.dirty();
-    if(game_mode == GAME_MODE_LVL)
+    if(game_mode == GAME_MODE_MENU)
       clip.desired_y = 20;
     else if(game_mode == GAME_MODE_PLAY)
       clip.desired_y = 500;
@@ -2402,9 +2402,9 @@ var GamePlayScene = function(game, stage)
       placer_clicker.flush();
       placer_dragger.flush();
     }
-    if(game_mode == GAME_MODE_LVL)
+    if(game_mode == GAME_MODE_MENU)
     {
-      lvl_clicker.flush();
+      menu_clicker.flush();
     }
     else if(game_mode == GAME_MODE_PLAY)
     {
