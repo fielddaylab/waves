@@ -1,4 +1,6 @@
-var default_completeness = 0;
+var click_aud;
+
+var default_completeness = 1;
 var print_debug = false;
 var placer_debug = false;
 
@@ -455,21 +457,21 @@ var ComponentEditor = function(component, color, x,y,w,h)
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   var b_h = ((self.h/2)-(4*10))/3;
-  self.reset_button  = new ButtonBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*1)+b_h*0, 30, b_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; self.reset(); });
-  self.toggle_button = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*2)+b_h*1, 30, b_h, true, function(on) { if(!self.toggle_enabled) return; if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
-  self.play_button   = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*3)+b_h*2, 30, b_h, true, function(on) { self.component.setPlaying(!on); });
+  self.reset_button  = new ButtonBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*1)+b_h*0, 30, b_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); });
+  self.toggle_button = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*2)+b_h*1, 30, b_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
+  self.play_button   = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*3)+b_h*2, 30, b_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); });
   self.goal_contribution = 1;
 
   self.amplitude_slider  = new SmoothSliderBox(    self.x+10+30, self.y+self.h/2+10,          self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
   self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10+30, self.y+self.h/2+self.h/4-10, self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_wavelength, graph_max_wavelength, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
   self.offset_slider     = new SmoothSliderBox(    self.x+10+30, self.y+self.h-10-20,         self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_offset,         graph_max_offset,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
 
-  self.offset_dec_button = new ButtonBox(self.x+10, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
-  self.offset_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
-  self.wavelength_dec_button = new ButtonBox(self.x+10, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); });
-  self.wavelength_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); });
-  self.amplitude_dec_button = new ButtonBox(self.x+10, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); });
-  self.amplitude_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); });
+  self.offset_dec_button = new ButtonBox(self.x+10, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
+  self.offset_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
+  self.wavelength_dec_button = new ButtonBox(self.x+10, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); });
+  self.wavelength_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); });
+  self.amplitude_dec_button = new ButtonBox(self.x+10, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); });
+  self.amplitude_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); });
 
   self.enabled = true;
   self.visible = true;
@@ -747,7 +749,7 @@ var ClipBoard = function(x,y,w,h,scene,levels)
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else scene.setMode(GAME_MODE_PLAY); }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
     if(this.down) canv.context.strokeStyle = "#00F400";
@@ -761,27 +763,27 @@ var ClipBoard = function(x,y,w,h,scene,levels)
 
   var bs = 70;
   //sections: s (single), pl (pulse locked), dl (double locked), ds (double single), d (double)
-  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { /* the one level that's always unlocked */ scene.requestLevel(s_play_lvl); });  self.s_play.req_lvl   = -1;                self.s_play.title_a = "single wave";   self.s_play.title_b = "playground"; self.buttons.push(self.s_play);
-  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_levels_lvl);}); self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title_a = "single wave"; self.s_levels.title_b = "levels";   self.buttons.push(self.s_levels);
-  self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title_a = "single wave"; self.s_random.title_b = "random";   self.buttons.push(self.s_random);
-  //self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_create.req_lvl].complete) scene.requestLevel(s_create_lvl);}); self.s_create.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_create);
+  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { /* the one level that's always unlocked */ click_aud.play(); scene.requestLevel(s_play_lvl); });  self.s_play.req_lvl   = -1;                self.s_play.title_a = "single wave";   self.s_play.title_b = "playground"; self.buttons.push(self.s_play);
+  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(s_levels_lvl);}); self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title_a = "single wave"; self.s_levels.title_b = "levels";   self.buttons.push(self.s_levels);
+  self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) click_aud.play(); scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title_a = "single wave"; self.s_random.title_b = "random";   self.buttons.push(self.s_random);
+  //self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_create.req_lvl].complete) click_aud.play(); scene.requestLevel(s_create_lvl);}); self.s_create.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_create);
 
-  self.pl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title_a = "pulse interference";   self.pl_play.title_b = "playground";   self.buttons.push(self.pl_play);
-  self.pl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) scene.requestLevel(pl_levels_lvl);}); self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title_a = "pulse interference"; self.pl_levels.title_b = "levels"; self.buttons.push(self.pl_levels);
-  self.pl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) scene.requestLevel(pl_random_lvl);}); self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title_a = "pulse interference"; self.pl_random.title_b = "random"; self.buttons.push(self.pl_random);
-  //self.pl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_create.req_lvl].complete) scene.requestLevel(pl_create_lvl);}); self.pl_create.req_lvl = pl_levels_last_lvl; self.buttons.push(self.pl_create);
+  self.pl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   click_aud.play(); scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title_a = "pulse interference";   self.pl_play.title_b = "playground";   self.buttons.push(self.pl_play);
+  self.pl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_levels_lvl);}); self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title_a = "pulse interference"; self.pl_levels.title_b = "levels"; self.buttons.push(self.pl_levels);
+  self.pl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_random_lvl);}); self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title_a = "pulse interference"; self.pl_random.title_b = "random"; self.buttons.push(self.pl_random);
+  //self.pl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_create.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_create_lvl);}); self.pl_create.req_lvl = pl_levels_last_lvl; self.buttons.push(self.pl_create);
 
-  self.d_play    = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs*3+20, function(on) { if(levels[self.d_play.req_lvl].complete)    scene.requestLevel(d_play_lvl);});    self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title_a = "wave interference";    self.d_play.title_b = "playground"; self.buttons.push(self.d_play);
-  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_levels.req_lvl].complete) scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title_a = "wave interference"; self.dl_levels.title_b = "levels";  self.buttons.push(self.dl_levels);
-  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title_a = "wave interference"; self.dl_random.title_b = "random";  self.buttons.push(self.dl_random);
-  //self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_create.req_lvl].complete) scene.requestLevel(dl_create_lvl);}); self.dl_create.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_create);
+  self.d_play    = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs*3+20, function(on) { if(levels[self.d_play.req_lvl].complete)    click_aud.play(); scene.requestLevel(d_play_lvl);});    self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title_a = "wave interference";    self.d_play.title_b = "playground"; self.buttons.push(self.d_play);
+  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title_a = "wave interference"; self.dl_levels.title_b = "levels";  self.buttons.push(self.dl_levels);
+  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title_a = "wave interference"; self.dl_random.title_b = "random";  self.buttons.push(self.dl_random);
+  //self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_create.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_create_lvl);}); self.dl_create.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_create);
 
-  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title_a = "wave interference"; self.ds_levels.title_b = "levels medium";  self.buttons.push(self.ds_levels);
-  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) scene.requestLevel(ds_random_lvl);}); self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title_a = "wave interference"; self.ds_random.title_b  = "random medium"; self.buttons.push(self.ds_random);
-  //self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_create.req_lvl].complete) scene.requestLevel(d_create_lvl);}); self.d_create.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_create);
+  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title_a = "wave interference"; self.ds_levels.title_b = "levels medium";  self.buttons.push(self.ds_levels);
+  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_random_lvl);}); self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title_a = "wave interference"; self.ds_random.title_b  = "random medium"; self.buttons.push(self.ds_random);
+  //self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_create.req_lvl].complete) click_aud.play(); scene.requestLevel(d_create_lvl);}); self.d_create.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_create);
 
-  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title_a = "wave interference"; self.d_levels.title_b = "levels hard";   self.buttons.push(self.d_levels);
-  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title_a = "wave interference"; self.d_random.title_b = "random hard"; self.buttons.push(self.d_random);
+  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title_a = "wave interference"; self.d_levels.title_b = "levels hard";   self.buttons.push(self.d_levels);
+  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) click_aud.play(); scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title_a = "wave interference"; self.d_random.title_b = "random hard"; self.buttons.push(self.d_random);
 
   //quick hack to fix clicker even though on separate canv
   var draw = function(canv)
@@ -941,6 +943,7 @@ var Blurb = function(scene)
 
   self.click = function(evt)
   {
+    click_aud.play();
     scene.setMode(GAME_MODE_PLAY);
   }
 }
@@ -2104,7 +2107,7 @@ var GamePlayScene = function(game, stage)
 
     blurb = new Blurb(self);
 
-    menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { self.setMode(GAME_MODE_MENU); });
+    menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
 
     readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20,
       function(on)
@@ -2119,6 +2122,7 @@ var GamePlayScene = function(game, stage)
           )
         )
         {
+          click_aud.play();
           levels[cur_level].complete++;
 
           if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
@@ -2142,6 +2146,7 @@ var GamePlayScene = function(game, stage)
           )
         )
         {
+          click_aud.play();
           if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
           else
           {
@@ -2155,7 +2160,7 @@ var GamePlayScene = function(game, stage)
     if(print_debug)
       printButton = new ButtonBox(self.c.width-10-80, 90, 80, 20, function(on) { self.print(); });
 
-    composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { if(levels[cur_level].myE1_visible) self.animateComposition(); });
+    composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
     composeButton.draw = function(canv)
     {
       if(composeButton.down) canv.context.strokeStyle = "#00F400";
@@ -2205,6 +2210,9 @@ var GamePlayScene = function(game, stage)
 
 
     self.setMode(GAME_MODE_MENU);
+
+    click_aud = new Aud("assets/click_0.wav");
+    click_aud.load;
   };
 
   self.requestLevel = function(lvl)
