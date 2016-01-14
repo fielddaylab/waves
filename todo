@@ -1,10 +1,9 @@
-- popups w/ text
+- text unreadable
+- should say "wavelength", not "frequency"
+- solution for disabled buttons
+- "play" is toggle, not button
+- no buttons are "knobs"
 
-- ability to create 'n test levels
-- start w/ viz engaged on some levels
+- obvious popups need art
+- obvious levels need art
 
-- random display n completes
-- hit "skip" counts +1 complete *if* complete
-- start playgrounds/certain levels with vis on
-- - or levels with "viz recommended!" ?
-- "toggle" button should be available (not dark) even when line not enabled
