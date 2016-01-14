@@ -999,6 +999,13 @@ var GamePlayScene = function(game, stage)
   var n_levels;
   var levels;
 
+  var bg_gradient = new Image(); bg_gradient.src = "assets/wave-machine-background.jpg";
+  var bg_machine = new Image(); bg_machine.src = "assets/wave-machine-transparent.png";
+  var toggle_up = new Image(); toggle_up.src = "assets/toggle-up-button.png";
+  var toggle_down = new Image(); toggle_down.src = "assets/toggle-down-button.png";
+  var slider = new Image(); slider.src = "assets/slider-button.png";
+  var knob = new Image(); knob.src = "assets/knob-button.png";
+
   self.ready = function()
   {
     dbugger = new Debugger({source:document.getElementById("debug_div")});
@@ -2399,7 +2406,7 @@ var GamePlayScene = function(game, stage)
     if(game_mode == GAME_MODE_MENU)
       clip.desired_y = 20;
     else if(game_mode == GAME_MODE_PLAY)
-      clip.desired_y = 500;
+      clip.desired_y = self.c.height+20;
   }
 
   var t = 0;
@@ -2460,6 +2467,9 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
+    self.dc.context.drawImage(bg_gradient, 0, 0, self.c.width, self.c.height);
+    self.dc.context.drawImage(bg_machine, 0, 0, self.c.width, self.c.height);
+
     if(!levels[cur_level].playground)
     {
       //pulsing goal
