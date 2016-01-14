@@ -1,8 +1,12 @@
 var click_aud;
+var global_slider_img;
+var global_dial_img;
+var global_toggle_up;
+var global_toggle_down;
 
-var default_completeness = 1;
+var default_completeness = 0;
 var print_debug = false;
-var placer_debug = true;
+var placer_debug = false;
 
 var dbugger;
 
@@ -284,9 +288,6 @@ var GraphDrawer = function(composition, x, y, w, h)
     }
 
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
-    canv.context.lineWidth = 1;
-    canv.context.strokeStyle = "#000000";
-    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
   }
 
   self.dirty = function()
@@ -462,10 +463,10 @@ var ComponentEditor = function(component, color, side)
     self.wavelength_y = 762;
     self.amplitude_y = 798;
 
-    self.toggle_x = 221;
-    self.toggle_y = 552;
-    self.toggle_w = 48;
-    self.toggle_h = 48;
+    self.toggle_x = 233;
+    self.toggle_y = 512;
+    self.toggle_w = 37;
+    self.toggle_h = 99;
 
     self.play_x = 212;
     self.play_y = 700;
@@ -496,10 +497,10 @@ var ComponentEditor = function(component, color, side)
     self.wavelength_y = 762;
     self.amplitude_y = 798;
 
-    self.toggle_x = 952;
-    self.toggle_y = 552;
-    self.toggle_w = 48;
-    self.toggle_h = 48;
+    self.toggle_x = 965;
+    self.toggle_y = 512;
+    self.toggle_w = 37;
+    self.toggle_h = 99;
 
     self.play_x = 980;
     self.play_y = 700;
@@ -521,21 +522,26 @@ var ComponentEditor = function(component, color, side)
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   var b_h = ((self.h/2)-(4*10))/3;
-  self.reset_button  = new ButtonBox(self.reset_x, self.reset_y, self.reset_w, self.reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); });
+  self.reset_button  = new ButtonBox(self.reset_x, self.reset_y, self.reset_w, self.reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
   self.toggle_button = new ToggleBox(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
-  self.play_button   = new ToggleBox(self.play_x, self.play_y, self.play_w, self.play_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); });
+  self.toggle_button.draw = function(canv)
+  {
+    if(!self.goal_contribution) canv.context.drawImage(global_toggle_down, self.toggle_button.x,self.toggle_button.y+28,self.toggle_button.w,self.toggle_button.h-28);
+    else                        canv.context.drawImage(global_toggle_up,   self.toggle_button.x,self.toggle_button.y   ,self.toggle_button.w,self.toggle_button.h-28);
+  }
+  self.play_button   = new ToggleBox(self.play_x, self.play_y, self.play_w, self.play_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
   self.goal_contribution = 1;
 
   self.amplitude_slider  = new SmoothSliderBox(    self.sliders_x, self.amplitude_y,  self.sliders_w, self.sliders_h, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
   self.wavelength_slider = new SmoothSliderSqrtBox(self.sliders_x, self.wavelength_y, self.sliders_w, self.sliders_h, graph_min_wavelength, graph_max_wavelength, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
   self.offset_slider     = new SmoothSliderBox(    self.sliders_x, self.offset_y,     self.sliders_w, self.sliders_h, graph_min_offset,         graph_max_offset,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
 
-  self.offset_dec_button = new ButtonBox(self.sliders_x-20, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
-  self.offset_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
-  self.wavelength_dec_button = new ButtonBox(self.sliders_x-20, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); });
-  self.wavelength_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); });
-  self.amplitude_dec_button = new ButtonBox(self.sliders_x-20, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); });
-  self.amplitude_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); });
+  self.offset_dec_button = new ButtonBox(self.sliders_x-20, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); }); self.offset_dec_button.draw = function(canv) {};
+  self.offset_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); }); self.offset_inc_button.draw = function(canv) {};
+  self.wavelength_dec_button = new ButtonBox(self.sliders_x-20, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); }); self.wavelength_dec_button.draw = function(canv) {};
+  self.wavelength_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); }); self.wavelength_inc_button.draw = function(canv) {};
+  self.amplitude_dec_button = new ButtonBox(self.sliders_x-20, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); }); self.amplitude_dec_button.draw = function(canv) {};
+  self.amplitude_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); }); self.amplitude_inc_button.draw = function(canv) {};
 
   self.enabled = true;
   self.visible = true;
@@ -574,7 +580,6 @@ var ComponentEditor = function(component, color, side)
     clicker.register(self.amplitude_dec_button);
     presser.register(self.amplitude_inc_button);
     clicker.register(self.amplitude_inc_button);
-
   }
 
   self.setDefaults = function(offset, wavelength, amplitude)
@@ -644,28 +649,23 @@ var ComponentEditor = function(component, color, side)
 
     self.graph.draw(canv);
 
-    self.reset_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText("reset",self.reset_button.x+5,self.reset_button.y+15);
+    self.reset_button.draw(canv);
     if(self.toggle_enabled)
     {
       self.toggle_button.draw(canv);
-      canv.context.fillStyle = "#000000";
-      canv.context.fillText("on/off",self.toggle_button.x,self.toggle_button.y+15);
     }
-    self.play_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText("> / ||",self.play_button.x+5,self.play_button.y+15);
+    self.play_button.draw(canv);
 
-    self.offset_dec_button.draw(canv);     canv.context.fillStyle = "#000000"; canv.context.fillText("<",self.offset_dec_button.x+10,self.offset_dec_button.y+15);
-    self.offset_inc_button.draw(canv);     canv.context.fillStyle = "#000000"; canv.context.fillText(">",self.offset_inc_button.x+10,self.offset_inc_button.y+15);
-    self.wavelength_dec_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText("<",self.wavelength_dec_button.x+10,self.wavelength_dec_button.y+15);
-    self.wavelength_inc_button.draw(canv); canv.context.fillStyle = "#000000"; canv.context.fillText(">",self.wavelength_inc_button.x+10,self.wavelength_inc_button.y+15);
-    self.amplitude_dec_button.draw(canv);  canv.context.fillStyle = "#000000"; canv.context.fillText("<",self.amplitude_dec_button.x+10,self.amplitude_dec_button.y+15);
-    self.amplitude_inc_button.draw(canv);  canv.context.fillStyle = "#000000"; canv.context.fillText(">",self.amplitude_inc_button.x+10,self.amplitude_inc_button.y+15);
+    self.offset_dec_button.draw(canv);
+    self.offset_inc_button.draw(canv);
+    self.wavelength_dec_button.draw(canv);
+    self.wavelength_inc_button.draw(canv);
+    self.amplitude_dec_button.draw(canv);
+    self.amplitude_inc_button.draw(canv);
 
-    canv.context.lineWidth = 1;
-    canv.context.strokeStyle = "#000000";
-    self.offset_slider.draw(canv); canv.context.fillText("offset",self.offset_slider.x,self.offset_slider.y);
-    self.wavelength_slider.draw(canv); canv.context.fillText("wavelength",self.wavelength_slider.x,self.wavelength_slider.y);
-    self.amplitude_slider.draw(canv); canv.context.fillText("amplitude",self.amplitude_slider.x,self.amplitude_slider.y);
-    canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w,self.h);
+    self.offset_slider.draw(canv);
+    self.wavelength_slider.draw(canv);
+    self.amplitude_slider.draw(canv);
 
     if(!self.enabled)
     {
@@ -1069,6 +1069,10 @@ var GamePlayScene = function(game, stage)
   var toggle_down = new Image(); toggle_down.src = "assets/toggle-down-button.png";
   var slider = new Image(); slider.src = "assets/slider-button.png";
   var knob = new Image(); knob.src = "assets/knob-button.png";
+  global_slider_img = slider;
+  global_dial_img = knob;
+  global_toggle_up = toggle_up;
+  global_toggle_down = toggle_down;
 
   self.ready = function()
   {
@@ -2231,26 +2235,11 @@ var GamePlayScene = function(game, stage)
     if(print_debug)
       printButton = new ButtonBox(self.c.width-10-80, 90, 80, 20, function(on) { self.print(); });
 
-    composeButton = new ButtonBox((self.c.width/2)-20, self.c.height/2+10, 40, (self.c.height/2)-20, function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
+    composeButton = new ButtonBox(597, 730, 37, 99, function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
     composeButton.draw = function(canv)
     {
-      if(composeButton.down) canv.context.strokeStyle = "#00F400";
-      else          canv.context.strokeStyle = "#000000";
-
-      canv.context.fillStyle = "#00F400";
-
-      var max_p = (myAnimDisplay.n_samples*2)+myAnimDisplay.frames_per_sample;
-      if(!levels[cur_level].myE1_visible) max_p = myAnimDisplay.n_samples+myAnimDisplay.frames_per_sample;
-      if(max_p < myAnimDisplay.progress) max_p = myAnimDisplay.progress;
-      canv.context.fillRect(composeButton.x,composeButton.y,composeButton.w,(composeButton.h*myAnimDisplay.progress/max_p));
-      canv.context.strokeRect(composeButton.x+0.5,composeButton.y+0.5,composeButton.w,composeButton.h);
-
-      canv.context.fillStyle = "#000000";
-      canv.context.save();
-      canv.context.translate(this.x, this.y);
-      canv.context.rotate(Math.PI/2);
-      canv.context.fillText("show wave contributions", 20, -20);
-      canv.context.restore();
+      if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(toggle_up,composeButton.x,composeButton.y,composeButton.w,composeButton.h-28);
+      else                   canv.context.drawImage(toggle_down,composeButton.x,composeButton.y+28,composeButton.w,composeButton.h-28);
     }
 
     validator = new Validator(myComp, gComp);

@@ -247,8 +247,8 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.w = w;
   self.h = h;
 
-  self.slit_x = Math.round(self.x + self.w/20);
-  self.slit_w = Math.round(self.w - self.w/10);
+  self.slit_x = Math.round(self.x + self.w/10);
+  self.slit_w = Math.round(self.w - self.w/5);
 
   self.min_val = min_val;
   self.max_val = max_val;
@@ -298,11 +298,8 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "#333333";
-    canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
-    canv.context.fillStyle = "#000000";
     var switch_x = self.slit_x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.slit_w);
-    canv.context.strokeRect(switch_x-(self.w/20)+0.5,self.y+0.5,(self.w/10),self.h);
+    canv.context.drawImage(global_slider_img, switch_x-(self.w/10)+0.5,self.y+0.5,(self.w/5),self.h);
   }
 
   self.print = function()
@@ -320,8 +317,8 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.w = w;
   self.h = h;
 
-  self.slit_x = self.x + self.w/20;
-  self.slit_w = self.w - self.w/10;
+  self.slit_x = self.x + self.w/10;
+  self.slit_w = self.w - self.w/5;
 
   self.min_val = min_val;
   self.max_val = max_val;
@@ -380,11 +377,8 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "#333333";
-    canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
-    canv.context.fillStyle = "#000000";
     var switch_x = self.slit_x+(((self.val-self.min_val)/(self.max_val-self.min_val))*self.slit_w);
-    canv.context.strokeRect(switch_x-(self.w/20)+0.5,self.y+0.5,(self.w/10),self.h);
+    canv.context.drawImage(global_slider_img, switch_x-(self.w/10)+0.5,self.y+0.5,(self.w/5),self.h);
   }
 
   self.print = function()
@@ -402,8 +396,8 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback)
   self.w = w;
   self.h = h;
 
-  self.slit_x = self.x + self.w/20;
-  self.slit_w = self.w - self.w/10;
+  self.slit_x = self.x + self.w/10;
+  self.slit_w = self.w - self.w/5;
 
   self.min_val = min_val;
   self.max_val = max_val;
@@ -464,13 +458,10 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback)
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "#333333";
-    canv.context.fillRect(self.slit_x,self.y+self.h/3,self.slit_w,self.h/3);
-    canv.context.fillStyle = "#000000";
     var t = (self.val-self.min_val)/(self.max_val-self.min_val);
     t = Math.sqrt(t);
     var switch_x = self.slit_x+(t*self.slit_w);
-    canv.context.strokeRect(switch_x-(self.w/20)+0.5,self.y+0.5,(self.w/10),self.h);
+    canv.context.drawImage(global_slider_img, switch_x-(self.w/10)+0.5,self.y+0.5,(self.w/5),self.h);
   }
 
   self.print = function()
