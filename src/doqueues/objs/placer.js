@@ -17,7 +17,8 @@ var Placer = function(asset, x,y,w,h)
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "#000000";
+    canv.context.strokeStyle = "#FF0000";
+    canv.context.fillStyle = "#FF0000";
     canv.context.strokeRect(self.x,self.y,self.w,self.h);
     canv.context.fillText(self.text,self.x,self.y+self.h);
     /*

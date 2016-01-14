@@ -2,7 +2,7 @@ var click_aud;
 
 var default_completeness = 1;
 var print_debug = false;
-var placer_debug = false;
+var placer_debug = true;
 
 var dbugger;
 
@@ -436,42 +436,106 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
   }
 }
 
-var ComponentEditor = function(component, color, x,y,w,h)
+var ComponentEditor = function(component, color, side)
 {
   var self = this;
   self.component = component;
 
   self.color = color;
 
-  self.x = x;
-  self.y = y;
-  self.w = w;
-  self.h = h;
+  if(side == "left")
+  {
+    self.x = 209;
+    self.y = 522;
+    self.w = 369;
+    self.h = 325;
+
+    self.graph_x = 307;
+    self.graph_y = 529;
+    self.graph_w = 266;
+    self.graph_h = 106;
+
+    self.sliders_x = 301;
+    self.sliders_w = 240;
+    self.sliders_h = 20;
+    self.offset_y = 725;
+    self.wavelength_y = 762;
+    self.amplitude_y = 798;
+
+    self.toggle_x = 221;
+    self.toggle_y = 552;
+    self.toggle_w = 48;
+    self.toggle_h = 48;
+
+    self.play_x = 212;
+    self.play_y = 700;
+    self.play_w = 48;
+    self.play_h = 48;
+
+    self.reset_x = 212;
+    self.reset_y = 776;
+    self.reset_w = 48;
+    self.reset_h = 48;
+  }
+  else if(side == "right")
+  {
+    self.x = 666;
+    self.y = 521;
+    self.w = 363;
+    self.h = 325;
+
+    self.graph_x = 671;
+    self.graph_y = 529;
+    self.graph_w = 266;
+    self.graph_h = 106;
+
+    self.sliders_x = 697;
+    self.sliders_w = 240;
+    self.sliders_h = 20;
+    self.offset_y = 725;
+    self.wavelength_y = 762;
+    self.amplitude_y = 798;
+
+    self.toggle_x = 952;
+    self.toggle_y = 552;
+    self.toggle_w = 48;
+    self.toggle_h = 48;
+
+    self.play_x = 980;
+    self.play_y = 700;
+    self.play_w = 48;
+    self.play_h = 48;
+
+    self.reset_x = 980;
+    self.reset_y = 776;
+    self.reset_w = 48;
+    self.reset_h = 48;
+  }
 
   self.default_offset = graph_default_offset;
   self.default_wavelength = graph_default_wavelength;
   self.default_amplitude = graph_default_amplitude;
 
-  self.graph = new GraphDrawer(self.component, self.x+10, self.y+10, self.w-20, (self.h-20)/2);
+  self.graph = new GraphDrawer(self.component, self.graph_x, self.graph_y, self.graph_w, self.graph_h);
   self.graph.color = self.color;
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   var b_h = ((self.h/2)-(4*10))/3;
-  self.reset_button  = new ButtonBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*1)+b_h*0, 30, b_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); });
-  self.toggle_button = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*2)+b_h*1, 30, b_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
-  self.play_button   = new ToggleBox(self.x+self.w-10-30, self.y+(self.h/2)+(10*3)+b_h*2, 30, b_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); });
+  self.reset_button  = new ButtonBox(self.reset_x, self.reset_y, self.reset_w, self.reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); });
+  self.toggle_button = new ToggleBox(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
+  self.play_button   = new ToggleBox(self.play_x, self.play_y, self.play_w, self.play_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); });
   self.goal_contribution = 1;
 
-  self.amplitude_slider  = new SmoothSliderBox(    self.x+10+30, self.y+self.h/2+10,          self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
-  self.wavelength_slider = new SmoothSliderSqrtBox(self.x+10+30, self.y+self.h/2+self.h/4-10, self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_wavelength, graph_max_wavelength, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
-  self.offset_slider     = new SmoothSliderBox(    self.x+10+30, self.y+self.h-10-20,         self.w-10-self.reset_button.w-10-20-10-10-30, 20, graph_min_offset,         graph_max_offset,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
+  self.amplitude_slider  = new SmoothSliderBox(    self.sliders_x, self.amplitude_y,  self.sliders_w, self.sliders_h, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
+  self.wavelength_slider = new SmoothSliderSqrtBox(self.sliders_x, self.wavelength_y, self.sliders_w, self.sliders_h, graph_min_wavelength, graph_max_wavelength, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
+  self.offset_slider     = new SmoothSliderBox(    self.sliders_x, self.offset_y,     self.sliders_w, self.sliders_h, graph_min_offset,         graph_max_offset,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
 
-  self.offset_dec_button = new ButtonBox(self.x+10, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
-  self.offset_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.offset_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
-  self.wavelength_dec_button = new ButtonBox(self.x+10, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); });
-  self.wavelength_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.wavelength_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); });
-  self.amplitude_dec_button = new ButtonBox(self.x+10, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); });
-  self.amplitude_inc_button = new ButtonBox(self.x+self.w-10-self.reset_button.w-10-20, self.amplitude_slider.y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); });
+  self.offset_dec_button = new ButtonBox(self.sliders_x-20, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); });
+  self.offset_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); });
+  self.wavelength_dec_button = new ButtonBox(self.sliders_x-20, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); });
+  self.wavelength_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); });
+  self.amplitude_dec_button = new ButtonBox(self.sliders_x-20, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); });
+  self.amplitude_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); });
 
   self.enabled = true;
   self.visible = true;
@@ -1022,14 +1086,14 @@ var GamePlayScene = function(game, stage)
     myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
-    myDisplay = new GraphDrawer(myComp, 10, 10, self.c.width-20, ((self.c.height-20)/2));
+    myDisplay = new GraphDrawer(myComp, 268, 207, 703, 249);
     myDisplay.color = "#FF00FF";
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
     myDisplay.draw_zero_y = true;
-    nullEditor = new ComponentEditor(myC0, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
-    myE0 = new ComponentEditor(myC0, "#FF0000",                     10, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
-    myE1 = new ComponentEditor(myC1, "#0000FF", (self.c.width/2)+10+20, self.c.height/2+10, (self.c.width/2)-20-20,   (self.c.height/2)-20);
+    nullEditor = new ComponentEditor(myC0, "#FF0000", "left");
+    myE0 = new ComponentEditor(myC0, "#FF0000", "left");
+    myE1 = new ComponentEditor(myC1, "#0000FF", "right");
 
     s_play_lvl = n_levels;
     //lvl? //single-wave playground
@@ -2092,20 +2156,20 @@ var GamePlayScene = function(game, stage)
 
     clip = new ClipBoard(20,20,self.c.width-40,self.c.height-20,self,levels);
 
-    e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, myE0.x+10, myE0.y+10, myE0.w-20, (myE0.h/2)-10);
-    e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  myE1.x+10, myE1.y+10, myE1.w-20, (myE1.h/2)-10);
-    myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  10, 10, self.c.width-20, (self.c.height-20)/2);
+    e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, myE0.graph.x, myE0.graph.y, myE0.graph.w, myE0.graph.h);
+    e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  myE1.graph.x, myE1.graph.y, myE1.graph.w, myE1.graph.h);
+    myAnimDisplay = new CompositionAnimationDrawer(myC0,  myC1,  myDisplay.x, myDisplay.y, myDisplay.w, myDisplay.h);
 
     gC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     gComp = new Composition(gC0, gC1);
-    gDisplay = new GraphDrawer(gComp, 10, 10, self.c.width-20, ((self.c.height-20)/2));
+    gDisplay = new GraphDrawer(gComp, myDisplay.x, myDisplay.y, myDisplay.w, myDisplay.h);
     gDisplay.draw_zero_x = false;
     gDisplay.draw_zero_y = true;
     gDisplay.lineWidth = 8;
     gDisplay.color = "#88FF88";
     gDisplay.dotted = false;
-    g2Display = new GraphDrawer(gComp, 10, 10, self.c.width-20, ((self.c.height-20)/2));
+    g2Display = new GraphDrawer(gComp, myDisplay.x, myDisplay.y, myDisplay.w, myDisplay.h);
     g2Display.draw_zero_x = false;
     g2Display.draw_zero_y = false;
     g2Display.lineWidth = 2;
