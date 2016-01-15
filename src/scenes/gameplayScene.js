@@ -1167,7 +1167,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "A snapshot of a wave can be defined by 3 properties- its Amplitude, Wavelength, and Offset. Alter the red wave's offset to match the green wave.";
+    level.blurb_txt = "A snapshot of a wave can be defined by 3 properties- its Amplitude, Wavelength, and Offset. Alter the red wave's offset to match the dark wave.";
     level.blurb_img = "offset";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1201,7 +1201,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "A wave's Wavelength is the distance between each of its pulses. Again, use the sliders to match the green wave.";
+    level.blurb_txt = "A wave's Wavelength is the distance between each of its pulses. Again, use the sliders to match the dark wave.";
     level.blurb_img = "wavelength";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1269,7 +1269,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to match the green.";
+    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to match the dark.";
     levels.push(level);
 
     //lvl? //all three (low amp wave looks different)
@@ -1642,7 +1642,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to interfere with the blue wave so that they overlap just enough to greate the green wave.";
+    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to interfere with the blue wave so that they overlap just enough to greate the dark wave.";
     levels.push(level);
 
     pl_random_lvl = n_levels;
@@ -1820,7 +1820,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "If this wave looks intimidating, just try to mentally break the green wave down into two- one for its little squiggles, and one for its big squiggles. Then create that.";
+    level.blurb_txt = "If this wave looks intimidating, just try to mentally break the dark wave down into two- one for its little squiggles, and one for its big squiggles. Then create that.";
     levels.push(level);
 
     //lvl? //zero amp high freq
@@ -2049,7 +2049,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "Now you can edit either wave. Take a look at the green wave, then the purple wave. Think which wave (the blue or the red) will you need to alter to create the green?";
+    level.blurb_txt = "Now you can edit either wave. Take a look at the dark wave, then the purple wave. Think which wave (the blue or the red) will you need to alter to create the dark?";
     levels.push(level);
 
     ds_levels_last_lvl = n_levels;
@@ -2134,7 +2134,7 @@ var GamePlayScene = function(game, stage)
     level.blurb_y = 270;
     level.blurb_w = 400;
     level.blurb_h = 130;
-    level.blurb_txt = "You've seen this green wave before. Edit both waves to construct a solution.";
+    level.blurb_txt = "You've seen this dark wave before. Edit both waves to construct a solution.";
     levels.push(level);
 
     d_random_lvl = n_levels;
@@ -2182,7 +2182,7 @@ var GamePlayScene = function(game, stage)
     gDisplay.draw_zero_x = false;
     gDisplay.draw_zero_y = true;
     gDisplay.lineWidth = 8;
-    gDisplay.color = "#88FF88";
+    gDisplay.color = "#444444";
     gDisplay.dotted = false;
     g2Display = new GraphDrawer(gComp, myDisplay.x, myDisplay.y, myDisplay.w, myDisplay.h);
     g2Display.draw_zero_x = false;
