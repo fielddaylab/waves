@@ -1071,7 +1071,6 @@ var GamePlayScene = function(game, stage)
   var n_levels;
   var levels;
 
-  var bg_gradient = new Image(); bg_gradient.src = "assets/wave-machine-background.jpg";
   var bg_machine = new Image(); bg_machine.src = "assets/wave-machine.png";
   var toggle_up = new Image(); toggle_up.src = "assets/toggle-up-button.png";
   var toggle_down = new Image(); toggle_down.src = "assets/toggle-down-button.png";
@@ -1084,7 +1083,7 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
-    dbugger = new Debugger({source:document.getElementById("debug_div")});
+    //dbugger = new Debugger({source:document.getElementById("debug_div")});
     if(placer_debug)
     {
       var asset = new Image();
@@ -2426,7 +2425,7 @@ var GamePlayScene = function(game, stage)
 
   self.print = function()
   {
-    dbugger.log(validator.delta);
+    //dbugger.log(validator.delta);
     console.log("myE0: (on lvl "+cur_level+")");
     console.log("offset: "+myE0.offset_slider.pixelAtVal(myE0.offset_slider.val)/144);
     console.log("wavelength: "+myE0.wavelength_slider.pixelAtVal(myE0.wavelength_slider.val)/144);
@@ -2530,7 +2529,6 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
-    self.dc.context.drawImage(bg_gradient, 0, 0, self.c.width, self.c.height);
     self.dc.context.drawImage(bg_machine, 0, 0, self.c.width, self.c.height);
 
     if(!levels[cur_level].playground)
