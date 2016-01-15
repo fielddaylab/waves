@@ -4,7 +4,7 @@ var global_dial_img;
 var global_toggle_up;
 var global_toggle_down;
 
-var default_completeness = 1;
+var default_completeness = 0;
 var print_debug = false;
 var placer_debug = false;
 
@@ -678,7 +678,9 @@ var ComponentEditor = function(component, color, side)
     if(!self.enabled)
     {
       canv.context.fillStyle = "rgba(100,100,100,0.5)";
-      canv.context.fillRect(self.x,self.y,self.w,self.h);
+      if(side == "left")       canv.context.fillRect(210,687,346,158);
+      else if(side == "right") canv.context.fillRect(681,686,348,159);
+
     }
   }
 }
