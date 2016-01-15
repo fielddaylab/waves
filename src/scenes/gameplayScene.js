@@ -643,9 +643,15 @@ var ComponentEditor = function(component, color, side)
       self.component.dirty();
   }
 
+  var bars = new Image();
+  if(side == "left")       bars.src = "assets/left-panel.png";
+  else if(side == "right") bars.src = "assets/right-panel.png";
   self.draw = function(canv)
   {
     if(!self.visible) return;
+
+    if(side == "left")       canv.context.drawImage(bars,210,687,346,158);
+    else if(side == "right") canv.context.drawImage(bars,681,686,348,159);
 
     self.graph.draw(canv);
 
@@ -1064,7 +1070,7 @@ var GamePlayScene = function(game, stage)
   var levels;
 
   var bg_gradient = new Image(); bg_gradient.src = "assets/wave-machine-background.jpg";
-  var bg_machine = new Image(); bg_machine.src = "assets/wave-machine-transparent.png";
+  var bg_machine = new Image(); bg_machine.src = "assets/wave-machine.png";
   var toggle_up = new Image(); toggle_up.src = "assets/toggle-up-button.png";
   var toggle_down = new Image(); toggle_down.src = "assets/toggle-down-button.png";
   var slider = new Image(); slider.src = "assets/slider-button.png";
@@ -1079,7 +1085,9 @@ var GamePlayScene = function(game, stage)
     dbugger = new Debugger({source:document.getElementById("debug_div")});
     if(placer_debug)
     {
-      placer = new Placer({},100,100,100,100);
+      var asset = new Image();
+      asset.src = "assets/right-panel.png";
+      placer = new Placer(asset,100,100,100,100);
     }
     var level;
     cur_level = 0;
