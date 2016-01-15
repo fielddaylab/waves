@@ -4,7 +4,7 @@ var global_dial_img;
 var global_toggle_up;
 var global_toggle_down;
 
-var default_completeness = 0;
+var default_completeness = 1;
 var print_debug = false;
 var placer_debug = false;
 
@@ -451,7 +451,7 @@ var ComponentEditor = function(component, color, side)
     self.w = 369;
     self.h = 325;
 
-    self.graph_x = 307;
+    self.graph_x = 309;
     self.graph_y = 529;
     self.graph_w = 266;
     self.graph_h = 106;
@@ -485,7 +485,7 @@ var ComponentEditor = function(component, color, side)
     self.w = 363;
     self.h = 325;
 
-    self.graph_x = 671;
+    self.graph_x = 673;
     self.graph_y = 529;
     self.graph_w = 266;
     self.graph_h = 106;
@@ -655,12 +655,12 @@ var ComponentEditor = function(component, color, side)
 
     self.graph.draw(canv);
 
-    self.reset_button.draw(canv);
     if(self.toggle_enabled)
     {
       self.toggle_button.draw(canv);
     }
-    self.play_button.draw(canv);
+    self.play_button.draw(canv); canv.context.fillText("play",self.play_button.x+15,self.play_button.y+self.play_button.h+10);
+    self.reset_button.draw(canv); canv.context.fillText("reset",self.reset_button.x+12,self.reset_button.y+self.reset_button.h+10);
 
     self.offset_dec_button.draw(canv);
     self.offset_inc_button.draw(canv);
@@ -669,9 +669,11 @@ var ComponentEditor = function(component, color, side)
     self.amplitude_dec_button.draw(canv);
     self.amplitude_inc_button.draw(canv);
 
-    self.offset_slider.draw(canv);
-    self.wavelength_slider.draw(canv);
-    self.amplitude_slider.draw(canv);
+    canv.context.lineWidth = 1;
+    canv.context.strokeStyle = "#000000";
+    self.offset_slider.draw(canv); canv.context.fillText("offset",self.offset_slider.x,self.offset_slider.y);
+    self.wavelength_slider.draw(canv); canv.context.fillText("wavelength",self.wavelength_slider.x,self.wavelength_slider.y);
+    self.amplitude_slider.draw(canv); canv.context.fillText("amplitude",self.amplitude_slider.x,self.amplitude_slider.y);
 
     if(!self.enabled)
     {
@@ -2576,7 +2578,11 @@ var GamePlayScene = function(game, stage)
       printButton.draw(self.dc);
 
     if(levels[cur_level].myE1_visible)
+    {
       composeButton.draw(self.dc);
+      self.dc.context.fillText("show",         composeButton.x+5,composeButton.y-20);
+      self.dc.context.fillText("contributions",composeButton.x-10,composeButton.y-5);
+    }
 
     clip.draw(self.dc);
 
