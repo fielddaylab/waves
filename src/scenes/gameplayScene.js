@@ -9,6 +9,9 @@ var global_lvl_button_outline;
 var global_lvl_lock;
 var global_close;
 var global_yard_logo;
+var global_tall;
+var global_short;
+var global_menu;
 
 var blue = "#76DAE2";
 
@@ -971,21 +974,28 @@ var Blurb = function(scene)
 
   self.draw = function(canv)
   {
+    var box_height = 300;
     canv.context.fillStyle = blue;
-    canv.context.fillRect(0,canv.canvas.height-200,canv.canvas.width,200);
+    canv.context.fillRect(0,canv.canvas.height-box_height,canv.canvas.width,box_height);
 
-    canv.context.fillStyle = "#FFFFFF";
     canv.context.font = "30px stump";
     for(var i = 0; i < self.lines.length; i++)
-      canv.context.fillText(self.lines[i],300,canv.canvas.height-150+(i*40),canv.canvas.width-400);
+    {
+      canv.context.fillStyle = "#000000";
+      canv.context.fillText(self.lines[i],300-1,canv.canvas.height-box_height+((i+1)*40)-1,canv.canvas.width-400);
+      canv.context.fillStyle = "#FFFFFF";
+      canv.context.fillText(self.lines[i],300,canv.canvas.height-box_height+((i+1)*40),canv.canvas.width-400);
+    }
 
-    if(self.img_el)
-      canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
+    //if(self.img_el)
+      //canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
 
     canv.context.fillRect(self.x,self.y,self.w,self.h);
     canv.context.fillStyle = "#000000";
     canv.context.fillText("Ok!",self.x+10,self.y+self.h-10,self.w);
     canv.context.font = "12px stump";
+
+    canv.context.drawImage(global_tall,50,canv.canvas.height-500,170,450);
   }
 
   self.click = function(evt)
@@ -1057,6 +1067,9 @@ var GamePlayScene = function(game, stage)
   var lvl_lock = new Image(); lvl_lock.src = "assets/icon-locked.png";
   var close = new Image(); close.src = "assets/icon-close.png";
   var yard_logo = new Image(); yard_logo.src = "assets/theyard-logo.png";
+  var tall = new Image(); tall.src = "assets/scout.png";
+  var short = new Image(); short.src = "assets/honey.png";
+  var menu = new Image(); menu.src = "assets/icon-menu.png";
   global_slider_img = slider;
   global_dial_img = knob;
   global_toggle_up = toggle_up;
@@ -1067,6 +1080,9 @@ var GamePlayScene = function(game, stage)
   global_lvl_lock = lvl_lock;
   global_close = close;
   global_yard_logo = yard_logo;
+  global_tall = tall;
+  global_short = short;
+  global_menu = menu;
 
   self.ready = function()
   {
@@ -2019,9 +2035,13 @@ var GamePlayScene = function(game, stage)
 
     blurb = new Blurb(self);
 
-    menuButton  = new ButtonBox(10, 10, 80, 20, function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    menuButton  = new ButtonBox(self.c.width-55, 15, 30, 30, function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    menuButton.draw = function(canv)
+    {
+      canv.context.drawImage(global_menu,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
+    }
 
-    readyButton = new ButtonBox(self.c.width-10-80, 10, 80, 20,
+    readyButton = new ButtonBox(821,219,139,49,
       function(on)
       {
         if( //if this is showing
@@ -2367,14 +2387,7 @@ var GamePlayScene = function(game, stage)
     e1AnimDisplay.draw(self.dc);
     myAnimDisplay.draw(self.dc);
 
-    if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
-    {
-      readyButton.draw(self.dc); readyButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("next",readyButton.x+10,readyButton.y+15);
-    }
-    //if(!levels[cur_level].playground)
-      //vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
-    menuButton.draw(self.dc); self.dc.context.fillStyle = "#000000"; self.dc.context.fillText("menu",menuButton.x+10,menuButton.y+15);
     if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
       skipButton.draw(self.dc); self.dc.context.fillStyle = "#000000";
@@ -2400,6 +2413,20 @@ var GamePlayScene = function(game, stage)
     self.dc.context.font = "30px stump";
     self.dc.context.textAlign = "right";
     self.dc.context.fillText("The Wave Generator",self.dc.canvas.width-80,40);
+    menuButton.draw(self.dc);
+
+    if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
+    {
+      //readyButton.draw(self.dc); //don't need to "draw button"
+      self.dc.context.font = "50px stump";
+      self.dc.context.textAlign = "right";
+      self.dc.context.fillStyle = "#000000";
+      self.dc.context.fillText("Next!",readyButton.x+readyButton.w-3,readyButton.y+readyButton.h-10-3);
+      self.dc.context.fillStyle = "#FFFFFF";
+      self.dc.context.fillText("Next!",readyButton.x+readyButton.w,readyButton.y+readyButton.h-10);
+    }
+    //if(!levels[cur_level].playground)
+      //vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
 
     clip.draw(self.dc);
 
