@@ -13,6 +13,8 @@ var global_tall;
 var global_short;
 var global_menu;
 
+var global_n_ticks;
+
 var blue = "#76DAE2";
 
 var default_completeness = 0;
@@ -851,7 +853,10 @@ var ClipBoard = function(w,h,scene,levels)
     if(this.req_lvl < 0 || levels[this.req_lvl].complete)
     {
       if(!levels[this.lvl].complete)
-        canv.context.drawImage(global_lvl_button_outline,this.x-10,this.y-10,this.w+20,this.h+20);
+      {
+        var s = (((Math.sin(global_n_ticks/20)+1)/4)+0.5)*10;
+        canv.context.drawImage(global_lvl_button_outline,this.x-s,this.y-s,this.w+s*2,this.h+s*2);
+      }
       canv.context.drawImage(global_lvl_button,this.x,this.y,this.w,this.h);
     }
     else
@@ -1088,6 +1093,8 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
+    global_n_ticks = 0;
+
     //dbugger = new Debugger({source:document.getElementById("debug_div")});
     if(placer_debug)
     {
@@ -2307,6 +2314,8 @@ var GamePlayScene = function(game, stage)
   var t = 0;
   self.tick = function()
   {
+    global_n_ticks++;
+
     if(placer_debug)
     {
       placer_clicker.flush();
@@ -2412,15 +2421,17 @@ var GamePlayScene = function(game, stage)
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
     {
       //readyButton.draw(self.dc); //don't need to "draw button"
+      var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
       self.dc.context.font = "50px stump";
       self.dc.context.textAlign = "right";
       self.dc.context.fillStyle = "#000000";
-      self.dc.context.fillText("Next!",readyButton.x+readyButton.w-3,readyButton.y+readyButton.h-10-3);
+      self.dc.context.fillText("Next!",readyButton.x+readyButton.w-3,readyButton.y+readyButton.h-10-3+s);
       self.dc.context.fillStyle = "#FFFFFF";
-      self.dc.context.fillText("Next!",readyButton.x+readyButton.w,readyButton.y+readyButton.h-10);
+      self.dc.context.fillText("Next!",readyButton.x+readyButton.w,readyButton.y+readyButton.h-10+s);
     }
     else if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
+      var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
       //skipButton.draw(self.dc); //don't need to "draw button"
       self.dc.context.font = "50px stump";
       self.dc.context.textAlign = "right";
@@ -2428,16 +2439,16 @@ var GamePlayScene = function(game, stage)
       if(levels[cur_level].random)
       {
         self.dc.context.fillStyle = "#000000";
-        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3);
+        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3+s);
         self.dc.context.fillStyle = "#FFFFFF";
-        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10);
+        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10+s);
       }
       else
       {
         self.dc.context.fillStyle = "#000000";
-        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3);
+        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3+s);
         self.dc.context.fillStyle = "#FFFFFF";
-        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10);
+        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10+s);
       }
     }
     //if(!levels[cur_level].playground)
