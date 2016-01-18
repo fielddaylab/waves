@@ -948,9 +948,9 @@ var Blurb = function(scene)
     var found = 0;
     var searched = 0;
     var tentative_search = 0;
-    var width = canv.canvas.width-400;
+    var width = canv.canvas.width-600;
 
-    canv.context.font = "30px stump";
+    canv.context.font = "30px Open Sans";
 
     //stage.drawCanv.context.font=whaaaat;
     while(found < self.txt.length)
@@ -987,13 +987,13 @@ var Blurb = function(scene)
     canv.context.fillStyle = blue;
     canv.context.fillRect(0,canv.canvas.height-box_height,canv.canvas.width,box_height);
 
-    canv.context.font = "30px stump";
+    canv.context.font = "30px Open Sans";
     for(var i = 0; i < self.lines.length; i++)
     {
       canv.context.fillStyle = "#000000";
-      canv.context.fillText(self.lines[i],300-1,canv.canvas.height-box_height+((i+1)*40)-1,canv.canvas.width-400);
+      canv.context.fillText(self.lines[i],300-1,canv.canvas.height-box_height+((i+1)*40)-1,canv.canvas.width-600);
       canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillText(self.lines[i],300,canv.canvas.height-box_height+((i+1)*40),canv.canvas.width-400);
+      canv.context.fillText(self.lines[i],300,canv.canvas.height-box_height+((i+1)*40),canv.canvas.width-600);
     }
 
     //if(self.img_el)
@@ -1001,6 +1001,7 @@ var Blurb = function(scene)
 
     canv.context.fillRect(self.x,self.y,self.w,self.h);
     canv.context.fillStyle = "#000000";
+    canv.context.font = "30px stump";
     canv.context.fillText("Ok!",self.x+10,self.y+self.h-10,self.w);
     canv.context.font = "12px stump";
 
