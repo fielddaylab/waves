@@ -7,6 +7,7 @@ var global_lvl_button;
 var global_fade_lvl_button;
 var global_lvl_button_outline;
 var global_lvl_lock;
+var global_close;
 
 var default_completeness = 0;
 var print_debug = false;
@@ -809,7 +810,11 @@ var ClipBoard = function(w,h,scene,levels)
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(self.w-450,90,70,70, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button.draw = function(canv)
+  {
+    canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
+  }
 
   var bs = 110;
   var p = 30;
@@ -860,7 +865,7 @@ var ClipBoard = function(w,h,scene,levels)
   for(var i = 0; i < self.buttons.length; i++)
   {
     var b = self.buttons[i];
-    b.def_y = b.y;
+    b.def_y = b.y-self.pretend_y;
     if(i != 0) //for dismiss button, I know, hack
       b.draw = draw;
   }
@@ -875,9 +880,9 @@ var ClipBoard = function(w,h,scene,levels)
     canv.context.fillStyle = "#FFFFFF";
     canv.context.fillText("Levels",self.w/2,150+self.pretend_y);
     canv.context.font = "50px stump";
-    canv.context.fillText("Wave",c0+bs/2,r0-40+self.pretend_y);
-    canv.context.fillText("Pulse",c1+bs/2,r0-40+self.pretend_y);
-    canv.context.fillText("Composition",c3+bs/2,r0-40+self.pretend_y);
+    canv.context.fillText("Wave",c0+bs/2,r0-50+self.pretend_y);
+    canv.context.fillText("Pulse",c1+bs/2,r0-50+self.pretend_y);
+    canv.context.fillText("Composition",c3+bs/2,r0-50+self.pretend_y);
     canv.context.textAlign = "right";
     canv.context.fillText("Playground",c0-20,r0+bs/2+self.pretend_y);
     canv.context.fillText("Challenges",c0-20,r1+bs/2+self.pretend_y);
@@ -1056,6 +1061,7 @@ var GamePlayScene = function(game, stage)
   var fade_lvl_button = new Image(); fade_lvl_button.src = "assets/fade-level-bg.png";
   var lvl_button_outline = new Image(); lvl_button_outline.src = "assets/level-bg-outline.png";
   var lvl_lock = new Image(); lvl_lock.src = "assets/icon-locked.png";
+  var close = new Image(); close.src = "assets/icon-close.png";
   global_slider_img = slider;
   global_dial_img = knob;
   global_toggle_up = toggle_up;
@@ -1064,6 +1070,7 @@ var GamePlayScene = function(game, stage)
   global_fade_lvl_button = fade_lvl_button;
   global_lvl_button_outline = lvl_button_outline;
   global_lvl_lock = lvl_lock;
+  global_close = close;
 
   self.ready = function()
   {
