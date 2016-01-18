@@ -6,6 +6,11 @@
   font-family:'stump';
   src: url('assets/stump_one.otf');
 }
+body,div
+{
+  margin:0px;
+  padding:0px;
+}
 </style>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <script type='text/javascript' src='src/config.js'></script>
@@ -41,18 +46,34 @@
 var g;
 function begin()
 {
+  var w = (window.innerWidth-1233)/2;
+  document.getElementById("side_a").style.width = w+"px";
+  document.getElementById("side_b").style.width = w+"px";
+  document.getElementById("stage_container").style.left = w+"px";
+  document.getElementById("side_b").style.left = (w+1233)+"px";
+
   g = new Game({width:1233,height:1024,container:"stage_container"});
   g.begin();
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
+window.onresize = function(event)
+{
+  var w = (window.innerWidth-1233)/2;
+  document.getElementById("side_a").style.width = w+"px";
+  document.getElementById("side_b").style.width = w+"px";
+  document.getElementById("stage_container").style.left = w+"px";
+  document.getElementById("side_b").style.right = "2233px";
+};
 </script>
 
 </head>
-<body style="background-image:url('assets/wave-machine-background.jpg'); margin:0px; padding:0px;">
+<body style="background-image:url('assets/wave-machine-background.jpg'); width:100%; user-select:none;">
 
-<div style="position:absolute; top:0px; left:0px; background-color:#76DAE2; width:100%; height:60px;"></div>
-<div id="stage_container" style="position:relative; padding:0px; margin:0px auto; width:1233px; height:1024px; user-select:none;"> </div>
+<div style="position:absolute; top:0px; left:0px; background-color:#76DAE2; width:100%; height:60px; user-select:none;"></div>
+<div id="side_a" style="position:absolute; height:1024px; user-select:none;"> </div>
+<div id="stage_container" style="position:absolute; width:1233px; height:1024px; user-select:none;"> </div>
+<div id="side_b" style="position:absolute; height:1024px; user-select:none;"> </div>
 </body>
 </html>
 

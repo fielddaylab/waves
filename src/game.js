@@ -31,6 +31,11 @@ var Game = function(init)
       scenes[currentScene].draw();
       stage.draw(); //blits from offscreen canvas to on screen one
     }
+    if(currentScene == 2)
+    {
+      document.getElementById("side_a").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
+      document.getElementById("side_b").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
+    }
   };
 
   self.nextScene = function()

@@ -14,6 +14,7 @@ var global_short;
 var global_menu;
 
 var global_n_ticks;
+var global_bg_alpha;
 
 var blue = "#76DAE2";
 
@@ -877,7 +878,8 @@ var ClipBoard = function(w,h,scene,levels)
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "rgba(0,0,0,"+(1-((self.pretend_y*10)/self.h))+")";
+    global_bg_alpha = (1-((self.pretend_y*10)/self.h));
+    canv.context.fillStyle = "rgba(0,0,0,"+global_bg_alpha+")";
     canv.context.fillRect(0,0,self.w,self.h);
 
     canv.context.font = "100px stump";
@@ -929,7 +931,7 @@ var Blurb = function(scene)
   var self = this;
   //dimensions for clicker- to dismiss
   self.x = scene.dc.canvas.width-200;
-  self.y = scene.dc.canvas.height-100;
+  self.y = scene.dc.canvas.height-200;
   self.w = 100;
   self.h = 50;
 
@@ -981,7 +983,8 @@ var Blurb = function(scene)
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "rgba(0,0,0,"+(1-((20*10)/canv.canvas.height))+")"; //emulates clipboard fade
+    global_bg_alpha = (1-((20*10)/canv.canvas.height));
+    canv.context.fillStyle = "rgba(0,0,0,"+global_bg_alpha+")"; //emulates clipboard fade
     canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
     var box_height = 300;
     canv.context.fillStyle = blue;
@@ -991,14 +994,17 @@ var Blurb = function(scene)
     for(var i = 0; i < self.lines.length; i++)
     {
       canv.context.fillStyle = "#000000";
-      canv.context.fillText(self.lines[i],300-1,canv.canvas.height-box_height+((i+1)*40)-1,canv.canvas.width-600);
+      canv.context.fillText(self.lines[i],300-1,canv.canvas.height-box_height+50+((i+1)*40)-1,canv.canvas.width-600);
       canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillText(self.lines[i],300,canv.canvas.height-box_height+((i+1)*40),canv.canvas.width-600);
+      canv.context.fillText(self.lines[i],300,canv.canvas.height-box_height+50+((i+1)*40),canv.canvas.width-600);
     }
 
     //if(self.img_el)
       //canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
 
+    canv.context.fillStyle = "#CCCCCC";
+    canv.context.fillRect(self.x,self.y+10,self.w,self.h);
+    canv.context.fillStyle = "#FFFFFF";
     canv.context.fillRect(self.x,self.y,self.w,self.h);
     canv.context.fillStyle = "#000000";
     canv.context.font = "30px stump";
@@ -1097,6 +1103,7 @@ var GamePlayScene = function(game, stage)
   self.ready = function()
   {
     global_n_ticks = 0;
+    global_bg_alpha = 0;
 
     //dbugger = new Debugger({source:document.getElementById("debug_div")});
     if(placer_debug)
@@ -2370,6 +2377,7 @@ var GamePlayScene = function(game, stage)
 
     t += 0.05;
     if(t > 4*Math.PI) t-=4*Math.PI;
+    console.log(global_bg_alpha);
   };
 
   self.draw = function()
