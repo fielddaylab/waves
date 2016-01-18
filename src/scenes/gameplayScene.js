@@ -981,6 +981,8 @@ var Blurb = function(scene)
 
   self.draw = function(canv)
   {
+    canv.context.fillStyle = "rgba(0,0,0,"+(1-((20*10)/canv.canvas.height))+")"; //emulates clipboard fade
+    canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
     var box_height = 300;
     canv.context.fillStyle = blue;
     canv.context.fillRect(0,canv.canvas.height-box_height,canv.canvas.width,box_height);
