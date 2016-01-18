@@ -665,8 +665,11 @@ var ComponentEditor = function(component, color, side)
     {
       self.toggle_button.draw(canv);
     }
-    self.play_button.draw(canv); canv.context.fillText("play",self.play_button.x+15,self.play_button.y+self.play_button.h+10);
-    self.reset_button.draw(canv); canv.context.fillText("reset",self.reset_button.x+12,self.reset_button.y+self.reset_button.h+10);
+    canv.context.font = "12px stump";
+    canv.context.textAlign = "center";
+    canv.context.fillStyle = "#000000";
+    self.play_button.draw(canv); canv.context.fillText("play",self.play_button.x+self.play_button.w/2,self.play_button.y+self.play_button.h+10);
+    self.reset_button.draw(canv); canv.context.fillText("reset",self.reset_button.x+self.reset_button.w/2,self.reset_button.y+self.reset_button.h+10);
 
     self.offset_dec_button.draw(canv);
     self.offset_inc_button.draw(canv);
@@ -675,8 +678,7 @@ var ComponentEditor = function(component, color, side)
     self.amplitude_dec_button.draw(canv);
     self.amplitude_inc_button.draw(canv);
 
-    canv.context.lineWidth = 1;
-    canv.context.strokeStyle = "#000000";
+    canv.context.textAlign = "left";
     self.offset_slider.draw(canv); canv.context.fillText("offset",self.offset_slider.x,self.offset_slider.y);
     self.wavelength_slider.draw(canv); canv.context.fillText("wavelength",self.wavelength_slider.x,self.wavelength_slider.y);
     self.amplitude_slider.draw(canv); canv.context.fillText("amplitude",self.amplitude_slider.x,self.amplitude_slider.y);
@@ -815,33 +817,33 @@ var ClipBoard = function(w,h,scene,levels)
   }
 
   var bs = 110;
-  var p = 30;
+  var p = 40;
   var c0 = self.w/2-(bs/2)-2*bs-2*p;
   var c1 = self.w/2-(bs/2)-1*bs-1*p;
   var c2 = self.w/2-(bs/2)-0*bs-0*p;
   var c3 = self.w/2+(bs/2)+0*bs+1*p;
   var c4 = self.w/2+(bs/2)+1*bs+2*p;
-  var r0 = self.h/2-(bs/2)-1*bs-1*p-40;
-  var r1 = self.h/2-(bs/2)-0*bs-0*p-40;
-  var r2 = self.h/2+(bs/2)+0*bs+1*p-40;
+  var r0 = self.h/2-(bs/2)-1*bs-1*(p+10)-10;
+  var r1 = self.h/2-(bs/2)-0*bs-0*(p+10)-10;
+  var r2 = self.h/2+(bs/2)+0*bs+1*(p+10)-10;
   //sections: s (single), pl (pulse locked), dl (double locked), ds (double single), d (double)
   self.s_play   = new ButtonBox(c0,r0,bs,bs, function(on) { /* the one level that's always unlocked */ click_aud.play(); scene.requestLevel(s_play_lvl); });  self.s_play.lvl   = s_play_lvl;   self.s_play.req_lvl   = -1;                self.s_play.title = "P";   self.buttons.push(self.s_play);
-  self.s_levels = new ButtonBox(c0,r1,bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(s_levels_lvl);}); self.s_levels.lvl = s_levels_lvl; self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title = "1"; self.buttons.push(self.s_levels);
-  self.s_random = new ButtonBox(c0,r2,bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) click_aud.play(); scene.requestLevel(s_random_lvl);}); self.s_random.lvl = s_random_lvl; self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title = "?"; self.buttons.push(self.s_random);
+  self.s_levels = new ButtonBox(c0,r1,bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(s_levels_lvl);}}); self.s_levels.lvl = s_levels_lvl; self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title = "1"; self.buttons.push(self.s_levels);
+  self.s_random = new ButtonBox(c0,r2,bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(s_random_lvl);}}); self.s_random.lvl = s_random_lvl; self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title = "?"; self.buttons.push(self.s_random);
 
-  self.pl_play   = new ButtonBox(c1,r0,bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   click_aud.play(); scene.requestLevel(pl_play_lvl); });  self.pl_play.lvl = pl_play_lvl;     self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title = "P";   self.buttons.push(self.pl_play);
-  self.pl_levels = new ButtonBox(c1,r1,bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_levels_lvl);}); self.pl_levels.lvl = pl_levels_lvl; self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title = "2"; self.buttons.push(self.pl_levels);
-  self.pl_random = new ButtonBox(c1,r2,bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_random_lvl);}); self.pl_random.lvl = pl_random_lvl; self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title = "?"; self.buttons.push(self.pl_random);
+  self.pl_play   = new ButtonBox(c1,r0,bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   { click_aud.play(); scene.requestLevel(pl_play_lvl); }});  self.pl_play.lvl = pl_play_lvl;     self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title = "P";   self.buttons.push(self.pl_play);
+  self.pl_levels = new ButtonBox(c1,r1,bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_levels_lvl);}}); self.pl_levels.lvl = pl_levels_lvl; self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title = "2"; self.buttons.push(self.pl_levels);
+  self.pl_random = new ButtonBox(c1,r2,bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_random_lvl);}}); self.pl_random.lvl = pl_random_lvl; self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title = "?"; self.buttons.push(self.pl_random);
 
-  self.d_play    = new ButtonBox(c2,r0,bs*3+p*2,bs, function(on) { if(levels[self.d_play.req_lvl].complete)    click_aud.play(); scene.requestLevel(d_play_lvl);});    self.d_play.lvl = d_play_lvl;       self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title = "P";    self.buttons.push(self.d_play);
-  self.dl_levels = new ButtonBox(c2,r1,bs,bs,       function(on) { if(levels[self.dl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_levels_lvl);}); self.dl_levels.lvl = dl_levels_lvl; self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title = "3"; self.buttons.push(self.dl_levels);
-  self.dl_random = new ButtonBox(c2,r2,bs,bs,       function(on) { if(levels[self.dl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_random_lvl);}); self.dl_random.lvl = dl_random_lvl; self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title = "?"; self.buttons.push(self.dl_random);
+  self.d_play    = new ButtonBox(c2,r0,bs*3+p*2,bs, function(on) { if(levels[self.d_play.req_lvl].complete)    { click_aud.play(); scene.requestLevel(d_play_lvl);}});    self.d_play.lvl = d_play_lvl;       self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title = "P";    self.buttons.push(self.d_play);
+  self.dl_levels = new ButtonBox(c2,r1,bs,bs,       function(on) { if(levels[self.dl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_levels_lvl);}}); self.dl_levels.lvl = dl_levels_lvl; self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title = "3"; self.buttons.push(self.dl_levels);
+  self.dl_random = new ButtonBox(c2,r2,bs,bs,       function(on) { if(levels[self.dl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_random_lvl);}}); self.dl_random.lvl = dl_random_lvl; self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title = "?"; self.buttons.push(self.dl_random);
 
-  self.ds_levels = new ButtonBox(c3,r1,bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_levels_lvl);}); self.ds_levels.lvl = ds_levels_lvl; self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title = "4"; self.buttons.push(self.ds_levels);
-  self.ds_random = new ButtonBox(c3,r2,bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_random_lvl);}); self.ds_random.lvl = ds_random_lvl; self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title = "?"; self.buttons.push(self.ds_random);
+  self.ds_levels = new ButtonBox(c3,r1,bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(ds_levels_lvl);}}); self.ds_levels.lvl = ds_levels_lvl; self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title = "4"; self.buttons.push(self.ds_levels);
+  self.ds_random = new ButtonBox(c3,r2,bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(ds_random_lvl);}}); self.ds_random.lvl = ds_random_lvl; self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title = "?"; self.buttons.push(self.ds_random);
 
-  self.d_levels = new ButtonBox(c4,r1,bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(d_levels_lvl);}); self.d_levels.lvl = d_levels_lvl; self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title = "5"; self.buttons.push(self.d_levels);
-  self.d_random = new ButtonBox(c4,r2,bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) click_aud.play(); scene.requestLevel(d_random_lvl);}); self.d_random.lvl = d_random_lvl; self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title = "?"; self.buttons.push(self.d_random);
+  self.d_levels = new ButtonBox(c4,r1,bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(d_levels_lvl);}}); self.d_levels.lvl = d_levels_lvl; self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title = "5"; self.buttons.push(self.d_levels);
+  self.d_random = new ButtonBox(c4,r2,bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(d_random_lvl);}}); self.d_random.lvl = d_random_lvl; self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title = "?"; self.buttons.push(self.d_random);
 
   //quick hack to fix clicker even though on separate canv
   var draw = function(canv)
@@ -877,7 +879,7 @@ var ClipBoard = function(w,h,scene,levels)
     canv.context.textAlign = "center";
     canv.context.fillStyle = "#FFFFFF";
     canv.context.fillText("Levels",self.w/2,150+self.pretend_y);
-    canv.context.font = "50px stump";
+    canv.context.font = "40px stump";
     canv.context.fillText("Wave",c0+bs/2,r0-50+self.pretend_y);
     canv.context.fillText("Pulse",c1+bs/2,r0-50+self.pretend_y);
     canv.context.fillText("Composition",c3+bs/2,r0-50+self.pretend_y);
@@ -2067,7 +2069,7 @@ var GamePlayScene = function(game, stage)
         }
       }
     );
-    skipButton = new ButtonBox(self.c.width-10-80, 50, 80, 20,
+    skipButton = new ButtonBox(readyButton.x,readyButton.y,readyButton.w,readyButton.h,
       function(on)
       {
         if( //if this is showing
@@ -2388,14 +2390,6 @@ var GamePlayScene = function(game, stage)
     myAnimDisplay.draw(self.dc);
 
 
-    if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
-    {
-      skipButton.draw(self.dc); self.dc.context.fillStyle = "#000000";
-      if(levels[cur_level].random)
-        self.dc.context.fillText("re-roll",skipButton.x+10,skipButton.y+15);
-      else
-        self.dc.context.fillText("skip",skipButton.x+10,skipButton.y+15);
-    }
     if(print_debug)
       printButton.draw(self.dc);
 
@@ -2424,6 +2418,27 @@ var GamePlayScene = function(game, stage)
       self.dc.context.fillText("Next!",readyButton.x+readyButton.w-3,readyButton.y+readyButton.h-10-3);
       self.dc.context.fillStyle = "#FFFFFF";
       self.dc.context.fillText("Next!",readyButton.x+readyButton.w,readyButton.y+readyButton.h-10);
+    }
+    else if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
+    {
+      //skipButton.draw(self.dc); //don't need to "draw button"
+      self.dc.context.font = "50px stump";
+      self.dc.context.textAlign = "right";
+
+      if(levels[cur_level].random)
+      {
+        self.dc.context.fillStyle = "#000000";
+        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3);
+        self.dc.context.fillStyle = "#FFFFFF";
+        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10);
+      }
+      else
+      {
+        self.dc.context.fillStyle = "#000000";
+        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3);
+        self.dc.context.fillStyle = "#FFFFFF";
+        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10);
+      }
     }
     //if(!levels[cur_level].playground)
       //vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
