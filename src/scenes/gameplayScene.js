@@ -8,6 +8,9 @@ var global_fade_lvl_button;
 var global_lvl_button_outline;
 var global_lvl_lock;
 var global_close;
+var global_yard_logo;
+
+var blue = "#76DAE2";
 
 var default_completeness = 0;
 var print_debug = false;
@@ -1062,6 +1065,7 @@ var GamePlayScene = function(game, stage)
   var lvl_button_outline = new Image(); lvl_button_outline.src = "assets/level-bg-outline.png";
   var lvl_lock = new Image(); lvl_lock.src = "assets/icon-locked.png";
   var close = new Image(); close.src = "assets/icon-close.png";
+  var yard_logo = new Image(); yard_logo.src = "assets/theyard-logo.png";
   global_slider_img = slider;
   global_dial_img = knob;
   global_toggle_up = toggle_up;
@@ -1071,6 +1075,7 @@ var GamePlayScene = function(game, stage)
   global_lvl_button_outline = lvl_button_outline;
   global_lvl_lock = lvl_lock;
   global_close = close;
+  global_yard_logo = yard_logo;
 
   self.ready = function()
   {
@@ -2538,6 +2543,14 @@ var GamePlayScene = function(game, stage)
       self.dc.context.fillText("show",         composeButton.x+5,composeButton.y-20);
       self.dc.context.fillText("contributions",composeButton.x-10,composeButton.y-5);
     }
+
+    self.dc.context.fillStyle = blue;
+    self.dc.context.fillRect(0,0,self.dc.canvas.width,60);
+    self.dc.context.drawImage(global_yard_logo,20,10,100,40);
+    self.dc.context.fillStyle = "#FFFFFF";
+    self.dc.context.font = "30px stump";
+    self.dc.context.textAlign = "right";
+    self.dc.context.fillText("The Wave Generator",self.dc.canvas.width-80,40);
 
     clip.draw(self.dc);
 
