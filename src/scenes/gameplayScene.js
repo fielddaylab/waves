@@ -784,15 +784,7 @@ var Level = function()
   self.playground = false;
 
   self.blurb = false;
-  self.blurb_x = 0;
-  self.blurb_y = 0;
-  self.blurb_w = 0;
-  self.blurb_h = 0;
   self.blurb_txt = "";
-  self.blurb_txt_x = 0;
-  self.blurb_txt_y = 0;
-  self.blurb_txt_w = 0;
-  self.blurb_txt_h = 0;
   self.blurb_img = "";
   self.blurb_img_x = 0;
   self.blurb_img_y = 0;
@@ -925,16 +917,14 @@ var ClipBoard = function(w,h,scene,levels)
 var Blurb = function(scene)
 {
   var self = this;
-  self.x = 0;
-  self.y = 0;
-  self.w = 0;
-  self.h = 0;
+  //dimensions for clicker- to dismiss
+  self.x = scene.dc.canvas.width-200;
+  self.y = scene.dc.canvas.height-100;
+  self.w = 100;
+  self.h = 50;
+
   self.txt = "";
   self.lines;
-  self.txt_x = 0;
-  self.txt_y = 0;
-  self.txt_w = 0;
-  self.txt_h = 0;
   self.img = "";
   self.img_x = 0;
   self.img_y = 0;
@@ -948,6 +938,9 @@ var Blurb = function(scene)
     var found = 0;
     var searched = 0;
     var tentative_search = 0;
+    var width = canv.canvas.width-400;
+
+    canv.context.font = "30px stump";
 
     //stage.drawCanv.context.font=whaaaat;
     while(found < self.txt.length)
@@ -956,7 +949,7 @@ var Blurb = function(scene)
       if(searched == -1) searched = self.txt.length;
       tentative_search = self.txt.indexOf(" ",searched+1);
       if(tentative_search == -1) tentative_search = self.txt.length;
-      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.txt_w && searched != self.txt.length)
+      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < width && searched != self.txt.length)
       {
         searched = tentative_search;
         tentative_search = self.txt.indexOf(" ",searched+1);
@@ -978,23 +971,21 @@ var Blurb = function(scene)
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillRect(self.x,self.y,self.w,self.h);
-    canv.context.strokeStyle = "#000000";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
+    canv.context.fillStyle = blue;
+    canv.context.fillRect(0,canv.canvas.height-200,canv.canvas.width,200);
 
-    canv.context.fillStyle = "#000000";
+    canv.context.fillStyle = "#FFFFFF";
+    canv.context.font = "30px stump";
     for(var i = 0; i < self.lines.length; i++)
-    {
-      canv.context.fillText(self.lines[i],self.txt_x,self.txt_y+(i*15),self.txt_w);
-    }
+      canv.context.fillText(self.lines[i],300,canv.canvas.height-150+(i*40),canv.canvas.width-400);
 
     if(self.img_el)
-    {
       canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
-    }
 
-    canv.context.fillText("(click to dismiss)",self.x+10,self.y+self.h-10,self.w);
+    canv.context.fillRect(self.x,self.y,self.w,self.h);
+    canv.context.fillStyle = "#000000";
+    canv.context.fillText("Ok!",self.x+10,self.y+self.h-10,self.w);
+    canv.context.font = "12px stump";
   }
 
   self.click = function(evt)
@@ -1126,10 +1117,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 310;
-    level.blurb_y = 25;
-    level.blurb_w = 235;
-    level.blurb_h = 70;
     level.blurb_txt = "This is a playground! Play around for a bit, and when you are ready to begin, hit next!";
     levels.push(level);
 
@@ -1155,10 +1142,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "A snapshot of a wave can be defined by 3 properties- its Amplitude, Wavelength, and Offset. Alter the red wave's offset to match the dark wave.";
     level.blurb_img = "offset";
     level.blurb_img_x = 250;
@@ -1188,10 +1171,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "A wave's Wavelength is the distance between each of its pulses. Again, use the sliders to match the dark wave.";
     level.blurb_img = "wavelength";
     level.blurb_img_x = 250;
@@ -1221,10 +1200,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Amplitude is the measurement of how far a wave deviates from its resting (non-oscillating) state (the horizontal line). You will need to move more than one slider to match this wave.";
     level.blurb_img = "amplitude";
     level.blurb_img_x = 250;
@@ -1254,10 +1229,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to match the dark.";
     levels.push(level);
 
@@ -1282,10 +1253,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Waves can differ drastically from each other- you might say this wave has a \"small amplitude\" and a \"large wavelength\".";
     levels.push(level);
 
@@ -1310,10 +1277,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "If a wave has 0 amplitude, it can be represented simply as a flat line. With no amplitude, wavelength and offset are meaningless.";
     levels.push(level);
 
@@ -1338,10 +1301,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "To eliminate this single wave, just decrease its amplitude.";
     levels.push(level);
 
@@ -1367,10 +1326,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "A pulse is simply a single motion of a wave. Its Amplitude, Wavelength, and Offset can be considered in the very same way as the waves previous.";
     level.blurb_img = "pulse";
     level.blurb_img_x = 250;
@@ -1401,10 +1356,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Complete as many random levels as you'd like, then return to menu.";
     levels.push(level);
 
@@ -1430,10 +1381,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Here is a playground with two pulses. You can see what happens when you let the pulses overlap (this is known as wave interference). When you are ready to resume, hit next.";
     levels.push(level);
 
@@ -1459,10 +1406,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "When two like pulses overlap, the result is the additive sum of each. This is called \"constructive interference\".";
     level.blurb_img = "constructive";
     level.blurb_img_x = 250;
@@ -1492,10 +1435,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "When two pulses on different sides of the line overlap, the result is one pulse subtracted from the other. This is known as \"destructive interference\".";
     level.blurb_img = "destructive";
     level.blurb_img_x = 250;
@@ -1525,10 +1464,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Combining very different pulses can yield interesting results.";
     levels.push(level);
 
@@ -1553,10 +1488,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "If two waves with identical Amplitude, Wavelength, and Offset are interfering, the result will be a pulse exactly double in Amplitude of either.";
     levels.push(level);
 
@@ -1581,10 +1512,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "If two waves with identical Wavelength and Offset are interfering, but have opposite Amplitudes, the resulting wave can be said to be \"cancelled out\".";
     level.blurb_img = "cancel";
     level.blurb_img_x = 250;
@@ -1615,10 +1542,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to interfere with the blue wave so that they overlap just enough to greate the dark wave.";
     levels.push(level);
 
@@ -1669,10 +1592,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "This is a playground with two interfering waves. All the rules of interference that applied to pulses apply equally to waves. When you are done experimenting, hit next to resume.";
     levels.push(level);
 
@@ -1698,10 +1617,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "When you have a wave with a large wavelength overlapping (interfering with) a wave with a small wavelength, the alternating constructive and destructive interference looks like the smaller wave \"riding\" the larger one.";
     level.blurb_img = "highlowfq";
     level.blurb_img_x = 250;
@@ -1731,10 +1646,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Try hitting the \"play\" button on the large wave to watch how its offset effects the resulting wave.";
     levels.push(level);
 
@@ -1759,10 +1670,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "The Wavelength of the smaller wave dictates the width of the little squiggles, and the Wavelength of the larger wave dictates the width of the big squiggles. (\"Squiggles\" is not a technical term, but it probably should be.)";
     levels.push(level);
 
@@ -1787,10 +1694,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "If this wave looks intimidating, just try to mentally break the dark wave down into two- one for its little squiggles, and one for its big squiggles. Then create that.";
     levels.push(level);
 
@@ -1815,10 +1718,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "When there is only one wave, zero Amplitude means a flat line. When there are two, if either of the waves are flat, that wave will simply not effect (interfere with) the other.";
     levels.push(level);
 
@@ -1843,10 +1742,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Turn on the \"wave visualization\" to show how increasing the large wave's amplitude effects the result.";
     levels.push(level);
 
@@ -1871,10 +1766,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "For this wave, you will need to alter the Amplitude, Wavelength, and Frequency to create the correct interference.";
     levels.push(level);
 
@@ -1899,10 +1790,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Like pulses, if two waves are identical except for their opposite amplitude, they can cancel each other out. (Click the wave visualizer to see this in action).";
     levels.push(level);
 
@@ -1927,10 +1814,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Waves of any shape or size can be cancelled out, so long as the wave interfering with them has the opposite amplitude.";
     levels.push(level);
 
@@ -1956,10 +1839,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "If the starting wave looks intimidating, just try to imagine what the red wave would need to look like to cancel out the blue. (The wave visualization might help here.)";
     levels.push(level);
 
@@ -2008,10 +1887,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "Now you can edit either wave. Take a look at the dark wave, then the purple wave. Think which wave (the blue or the red) will you need to alter to create the dark?";
     levels.push(level);
 
@@ -2037,10 +1912,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "If you can, try to guess what change you will need to make to solve this before touching any of the sliders. Then move the one slider to solve this wave.";
     levels.push(level);
 
@@ -2090,10 +1961,6 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_x = 210;
-    level.blurb_y = 270;
-    level.blurb_w = 400;
-    level.blurb_h = 130;
     level.blurb_txt = "You've seen this dark wave before. Edit both waves to construct a solution.";
     levels.push(level);
 
@@ -2260,25 +2127,7 @@ var GamePlayScene = function(game, stage)
     if(levels[cur_level].blurb && !levels[cur_level].blurb_seen)
     {
       var curl = levels[cur_level];
-      blurb.x = curl.blurb_x;
-      blurb.y = curl.blurb_y;
-      blurb.w = curl.blurb_w;
-      blurb.h = curl.blurb_h;
       blurb.txt = curl.blurb_txt;
-      if(curl.blurb_txt_x || curl.blurb_txt_y || curl.blurb_txt_w || curl.blurb_txt_h) //if any properties set on blurb text pos
-      {
-        blurb.txt_x = curl.blurb_txt_x;
-        blurb.txt_y = curl.blurb_txt_y;
-        blurb.txt_w = curl.blurb_txt_w;
-        blurb.txt_h = curl.blurb_txt_h;
-      }
-      else //otherwise assume full text area
-      {
-        blurb.txt_x = curl.blurb_x+10;
-        blurb.txt_y = curl.blurb_y+15;
-        blurb.txt_w = curl.blurb_w-10;
-        blurb.txt_h = curl.blurb_h-30;
-      }
       blurb.img = curl.blurb_img;
       blurb.img_x = curl.blurb_img_x;
       blurb.img_y = curl.blurb_img_y;
