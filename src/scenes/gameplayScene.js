@@ -3,6 +3,7 @@ var global_slider_img;
 var global_dial_img;
 var global_toggle_up;
 var global_toggle_down;
+var global_lvl_button;
 
 var default_completeness = 0;
 var print_debug = false;
@@ -798,130 +799,111 @@ var Level = function()
   self.blurb_seen = false;
 }
 
-var ClipBoard = function(x,y,w,h,scene,levels)
+var ClipBoard = function(w,h,scene,levels)
 {
   var self = this;
 
-  self.canv;
-
-  self.x = x;
-  self.y = y;
   self.w = w;
   self.h = h;
-  self.desired_y = y;
-
-  self.canv = new Canv(
-    {
-      width:self.w,
-      height:self.h,
-      fillStyle:"#000000",
-      strokeStyle:"#000000",
-      smoothing:true
-    }
-  );
+  self.pretend_y = 20;
+  self.desired_y = 20;
 
   self._dirty = true;
 
   self.buttons = [];
   self.dismiss_button = new ButtonBox(self.w-20-20,20,20,20, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
-  self.dismiss_button.draw = function(canv)
-  {
-    if(this.down) canv.context.strokeStyle = "#00F400";
-    else          canv.context.strokeStyle = "#000000";
 
-    canv.context.fillStyle = "#00F400";
-
-    canv.context.fillRect(this.off_x,this.off_y,this.w,this.h);
-    canv.context.strokeRect(this.off_x+0.5,this.off_y+0.5,this.w,this.h);
-  }
-
-  var bs = 70;
+  var bs = 110;
+  var p = 30;
+  var c0 = self.w/2-(bs/2)-2*bs-2*p;
+  var c1 = self.w/2-(bs/2)-1*bs-1*p;
+  var c2 = self.w/2-(bs/2)-0*bs-0*p;
+  var c3 = self.w/2+(bs/2)+0*bs+1*p;
+  var c4 = self.w/2+(bs/2)+1*bs+2*p;
+  var r0 = self.h/2-(bs/2)-1*bs-1*p-40;
+  var r1 = self.h/2-(bs/2)-0*bs-0*p-40;
+  var r2 = self.h/2+(bs/2)+0*bs+1*p-40;
   //sections: s (single), pl (pulse locked), dl (double locked), ds (double single), d (double)
-  self.s_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*0),bs,bs, function(on) { /* the one level that's always unlocked */ click_aud.play(); scene.requestLevel(s_play_lvl); });  self.s_play.req_lvl   = -1;                self.s_play.title_a = "single wave";   self.s_play.title_b = "playground"; self.buttons.push(self.s_play);
-  self.s_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(s_levels_lvl);}); self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title_a = "single wave"; self.s_levels.title_b = "levels";   self.buttons.push(self.s_levels);
-  self.s_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) click_aud.play(); scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title_a = "single wave"; self.s_random.title_b = "random";   self.buttons.push(self.s_random);
-  //self.s_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*0),bs,bs, function(on) { if(levels[self.s_create.req_lvl].complete) click_aud.play(); scene.requestLevel(s_create_lvl);}); self.s_create.req_lvl = s_levels_last_lvl; self.buttons.push(self.s_create);
+  self.s_play   = new ButtonBox(c0,r0,bs,bs, function(on) { /* the one level that's always unlocked */ click_aud.play(); scene.requestLevel(s_play_lvl); });  self.s_play.req_lvl   = -1;                self.s_play.title = "P";   self.buttons.push(self.s_play);
+  self.s_levels = new ButtonBox(c0,r1,bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(s_levels_lvl);}); self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title = "1"; self.buttons.push(self.s_levels);
+  self.s_random = new ButtonBox(c0,r2,bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) click_aud.play(); scene.requestLevel(s_random_lvl);}); self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title = "?"; self.buttons.push(self.s_random);
 
-  self.pl_play   = new ButtonBox(20+((bs+10)*0),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   click_aud.play(); scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title_a = "pulse interference";   self.pl_play.title_b = "playground";   self.buttons.push(self.pl_play);
-  self.pl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_levels_lvl);}); self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title_a = "pulse interference"; self.pl_levels.title_b = "levels"; self.buttons.push(self.pl_levels);
-  self.pl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_random_lvl);}); self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title_a = "pulse interference"; self.pl_random.title_b = "random"; self.buttons.push(self.pl_random);
-  //self.pl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*1),bs,bs, function(on) { if(levels[self.pl_create.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_create_lvl);}); self.pl_create.req_lvl = pl_levels_last_lvl; self.buttons.push(self.pl_create);
+  self.pl_play   = new ButtonBox(c1,r0,bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   click_aud.play(); scene.requestLevel(pl_play_lvl); });  self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title = "P";   self.buttons.push(self.pl_play);
+  self.pl_levels = new ButtonBox(c1,r1,bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_levels_lvl);}); self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title = "2"; self.buttons.push(self.pl_levels);
+  self.pl_random = new ButtonBox(c1,r2,bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(pl_random_lvl);}); self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title = "?"; self.buttons.push(self.pl_random);
 
-  self.d_play    = new ButtonBox(20+((bs+10)*0),20+((bs+10)*2),bs,bs*3+20, function(on) { if(levels[self.d_play.req_lvl].complete)    click_aud.play(); scene.requestLevel(d_play_lvl);});    self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title_a = "wave interference";    self.d_play.title_b = "playground"; self.buttons.push(self.d_play);
-  self.dl_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title_a = "wave interference"; self.dl_levels.title_b = "levels";  self.buttons.push(self.dl_levels);
-  self.dl_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title_a = "wave interference"; self.dl_random.title_b = "random";  self.buttons.push(self.dl_random);
-  //self.dl_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*2),bs,bs,      function(on) { if(levels[self.dl_create.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_create_lvl);}); self.dl_create.req_lvl = dl_levels_last_lvl; self.buttons.push(self.dl_create);
+  self.d_play    = new ButtonBox(c2,r0,bs*3+p*2,bs, function(on) { if(levels[self.d_play.req_lvl].complete)    click_aud.play(); scene.requestLevel(d_play_lvl);});    self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title = "P";    self.buttons.push(self.d_play);
+  self.dl_levels = new ButtonBox(c2,r1,bs,bs,      function(on) { if(levels[self.dl_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_levels_lvl);}); self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title = "3"; self.buttons.push(self.dl_levels);
+  self.dl_random = new ButtonBox(c2,r2,bs,bs,      function(on) { if(levels[self.dl_random.req_lvl].complete) click_aud.play(); scene.requestLevel(dl_random_lvl);}); self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title = "?"; self.buttons.push(self.dl_random);
 
-  self.ds_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title_a = "wave interference"; self.ds_levels.title_b = "levels medium";  self.buttons.push(self.ds_levels);
-  self.ds_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*3),bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_random_lvl);}); self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title_a = "wave interference"; self.ds_random.title_b  = "random medium"; self.buttons.push(self.ds_random);
-  //self.d_create = new ButtonBox(20+((bs+10)*3),20+((bs+10)*3),bs,bs*2+10, function(on) { if(levels[self.d_create.req_lvl].complete) click_aud.play(); scene.requestLevel(d_create_lvl);}); self.d_create.req_lvl = ds_levels_last_lvl; self.buttons.push(self.d_create);
+  self.ds_levels = new ButtonBox(c3,r1,bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_levels_lvl);}); self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title = "4"; self.buttons.push(self.ds_levels);
+  self.ds_random = new ButtonBox(c3,r2,bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) click_aud.play(); scene.requestLevel(ds_random_lvl);}); self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title = "?"; self.buttons.push(self.ds_random);
 
-  self.d_levels = new ButtonBox(20+((bs+10)*1),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title_a = "wave interference"; self.d_levels.title_b = "levels hard";   self.buttons.push(self.d_levels);
-  self.d_random = new ButtonBox(20+((bs+10)*2),20+((bs+10)*4),bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) click_aud.play(); scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title_a = "wave interference"; self.d_random.title_b = "random hard"; self.buttons.push(self.d_random);
+  self.d_levels = new ButtonBox(c4,r1,bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) click_aud.play(); scene.requestLevel(d_levels_lvl);}); self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title = "5"; self.buttons.push(self.d_levels);
+  self.d_random = new ButtonBox(c4,r2,bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) click_aud.play(); scene.requestLevel(d_random_lvl);}); self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title = "?"; self.buttons.push(self.d_random);
 
   //quick hack to fix clicker even though on separate canv
   var draw = function(canv)
   {
-    if(this.down) canv.context.strokeStyle = "#00F400";
-    else          canv.context.strokeStyle = "#000000";
-
     if(this.req_lvl < 0 || levels[this.req_lvl].complete)
-      canv.context.fillStyle = "#00F400";
+    {
+      //canv.context.fillStyle = "#00F400";
+    }
     else
-      canv.context.fillStyle = "#FF8800";
+    {
+      //canv.context.fillStyle = "#FF8800";
+    }
 
-    canv.context.fillRect(this.off_x,this.off_y,this.w,this.h);
-    canv.context.strokeRect(this.off_x+0.5,this.off_y+0.5,this.w,this.h);
-    canv.context.fillStyle = "#000000";
-    canv.context.fillText(this.title_a,this.off_x+10,this.off_y+20);
-    canv.context.fillText(this.title_b,this.off_x+10,this.off_y+50);
+    canv.context.drawImage(global_lvl_button,this.x,this.y,this.w,this.h);
+    canv.context.fillStyle = "#FFFFFF";
+    canv.context.fillText(this.title,this.x+this.w/2,this.y+this.h-20);
   }
   for(var i = 0; i < self.buttons.length; i++)
   {
     var b = self.buttons[i];
-
-    b.off_x = b.x;
-    b.off_y = b.y;
-    b.x = b.off_x+self.x;
-    b.y = b.off_y+self.y;
-
+    b.def_y = b.y;
     if(i != 0) //for dismiss button, I know, hack
       b.draw = draw;
   }
 
   self.draw = function(canv)
   {
-    if(self.isDirty())
-    {
-      self.canv.clear();
+    canv.context.fillStyle = "rgba(255,255,255,"+(1-((self.pretend_y*5)/self.h))+")";
+    canv.context.fillRect(0,0,self.w,self.h);
 
-      self.canv.context.fillStyle = "#000000";
-      self.canv.context.fillRect(0,0,self.w,self.h);
-      self.canv.context.fillStyle = "#FFFFFF";
-      self.canv.context.fillRect(10,10,self.w-20,self.h-10);
+    canv.context.font = "100px stump";
+    canv.context.textAlign = "center";
+    canv.context.fillStyle = "#000000";
+    canv.context.fillText("Levels",self.w/2,150+self.pretend_y);
+    canv.context.font = "50px stump";
+    canv.context.fillText("Wave",c0+bs/2,r0-40+self.pretend_y);
+    canv.context.fillText("Pulse",c1+bs/2,r0-40+self.pretend_y);
+    canv.context.fillText("Composition",c3+bs/2,r0-40+self.pretend_y);
+    canv.context.textAlign = "right";
+    canv.context.fillText("Playground",c0-20,r0+bs/2+self.pretend_y);
+    canv.context.fillText("Challenges",c0-20,r1+bs/2+self.pretend_y);
+    canv.context.fillText("Random",c0-20,r2+bs/2+self.pretend_y);
 
-      self.canv.strokeStyle = "#000000";
-
-      for(var i = 0; i < self.buttons.length; i++)
-        self.buttons[i].draw(self.canv);
-    }
-
-    if(self.y < canv.canvas.height) //if on screen
-      canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
+    canv.context.font = "100px stump";
+    canv.context.textAlign = "center";
+    canv.context.fillStyle = "#FFFFFF";
+    for(var i = 0; i < self.buttons.length; i++)
+      self.buttons[i].draw(canv);
+    canv.context.font = "12px stump";
+    canv.context.textAlign = "left";
   }
 
   self.tick = function()
   {
-    if(self.desired_y != self.y)
+    if(self.desired_y != self.pretend_y)
     {
-      if(Math.abs(self.desired_y-self.y) < 1) self.y = self.desired_y;
-      else self.y = lerp(self.y, self.desired_y, 0.2);
+      if(Math.abs(self.desired_y-self.pretend_y) < 1) self.pretend_y = self.desired_y;
+      else self.pretend_y = lerp(self.pretend_y, self.desired_y, 0.2);
 
       for(var i = 0; i < self.buttons.length; i++)
       {
         var b = self.buttons[i];
-        b.x = b.off_x+self.x;
-        b.y = b.off_y+self.y;
+        b.y = b.def_y+self.pretend_y;
       }
     }
   }
@@ -931,13 +913,6 @@ var ClipBoard = function(x,y,w,h,scene,levels)
     for(var i = 0; i < self.buttons.length; i++)
       clicker.register(self.buttons[i]);
   }
-
-  self.dirty   = function() { self._dirty = true; }
-  self.cleanse = function()
-  {
-    self._dirty = false;
-  }
-  self.isDirty = function() { return self._dirty; }
 }
 
 var Blurb = function(scene)
@@ -1078,10 +1053,12 @@ var GamePlayScene = function(game, stage)
   var toggle_down = new Image(); toggle_down.src = "assets/toggle-down-button.png";
   var slider = new Image(); slider.src = "assets/slider-button.png";
   var knob = new Image(); knob.src = "assets/knob-button.png";
+  var lvl_button = new Image(); lvl_button.src = "assets/level-bg.png";
   global_slider_img = slider;
   global_dial_img = knob;
   global_toggle_up = toggle_up;
   global_toggle_down = toggle_down;
+  global_lvl_button = lvl_button;
 
   self.ready = function()
   {
@@ -2169,7 +2146,7 @@ var GamePlayScene = function(game, stage)
     play_presser = new Presser({source:stage.dispCanv.canvas});
     play_clicker = new Clicker({source:stage.dispCanv.canvas});
 
-    clip = new ClipBoard(20,20,self.c.width-40,self.c.height-20,self,levels);
+    clip = new ClipBoard(self.c.width,self.c.height,self,levels);
 
     e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, myE0.graph.x, myE0.graph.y, myE0.graph.w, myE0.graph.h);
     e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  myE1.graph.x, myE1.graph.y, myE1.graph.w, myE1.graph.h);
@@ -2283,7 +2260,9 @@ var GamePlayScene = function(game, stage)
     self.setMode(GAME_MODE_MENU);
 
     click_aud = new Aud("assets/click_0.wav");
-    click_aud.load;
+    click_aud.load();
+
+    stage.drawCanv.context.font = "12px stump";
   };
 
   self.requestLevel = function(lvl)
@@ -2466,7 +2445,6 @@ var GamePlayScene = function(game, stage)
 
     game_mode = mode;
 
-    clip.dirty();
     if(game_mode == GAME_MODE_MENU)
       clip.desired_y = 20;
     else if(game_mode == GAME_MODE_PLAY)
@@ -2594,7 +2572,6 @@ var GamePlayScene = function(game, stage)
       placer.draw(self.dc);
     }
 
-    clip.cleanse();
     myComp.cleanse();
     myDisplay.cleanse();
     gComp.cleanse();
