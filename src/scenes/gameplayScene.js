@@ -7,6 +7,7 @@ var global_lvl_button;
 var global_fade_lvl_button;
 var global_lvl_button_outline;
 var global_lvl_lock;
+var global_check;
 var global_close;
 var global_yard_logo;
 var global_tall;
@@ -18,7 +19,7 @@ var global_bg_alpha;
 
 var blue = "#76DAE2";
 
-var default_completeness = 1;
+var default_completeness = 0;
 var print_debug = false;
 var placer_debug = false;
 
@@ -830,23 +831,23 @@ var ClipBoard = function(w,h,scene,levels)
   var r1 = self.h/2-(bs/2)-0*bs-0*(p+10)-10;
   var r2 = self.h/2+(bs/2)+0*bs+1*(p+10)-10;
   //sections: s (single), pl (pulse locked), dl (double locked), ds (double single), d (double)
-  self.s_play   = new ButtonBox(c0,r0,bs,bs, function(on) { /* the one level that's always unlocked */ click_aud.play(); scene.requestLevel(s_play_lvl); });  self.s_play.lvl   = s_play_lvl;   self.s_play.req_lvl   = -1;                self.s_play.title = "P";   self.buttons.push(self.s_play);
-  self.s_levels = new ButtonBox(c0,r1,bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(s_levels_lvl);}}); self.s_levels.lvl = s_levels_lvl; self.s_levels.req_lvl = s_play_lvl;        self.s_levels.title = "1"; self.buttons.push(self.s_levels);
-  self.s_random = new ButtonBox(c0,r2,bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(s_random_lvl);}}); self.s_random.lvl = s_random_lvl; self.s_random.req_lvl = s_levels_last_lvl; self.s_random.title = "?"; self.buttons.push(self.s_random);
+  self.s_play   = new ButtonBox(c0,r0,bs,bs, function(on) { /* the one level that's always unlocked */ click_aud.play(); scene.requestLevel(s_play_lvl); });     self.s_play.lvl   = s_play_lvl;   self.s_play.req_lvl   = -1;                self.s_play.complete_lvl = s_play_lvl;     self.s_play.title = "P";   self.buttons.push(self.s_play);
+  self.s_levels = new ButtonBox(c0,r1,bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(s_levels_lvl);}}); self.s_levels.lvl = s_levels_lvl; self.s_levels.req_lvl = s_play_lvl;        self.s_levels.complete_lvl = s_levels_last_lvl; self.s_levels.title = "1"; self.buttons.push(self.s_levels);
+  self.s_random = new ButtonBox(c0,r2,bs,bs, function(on) { if(levels[self.s_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(s_random_lvl);}}); self.s_random.lvl = s_random_lvl; self.s_random.req_lvl = s_levels_last_lvl; self.s_random.complete_lvl = s_random_lvl; self.s_random.title = "?"; self.buttons.push(self.s_random);
 
-  self.pl_play   = new ButtonBox(c1,r0,bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   { click_aud.play(); scene.requestLevel(pl_play_lvl); }});  self.pl_play.lvl = pl_play_lvl;     self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.title = "P";   self.buttons.push(self.pl_play);
-  self.pl_levels = new ButtonBox(c1,r1,bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_levels_lvl);}}); self.pl_levels.lvl = pl_levels_lvl; self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.title = "2"; self.buttons.push(self.pl_levels);
-  self.pl_random = new ButtonBox(c1,r2,bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_random_lvl);}}); self.pl_random.lvl = pl_random_lvl; self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.title = "?"; self.buttons.push(self.pl_random);
+  self.pl_play   = new ButtonBox(c1,r0,bs,bs, function(on) { if(levels[self.pl_play.req_lvl].complete)   { click_aud.play(); scene.requestLevel(pl_play_lvl); }});  self.pl_play.lvl = pl_play_lvl;     self.pl_play.req_lvl   = s_levels_last_lvl;  self.pl_play.complete_lvl = pl_play_lvl;     self.pl_play.title = "P";   self.buttons.push(self.pl_play);
+  self.pl_levels = new ButtonBox(c1,r1,bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_levels_lvl);}}); self.pl_levels.lvl = pl_levels_lvl; self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.complete_lvl = pl_levels_last_lvl; self.pl_levels.title = "2"; self.buttons.push(self.pl_levels);
+  self.pl_random = new ButtonBox(c1,r2,bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_random_lvl);}}); self.pl_random.lvl = pl_random_lvl; self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.complete_lvl = pl_random_lvl; self.pl_random.title = "?"; self.buttons.push(self.pl_random);
 
-  self.d_play    = new ButtonBox(c2,r0,bs*3+p*2,bs, function(on) { if(levels[self.d_play.req_lvl].complete)    { click_aud.play(); scene.requestLevel(d_play_lvl);}});    self.d_play.lvl = d_play_lvl;       self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.title = "P";    self.buttons.push(self.d_play);
-  self.dl_levels = new ButtonBox(c2,r1,bs,bs,       function(on) { if(levels[self.dl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_levels_lvl);}}); self.dl_levels.lvl = dl_levels_lvl; self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.title = "3"; self.buttons.push(self.dl_levels);
-  self.dl_random = new ButtonBox(c2,r2,bs,bs,       function(on) { if(levels[self.dl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_random_lvl);}}); self.dl_random.lvl = dl_random_lvl; self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.title = "?"; self.buttons.push(self.dl_random);
+  self.d_play    = new ButtonBox(c2,r0,bs*3+p*2,bs, function(on) { if(levels[self.d_play.req_lvl].complete)    { click_aud.play(); scene.requestLevel(d_play_lvl);}});    self.d_play.lvl = d_play_lvl;       self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.complete_lvl = d_play_lvl;       self.d_play.title = "P";    self.buttons.push(self.d_play);
+  self.dl_levels = new ButtonBox(c2,r1,bs,bs,       function(on) { if(levels[self.dl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_levels_lvl);}}); self.dl_levels.lvl = dl_levels_lvl; self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.complete_lvl = dl_levels_last_lvl; self.dl_levels.title = "3"; self.buttons.push(self.dl_levels);
+  self.dl_random = new ButtonBox(c2,r2,bs,bs,       function(on) { if(levels[self.dl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_random_lvl);}}); self.dl_random.lvl = dl_random_lvl; self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.complete_lvl = dl_random_lvl; self.dl_random.title = "?"; self.buttons.push(self.dl_random);
 
-  self.ds_levels = new ButtonBox(c3,r1,bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(ds_levels_lvl);}}); self.ds_levels.lvl = ds_levels_lvl; self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.title = "4"; self.buttons.push(self.ds_levels);
-  self.ds_random = new ButtonBox(c3,r2,bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(ds_random_lvl);}}); self.ds_random.lvl = ds_random_lvl; self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.title = "?"; self.buttons.push(self.ds_random);
+  self.ds_levels = new ButtonBox(c3,r1,bs,bs, function(on) { if(levels[self.ds_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(ds_levels_lvl);}}); self.ds_levels.lvl = ds_levels_lvl; self.ds_levels.req_lvl = dl_levels_last_lvl; self.ds_levels.complete_lvl = ds_levels_last_lvl; self.ds_levels.title = "4"; self.buttons.push(self.ds_levels);
+  self.ds_random = new ButtonBox(c3,r2,bs,bs, function(on) { if(levels[self.ds_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(ds_random_lvl);}}); self.ds_random.lvl = ds_random_lvl; self.ds_random.req_lvl = ds_levels_last_lvl; self.ds_random.complete_lvl = ds_random_lvl; self.ds_random.title = "?"; self.buttons.push(self.ds_random);
 
-  self.d_levels = new ButtonBox(c4,r1,bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(d_levels_lvl);}}); self.d_levels.lvl = d_levels_lvl; self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.title = "5"; self.buttons.push(self.d_levels);
-  self.d_random = new ButtonBox(c4,r2,bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(d_random_lvl);}}); self.d_random.lvl = d_random_lvl; self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.title = "?"; self.buttons.push(self.d_random);
+  self.d_levels = new ButtonBox(c4,r1,bs,bs, function(on) { if(levels[self.d_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(d_levels_lvl);}}); self.d_levels.lvl = d_levels_lvl; self.d_levels.req_lvl = ds_levels_last_lvl; self.d_levels.complete_lvl = d_levels_last_lvl; self.d_levels.title = "5"; self.buttons.push(self.d_levels);
+  self.d_random = new ButtonBox(c4,r2,bs,bs, function(on) { if(levels[self.d_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(d_random_lvl);}}); self.d_random.lvl = d_random_lvl; self.d_random.req_lvl = d_levels_last_lvl;  self.d_random.complete_lvl = d_random_lvl; self.d_random.title = "?"; self.buttons.push(self.d_random);
 
   //quick hack to fix clicker even though on separate canv
   var draw = function(canv)
@@ -865,8 +866,15 @@ var ClipBoard = function(w,h,scene,levels)
       canv.context.drawImage(global_fade_lvl_button,this.x,this.y,this.w,this.h);
       canv.context.drawImage(global_lvl_lock,this.x+this.w-40,this.y-20,60,60);
     }
-    canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillText(this.title,this.x+this.w/2,this.y+this.h-20);
+    if(levels[this.complete_lvl].complete)
+    {
+      canv.context.drawImage(global_check,this.x+20,this.y+20,this.h-40,this.h-40);
+    }
+    else
+    {
+      canv.context.fillStyle = "#FFFFFF";
+      canv.context.fillText(this.title,this.x+this.w/2,this.y+this.h-20);
+    }
   }
   for(var i = 0; i < self.buttons.length; i++)
   {
@@ -1081,6 +1089,7 @@ var GamePlayScene = function(game, stage)
   var fade_lvl_button = new Image(); fade_lvl_button.src = "assets/fade-level-bg.png";
   var lvl_button_outline = new Image(); lvl_button_outline.src = "assets/level-bg-outline.png";
   var lvl_lock = new Image(); lvl_lock.src = "assets/icon-locked.png";
+  var check = new Image(); check.src = "assets/icon-check.png";
   var close = new Image(); close.src = "assets/icon-close.png";
   var yard_logo = new Image(); yard_logo.src = "assets/theyard-logo.png";
   var tall = new Image(); tall.src = "assets/scout.png";
@@ -1094,6 +1103,7 @@ var GamePlayScene = function(game, stage)
   global_fade_lvl_button = fade_lvl_button;
   global_lvl_button_outline = lvl_button_outline;
   global_lvl_lock = lvl_lock;
+  global_check = check;
   global_close = close;
   global_yard_logo = yard_logo;
   global_tall = tall;
