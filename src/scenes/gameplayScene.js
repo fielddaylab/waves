@@ -18,7 +18,7 @@ var global_bg_alpha;
 
 var blue = "#76DAE2";
 
-var default_completeness = 0;
+var default_completeness = 1;
 var print_debug = false;
 var placer_debug = false;
 
