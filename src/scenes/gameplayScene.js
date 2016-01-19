@@ -2387,7 +2387,6 @@ var GamePlayScene = function(game, stage)
 
     t += 0.05;
     if(t > 4*Math.PI) t-=4*Math.PI;
-    console.log(global_bg_alpha);
   };
 
   self.draw = function()
