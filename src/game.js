@@ -20,6 +20,7 @@ var Game = function(init)
     tick();
   };
 
+  var known_global_bg_alpha = -99999;
   var tick = function()
   {
     requestAnimFrame(tick,stage.dispCanv.canvas);
@@ -33,9 +34,13 @@ var Game = function(init)
     }
     if(currentScene == 2)
     {
-      document.getElementById("side_a").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
-      document.getElementById("side_b").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
-      document.getElementById("side_c").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
+      if(known_global_bg_alpha != global_bg_alpha)
+      {
+        known_global_bg_alpha = global_bg_alpha;
+        document.getElementById("side_a").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
+        document.getElementById("side_b").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
+        document.getElementById("side_c").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
+      }
     }
   };
 
