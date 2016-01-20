@@ -669,7 +669,7 @@ var ComponentEditor = function(component, color, side)
     {
       self.toggle_button.draw(canv);
     }
-    canv.context.font = "12px stump";
+    canv.context.font = "12px Open Sans";
     canv.context.textAlign = "center";
     canv.context.fillStyle = "#000000";
     self.play_button.draw(canv); canv.context.fillText("play",self.play_button.x+self.play_button.w/2,self.play_button.y+self.play_button.h+10);
@@ -960,7 +960,7 @@ var Blurb = function(scene)
     var tentative_search = 0;
     var width = canv.canvas.width-600;
 
-    canv.context.font = "30px Open Sans";
+    canv.context.font = "25px Open Sans";
 
     //stage.drawCanv.context.font=whaaaat;
     while(found < self.txt.length)
@@ -998,7 +998,7 @@ var Blurb = function(scene)
     canv.context.fillStyle = blue;
     canv.context.fillRect(0,canv.canvas.height-box_height,canv.canvas.width,box_height);
 
-    canv.context.font = "30px Open Sans";
+    canv.context.font = "25px Open Sans";
     for(var i = 0; i < self.lines.length; i++)
     {
       canv.context.fillStyle = "#FFFFFF";
@@ -1013,9 +1013,9 @@ var Blurb = function(scene)
     canv.context.fillStyle = "#FFFFFF";
     canv.context.fillRect(self.x,self.y,self.w,self.h);
     canv.context.fillStyle = "#000000";
-    canv.context.font = "30px stump";
+    canv.context.font = "30px Open Sans";
     canv.context.fillText("Ok!",self.x+10,self.y+self.h-10,self.w);
-    canv.context.font = "12px stump";
+    canv.context.font = "12px Open Sans";
 
     canv.context.drawImage(global_tall,50,canv.canvas.height-500,170,450);
   }
@@ -2158,7 +2158,7 @@ var GamePlayScene = function(game, stage)
     click_aud = new Aud("assets/click_0.wav");
     click_aud.load();
 
-    stage.drawCanv.context.font = "12px stump";
+    stage.drawCanv.context.font = "12px Open Sans";
   };
 
   self.requestLevel = function(lvl)
@@ -2440,7 +2440,7 @@ var GamePlayScene = function(game, stage)
     {
       //readyButton.draw(self.dc); //don't need to "draw button"
       var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
-      self.dc.context.font = "50px stump";
+      self.dc.context.font = "50px Open Sans";
       self.dc.context.textAlign = "right";
       self.dc.context.fillStyle = "#000000";
       self.dc.context.fillText("Next!",readyButton.x+readyButton.w-3,readyButton.y+readyButton.h-10-3+s);
@@ -2451,7 +2451,7 @@ var GamePlayScene = function(game, stage)
     {
       var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
       //skipButton.draw(self.dc); //don't need to "draw button"
-      self.dc.context.font = "50px stump";
+      self.dc.context.font = "50px Open Sans";
       self.dc.context.textAlign = "right";
 
       if(levels[cur_level].random)
