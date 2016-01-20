@@ -460,71 +460,71 @@ var ComponentEditor = function(component, color, side)
 
   if(side == "left")
   {
-    self.x = 209;
-    self.y = 522;
-    self.w = 369;
-    self.h = 325;
+    self.x = Math.round(209*(5/8));
+    self.y = Math.round(522*(5/8));
+    self.w = Math.round(369*(5/8));
+    self.h = Math.round(325*(5/8));
 
-    self.graph_x = 309;
-    self.graph_y = 529;
-    self.graph_w = 266;
-    self.graph_h = 106;
+    self.graph_x = Math.round(309*(5/8));
+    self.graph_y = Math.round(529*(5/8));
+    self.graph_w = Math.round(266*(5/8));
+    self.graph_h = Math.round(106*(5/8));
 
-    self.sliders_x = 301;
-    self.sliders_w = 240;
-    self.sliders_h = 20;
-    self.offset_y = 725;
-    self.wavelength_y = 762;
-    self.amplitude_y = 798;
+    self.sliders_x = Math.round(301*(5/8));
+    self.sliders_w = Math.round(240*(5/8));
+    self.sliders_h = Math.round(20*(5/8));
+    self.offset_y = Math.round(725*(5/8));
+    self.wavelength_y = Math.round(762*(5/8));
+    self.amplitude_y = Math.round(798*(5/8));
 
-    self.toggle_x = 233;
-    self.toggle_y = 512;
-    self.toggle_w = 37;
-    self.toggle_h = 99;
+    self.toggle_x = Math.round(233*(5/8));
+    self.toggle_y = Math.round(512*(5/8));
+    self.toggle_w = Math.round(37*(5/8));
+    self.toggle_h = Math.round(99*(5/8));
 
-    self.play_x = 212;
-    self.play_y = 700;
-    self.play_w = 48;
-    self.play_h = 48;
+    self.play_x = Math.round(212*(5/8));
+    self.play_y = Math.round(700*(5/8));
+    self.play_w = Math.round(48*(5/8));
+    self.play_h = Math.round(48*(5/8));
 
-    self.reset_x = 212;
-    self.reset_y = 776;
-    self.reset_w = 48;
-    self.reset_h = 48;
+    self.reset_x = Math.round(212*(5/8));
+    self.reset_y = Math.round(776*(5/8));
+    self.reset_w = Math.round(48*(5/8));
+    self.reset_h = Math.round(48*(5/8));
   }
   else if(side == "right")
   {
-    self.x = 666;
-    self.y = 521;
-    self.w = 363;
-    self.h = 325;
+    self.x = Math.round(666*(5/8));
+    self.y = Math.round(521*(5/8));
+    self.w = Math.round(363*(5/8));
+    self.h = Math.round(325*(5/8));
 
-    self.graph_x = 673;
-    self.graph_y = 529;
-    self.graph_w = 266;
-    self.graph_h = 106;
+    self.graph_x = Math.round(673*(5/8));
+    self.graph_y = Math.round(529*(5/8));
+    self.graph_w = Math.round(266*(5/8));
+    self.graph_h = Math.round(106*(5/8));
 
-    self.sliders_x = 697;
-    self.sliders_w = 240;
-    self.sliders_h = 20;
-    self.offset_y = 725;
-    self.wavelength_y = 762;
-    self.amplitude_y = 798;
+    self.sliders_x = Math.round(697*(5/8));
+    self.sliders_w = Math.round(240*(5/8));
+    self.sliders_h = Math.round(20*(5/8));
+    self.offset_y = Math.round(725*(5/8));
+    self.wavelength_y = Math.round(762*(5/8));
+    self.amplitude_y = Math.round(798*(5/8));
 
-    self.toggle_x = 965;
-    self.toggle_y = 512;
-    self.toggle_w = 37;
-    self.toggle_h = 99;
+    self.toggle_x = Math.round(965*(5/8));
+    self.toggle_y = Math.round(512*(5/8));
+    self.toggle_w = Math.round(37*(5/8));
+    self.toggle_h = Math.round(99*(5/8));
 
-    self.play_x = 980;
-    self.play_y = 700;
-    self.play_w = 48;
-    self.play_h = 48;
+    self.play_x = Math.round(980*(5/8));
+    self.play_y = Math.round(700*(5/8));
+    self.play_w = Math.round(48*(5/8));
+    self.play_h = Math.round(48*(5/8));
 
-    self.reset_x = 980;
-    self.reset_y = 776;
-    self.reset_w = 48;
-    self.reset_h = 48;
+    self.reset_x = Math.round(980*(5/8));
+    self.reset_y = Math.round(776*(5/8));
+    self.reset_w = Math.round(48*(5/8));
+    self.reset_h = Math.round(48*(5/8));
   }
 
   self.default_offset = graph_default_offset;
@@ -540,8 +540,8 @@ var ComponentEditor = function(component, color, side)
   self.toggle_button = new ToggleBox(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
   self.toggle_button.draw = function(canv)
   {
-    if(!self.goal_contribution) canv.context.drawImage(global_toggle_down, self.toggle_button.x,self.toggle_button.y+28,self.toggle_button.w,self.toggle_button.h-28);
-    else                        canv.context.drawImage(global_toggle_up,   self.toggle_button.x,self.toggle_button.y   ,self.toggle_button.w,self.toggle_button.h-28);
+    if(!self.goal_contribution) canv.context.drawImage(global_toggle_down, self.toggle_button.x,self.toggle_button.y+Math.round(28*(5/8)),self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
+    else                        canv.context.drawImage(global_toggle_up,   self.toggle_button.x,self.toggle_button.y   ,self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
   }
   self.play_button   = new ToggleBox(self.play_x, self.play_y, self.play_w, self.play_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
   self.goal_contribution = 1;
@@ -664,8 +664,15 @@ var ComponentEditor = function(component, color, side)
   {
     if(!self.visible) return;
 
-    if(side == "left")       canv.context.drawImage(bars,210,687,346,158);
-    else if(side == "right") canv.context.drawImage(bars,681,686,348,159);
+    if(side == "left")       canv.context.drawImage(bars,Math.round(210*(5/8)),Math.round(687*(5/8)),Math.round(346*(5/8)),Math.round(158*(5/8)));
+    else if(side == "right") canv.context.drawImage(bars,Math.round(681*(5/8)),Math.round(686*(5/8)),Math.round(348*(5/8)),Math.round(159*(5/8)));
+
+    canv.context.textAlign = "left";
+    canv.context.font = "11px Open Sans";
+    canv.context.fillStyle = "#000000";
+    canv.context.fillText("offset",self.offset_slider.x,self.offset_slider.y); self.offset_slider.draw(canv);
+    canv.context.fillText("wavelength",self.wavelength_slider.x,self.wavelength_slider.y); self.wavelength_slider.draw(canv);
+    canv.context.fillText("amplitude",self.amplitude_slider.x,self.amplitude_slider.y); self.amplitude_slider.draw(canv);
 
     self.graph.draw(canv);
 
@@ -673,9 +680,8 @@ var ComponentEditor = function(component, color, side)
     {
       self.toggle_button.draw(canv);
     }
-    canv.context.font = "12px Open Sans";
+
     canv.context.textAlign = "center";
-    canv.context.fillStyle = "#000000";
     self.play_button.draw(canv); canv.context.fillText("play",self.play_button.x+self.play_button.w/2,self.play_button.y+self.play_button.h+10);
     self.reset_button.draw(canv); canv.context.fillText("reset",self.reset_button.x+self.reset_button.w/2,self.reset_button.y+self.reset_button.h+10);
 
@@ -686,16 +692,11 @@ var ComponentEditor = function(component, color, side)
     self.amplitude_dec_button.draw(canv);
     self.amplitude_inc_button.draw(canv);
 
-    canv.context.textAlign = "left";
-    self.offset_slider.draw(canv); canv.context.fillText("offset",self.offset_slider.x,self.offset_slider.y);
-    self.wavelength_slider.draw(canv); canv.context.fillText("wavelength",self.wavelength_slider.x,self.wavelength_slider.y);
-    self.amplitude_slider.draw(canv); canv.context.fillText("amplitude",self.amplitude_slider.x,self.amplitude_slider.y);
-
     if(!self.enabled)
     {
       canv.context.fillStyle = "rgba(100,100,100,0.5)";
-      if(side == "left")       canv.context.fillRect(210,687,346,158);
-      else if(side == "right") canv.context.fillRect(681,686,348,159);
+      if(side == "left")       canv.context.fillRect(Math.round(210*(5/8)),Math.round(687*(5/8)),Math.round(346*(5/8)),Math.round(158*(5/8)));
+      else if(side == "right") canv.context.fillRect(Math.round(681*(5/8)),Math.round(686*(5/8)),Math.round(348*(5/8)),Math.round(159*(5/8)));
 
     }
   }
@@ -812,20 +813,20 @@ var ClipBoard = function(w,h,scene,levels)
 
   self.w = w;
   self.h = h;
-  self.pretend_y = 20;
-  self.desired_y = 20;
+  self.pretend_y = Math.round(20*(5/8));
+  self.desired_y = Math.round(20*(5/8));
 
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(self.w-450,90,70,70, function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(self.w-Math.round(420*(5/8)),Math.round(90*(5/8)),Math.round(70*(5/8)),Math.round(70*(5/8)), function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
     canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
   }
 
-  var bs = 110;
-  var p = 40;
+  var bs = Math.round(110*(5/8));
+  var p = Math.round(40*(5/8));
   var c0 = self.w/2-(bs/2)-2*bs-2*p;
   var c1 = self.w/2-(bs/2)-1*bs-1*p;
   var c2 = self.w/2-(bs/2)-0*bs-0*p;
@@ -860,7 +861,7 @@ var ClipBoard = function(w,h,scene,levels)
     {
       if(!levels[this.lvl].complete)
       {
-        var s = (((Math.sin(global_n_ticks/20)+1)/4)+0.5)*10;
+        var s = (((Math.sin(global_n_ticks/20)+1)/4)+0.5)*Math.round(10*(5/8));
         canv.context.drawImage(global_lvl_button_outline,this.x-s,this.y-s,this.w+s*2,this.h+s*2);
       }
       canv.context.drawImage(global_lvl_button,this.x,this.y,this.w,this.h);
@@ -868,16 +869,16 @@ var ClipBoard = function(w,h,scene,levels)
     else
     {
       canv.context.drawImage(global_fade_lvl_button,this.x,this.y,this.w,this.h);
-      canv.context.drawImage(global_lvl_lock,this.x+this.w-40,this.y-20,60,60);
+      canv.context.drawImage(global_lvl_lock,this.x+this.w-Math.round(40*(5/8)),this.y-Math.round(20*(5/8)),Math.round(60*(5/8)),Math.round(60*(5/8)));
     }
     if(levels[this.complete_lvl].complete)
     {
-      canv.context.drawImage(global_check,this.x+20,this.y+20,this.h-40,this.h-40);
+      canv.context.drawImage(global_check,this.x+Math.round(20*(5/8)),this.y+Math.round(20*(5/8)),this.h-Math.round(40*(5/8)),this.h-Math.round(40*(5/8)));
     }
     else
     {
       canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillText(this.title,this.x+this.w/2,this.y+this.h-20);
+      canv.context.fillText(this.title,this.x+this.w/2,this.y+this.h-Math.round(20*(5/8)));
     }
   }
   for(var i = 0; i < self.buttons.length; i++)
@@ -894,26 +895,24 @@ var ClipBoard = function(w,h,scene,levels)
     canv.context.fillStyle = "rgba(0,0,0,"+global_bg_alpha+")";
     canv.context.fillRect(0,0,self.w,self.h);
 
-    canv.context.font = "100px stump";
+    canv.context.font = "80px stump";
     canv.context.textAlign = "center";
     canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillText("Levels",self.w/2,150+self.pretend_y);
-    canv.context.font = "40px stump";
-    canv.context.fillText("Wave",c0+bs/2,r0-50+self.pretend_y);
-    canv.context.fillText("Pulse",c1+bs/2,r0-50+self.pretend_y);
-    canv.context.fillText("Composition",c3+bs/2,r0-50+self.pretend_y);
+    canv.context.fillText("Levels",self.w/2,Math.round(150*(5/8))+self.pretend_y);
+    canv.context.font = "30px stump";
+    canv.context.fillText("Wave",c0+bs/2,r0-Math.round(50*(5/8))+self.pretend_y);
+    canv.context.fillText("Pulse",c1+bs/2,r0-Math.round(50*(5/8))+self.pretend_y);
+    canv.context.fillText("Composition",c3+bs/2,r0-Math.round(50*(5/8))+self.pretend_y);
     canv.context.textAlign = "right";
     canv.context.fillText("Playground",c0-20,r0+bs/2+self.pretend_y);
     canv.context.fillText("Challenges",c0-20,r1+bs/2+self.pretend_y);
     canv.context.fillText("Random",c0-20,r2+bs/2+self.pretend_y);
 
-    canv.context.font = "100px stump";
+    canv.context.font = "65px stump";
     canv.context.textAlign = "center";
     canv.context.fillStyle = "#FFFFFF";
     for(var i = 0; i < self.buttons.length; i++)
       self.buttons[i].draw(canv);
-    canv.context.font = "12px stump";
-    canv.context.textAlign = "left";
   }
 
   self.tick = function()
@@ -942,10 +941,10 @@ var Blurb = function(scene)
 {
   var self = this;
   //dimensions for clicker- to dismiss
-  self.x = scene.dc.canvas.width-200;
-  self.y = scene.dc.canvas.height-200;
-  self.w = 100;
-  self.h = 50;
+  self.x = scene.dc.canvas.width-Math.round(200*(5/8));
+  self.y = scene.dc.canvas.height-Math.round(200*(5/8));
+  self.w = Math.round(100*(5/8));
+  self.h = Math.round(50*(5/8));
 
   self.txt = "";
   self.lines;
@@ -962,9 +961,9 @@ var Blurb = function(scene)
     var found = 0;
     var searched = 0;
     var tentative_search = 0;
-    var width = canv.canvas.width-600;
+    var width = canv.canvas.width-Math.round(600*(5/8));
 
-    canv.context.font = "25px Open Sans";
+    canv.context.font = "20px Open Sans";
 
     //stage.drawCanv.context.font=whaaaat;
     while(found < self.txt.length)
@@ -998,15 +997,16 @@ var Blurb = function(scene)
     global_bg_alpha = (1-((20*10)/canv.canvas.height));
     canv.context.fillStyle = "rgba(0,0,0,"+global_bg_alpha+")"; //emulates clipboard fade
     canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
-    var box_height = 300;
+    var box_height = 188;//Math.round(300*(5/8));
     canv.context.fillStyle = blue;
     canv.context.fillRect(0,canv.canvas.height-box_height,canv.canvas.width,box_height);
 
-    canv.context.font = "25px Open Sans";
+    canv.context.font = "20px Open Sans";
+    canv.context.textAlign = "left";
     for(var i = 0; i < self.lines.length; i++)
     {
       canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillText(self.lines[i],300,canv.canvas.height-box_height+50+((i+1)*40),canv.canvas.width-600);
+      canv.context.fillText(self.lines[i],Math.round(300*(5/8)),canv.canvas.height-box_height+Math.round(50*(5/8))+((i+1)*Math.round(40*(5/8))),canv.canvas.width-Math.round(600*(5/8)));
     }
 
     //if(self.img_el)
@@ -1017,11 +1017,10 @@ var Blurb = function(scene)
     canv.context.fillStyle = "#FFFFFF";
     canv.context.fillRect(self.x,self.y,self.w,self.h);
     canv.context.fillStyle = "#000000";
-    canv.context.font = "30px Open Sans";
+    canv.context.font = "25px Open Sans";
     canv.context.fillText("Ok!",self.x+10,self.y+self.h-10,self.w);
-    canv.context.font = "12px Open Sans";
 
-    canv.context.drawImage(global_tall,50,canv.canvas.height-500,170,450);
+    canv.context.drawImage(global_tall,Math.round(50*(5/8)),canv.canvas.height-Math.round(500*(5/8)),Math.round(170*(5/8)),Math.round(450*(5/8)));
   }
 
   self.click = function(evt)
@@ -1129,7 +1128,7 @@ var GamePlayScene = function(game, stage)
     {
       var asset = new Image();
       asset.src = "assets/right-panel.png";
-      placer = new Placer(asset,100,100,100,100);
+      placer = new Placer(asset,Math.round(100*(5/8)),Math.round(100*(5/8)),Math.round(100*(5/8)),Math.round(100*(5/8)));
     }
     var level;
     cur_level = 0;
@@ -1140,7 +1139,7 @@ var GamePlayScene = function(game, stage)
     myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
-    myDisplay = new GraphDrawer(myComp, 268, 207, 703, 249);
+    myDisplay = new GraphDrawer(myComp, Math.round(268*(5/8)), Math.round(207*(5/8)), Math.round(703*(5/8)), Math.round(249*(5/8)));
     myDisplay.color = "#FF00FF";
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
@@ -2073,13 +2072,13 @@ var GamePlayScene = function(game, stage)
 
     blurb = new Blurb(self);
 
-    menuButton  = new ButtonBox(self.c.width-55, 15, 30, 30, function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    menuButton  = new ButtonBox(self.c.width-Math.round(55*(5/8)), Math.round(15*(5/8)), Math.round(30*(5/8)), Math.round(30*(5/8)), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
     {
       canv.context.drawImage(global_menu,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
     }
 
-    readyButton = new ButtonBox(821,219,139,49,
+    readyButton = new ButtonBox(Math.round(821*(5/8)),Math.round(219*(5/8)),Math.round(139*(5/8)),Math.round(49*(5/8)),
       function(on)
       {
         if( //if this is showing
@@ -2128,17 +2127,17 @@ var GamePlayScene = function(game, stage)
       }
     );
     if(print_debug)
-      printButton = new ButtonBox(self.c.width-10-80, 90, 80, 20, function(on) { self.print(); });
+      printButton = new ButtonBox(self.c.width-Math.round(10*(5/8))-Math.round(80*(5/8)), Math.round(90*(5/8)), Math.round(80*(5/8)), Math.round(20*(5/8)), function(on) { self.print(); });
 
-    composeButton = new ButtonBox(597, 730, 37, 99, function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
+    composeButton = new ButtonBox(Math.round(597*(5/8)), Math.round(730*(5/8)), Math.round(37*(5/8)), Math.round(99*(5/8)), function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
     composeButton.draw = function(canv)
     {
-      if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(toggle_up,composeButton.x,composeButton.y,composeButton.w,composeButton.h-28);
-      else                   canv.context.drawImage(toggle_down,composeButton.x,composeButton.y+28,composeButton.w,composeButton.h-28);
+      if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(toggle_up,composeButton.x,composeButton.y,composeButton.w,composeButton.h-Math.round(28*(5/8)));
+      else                   canv.context.drawImage(toggle_down,composeButton.x,composeButton.y+Math.round(28*(5/8)),composeButton.w,composeButton.h-Math.round(28*(5/8)));
     }
 
     validator = new Validator(myComp, gComp);
-    vDrawer = new ValidatorDrawer(10, 10+((self.c.height-20)/2)-20, self.c.width-20, 20, validator);
+    vDrawer = new ValidatorDrawer(Math.round(10*(5/8)), Math.round(10*(5/8))+((self.c.height-Math.round(20*(5/8)))/2)-Math.round(20*(5/8)), self.c.width-Math.round(20*(5/8)), Math.round(20*(5/8)), validator);
 
     if(placer_debug)
     {
@@ -2168,8 +2167,6 @@ var GamePlayScene = function(game, stage)
 
     click_aud = new Aud("assets/click_0.wav");
     click_aud.load();
-
-    stage.drawCanv.context.font = "12px Open Sans";
   };
 
   self.requestLevel = function(lvl)
@@ -2335,9 +2332,9 @@ var GamePlayScene = function(game, stage)
     game_mode = mode;
 
     if(game_mode == GAME_MODE_MENU)
-      clip.desired_y = 20;
+      clip.desired_y = Math.round(20*(5/8));
     else if(game_mode == GAME_MODE_PLAY)
-      clip.desired_y = self.c.height+20;
+      clip.desired_y = self.c.height+Math.round(20*(5/8));
   }
 
   var t = 0;
@@ -2435,29 +2432,30 @@ var GamePlayScene = function(game, stage)
     {
       composeButton.draw(self.dc);
       self.dc.context.fillStyle = "#000000";
-      self.dc.context.fillText("show",         composeButton.x+5,composeButton.y-20);
-      self.dc.context.fillText("contributions",composeButton.x-10,composeButton.y-5);
+      self.dc.context.textAlign = "center";
+      self.dc.context.fillText("show",         composeButton.x+composeButton.w/2,composeButton.y-20);
+      self.dc.context.fillText("contributions",composeButton.x+composeButton.w/2,composeButton.y-5);
     }
 
     self.dc.context.fillStyle = blue;
-    self.dc.context.fillRect(0,0,self.dc.canvas.width,60);
-    self.dc.context.drawImage(global_yard_logo,20,10,100,40);
+    self.dc.context.fillRect(0,0,self.dc.canvas.width,38);////Math.round(60*(5/8)));
+    self.dc.context.drawImage(global_yard_logo,Math.round(20*(5/8)),Math.round(10*(5/8)),Math.round(100*(5/8)),Math.round(40*(5/8)));
     self.dc.context.fillStyle = "#FFFFFF";
-    self.dc.context.font = "30px stump";
+    self.dc.context.font = "25px stump";
     self.dc.context.textAlign = "right";
-    self.dc.context.fillText("The Wave Generator",self.dc.canvas.width-80,40);
+    self.dc.context.fillText("The Wave Generator",self.dc.canvas.width-Math.round(80*(5/8)),Math.round(40*(5/8)));
     menuButton.draw(self.dc);
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
     {
-      var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
+      var s = ((Math.sin(global_n_ticks/20)+1)/2)*Math.round(10*(5/8));
       self.dc.context.drawImage(global_next,readyButton.x,readyButton.y+s,readyButton.w,readyButton.h);
     }
     else if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
-      var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
+      var s = ((Math.sin(global_n_ticks/20)+1)/2)*Math.round(10*(5/8));
       //skipButton.draw(self.dc); //don't need to "draw button"
-      self.dc.context.font = "50px Open Sans";
+      self.dc.context.font = "40px Open Sans";
       self.dc.context.textAlign = "right";
 
       if(levels[cur_level].random)
