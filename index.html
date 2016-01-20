@@ -53,6 +53,7 @@ function begin()
   document.getElementById("stage_container").style.left = w+"px";
   document.getElementById("side_b").style.left = (w+1233)+"px";
   document.getElementById("side_c").style.height = (window.innerHeight-1024)+"px";
+  document.getElementById("blurb_bg").style.height = (window.innerHeight-724)+"px";
 
   g = new Game({width:1233,height:1024,container:"stage_container"});
   g.begin();
@@ -67,6 +68,7 @@ window.onresize = function(event)
   document.getElementById("stage_container").style.left = w+"px";
   document.getElementById("side_b").style.left = (w+1233)+"px";
   document.getElementById("side_c").style.height = (window.innerHeight-1024)+"px";
+  document.getElementById("blurb_bg").style.height = (window.innerHeight-724)+"px";
 };
 </script>
 
@@ -74,9 +76,10 @@ window.onresize = function(event)
 <body style="background-image:url('assets/wave-machine-background.jpg'); width:100%; user-select:none;">
 <div style="position:absolute; top:0px; left:0px; background-color:#76DAE2; width:100%; height:60px; user-select:none;"></div>
 <div id="side_a" style="position:absolute; height:1024px; user-select:none;"> </div>
-<div id="stage_container" style="position:absolute; width:1233px; height:1024px; user-select:none;"> </div>
 <div id="side_b" style="position:absolute; height:1024px; user-select:none;"> </div>
 <div id="side_c" style="position:absolute; top:1024px; width:100%; user-select:none;"> </div>
+<div id="blurb_bg" style="visibility:hidden; position:absolute; top:724px; left:0px; background-color:#76DAE2; width:100%; user-select:none;"></div>
+<div id="stage_container" style="position:absolute; width:1233px; height:1024px; user-select:none;"> </div>
 </body>
 </html>
 

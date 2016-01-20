@@ -16,6 +16,7 @@ var global_menu;
 
 var global_n_ticks;
 var global_bg_alpha;
+var global_blurb_up;
 
 var blue = "#76DAE2";
 
@@ -1112,6 +1113,7 @@ var GamePlayScene = function(game, stage)
   {
     global_n_ticks = 0;
     global_bg_alpha = 0;
+    global_blurb_up = false;
 
     //dbugger = new Debugger({source:document.getElementById("debug_div")});
     if(placer_debug)
@@ -2475,7 +2477,11 @@ var GamePlayScene = function(game, stage)
     clip.draw(self.dc);
 
     if(game_mode == GAME_MODE_BLURB)
+    {
+      global_blurb_up = true;
       blurb.draw(self.dc);
+    }
+    else global_blurb_up = false;
 
     if(placer_debug)
     {
