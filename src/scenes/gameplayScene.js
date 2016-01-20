@@ -13,6 +13,9 @@ var global_yard_logo;
 var global_tall;
 var global_short;
 var global_menu;
+var global_next;
+var global_reroll;
+var global_skip;
 
 var global_n_ticks;
 var global_bg_alpha;
@@ -1094,6 +1097,9 @@ var GamePlayScene = function(game, stage)
   var tall = new Image(); tall.src = "assets/scout.png";
   var short = new Image(); short.src = "assets/honey.png";
   var menu = new Image(); menu.src = "assets/icon-menu.png";
+  var next = new Image(); next.src = "assets/button-next.png";
+  var skip = new Image(); skip.src = "assets/button-skip.png";
+  var reroll = new Image(); reroll.src = "assets/button-reroll.png";
   global_slider_img = slider;
   global_dial_img = knob;
   global_toggle_up = toggle_up;
@@ -1108,6 +1114,9 @@ var GamePlayScene = function(game, stage)
   global_tall = tall;
   global_short = short;
   global_menu = menu;
+  global_next = next;
+  global_skip = skip;
+  global_reroll = reroll;
 
   self.ready = function()
   {
@@ -2441,14 +2450,8 @@ var GamePlayScene = function(game, stage)
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
     {
-      //readyButton.draw(self.dc); //don't need to "draw button"
       var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
-      self.dc.context.font = "50px Open Sans";
-      self.dc.context.textAlign = "right";
-      self.dc.context.fillStyle = "#000000";
-      self.dc.context.fillText("Next!",readyButton.x+readyButton.w-3,readyButton.y+readyButton.h-10-3+s);
-      self.dc.context.fillStyle = "#FFFFFF";
-      self.dc.context.fillText("Next!",readyButton.x+readyButton.w,readyButton.y+readyButton.h-10+s);
+      self.dc.context.drawImage(global_next,readyButton.x,readyButton.y+s,readyButton.w,readyButton.h);
     }
     else if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
@@ -2458,19 +2461,9 @@ var GamePlayScene = function(game, stage)
       self.dc.context.textAlign = "right";
 
       if(levels[cur_level].random)
-      {
-        self.dc.context.fillStyle = "#000000";
-        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3+s);
-        self.dc.context.fillStyle = "#FFFFFF";
-        self.dc.context.fillText("Re-roll...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10+s);
-      }
+        self.dc.context.drawImage(global_reroll,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
       else
-      {
-        self.dc.context.fillStyle = "#000000";
-        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w-3,skipButton.y+skipButton.h-10-3+s);
-        self.dc.context.fillStyle = "#FFFFFF";
-        self.dc.context.fillText("Skip...",skipButton.x+skipButton.w,skipButton.y+skipButton.h-10+s);
-      }
+        self.dc.context.drawImage(global_skip,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
     }
     //if(!levels[cur_level].playground)
       //vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);

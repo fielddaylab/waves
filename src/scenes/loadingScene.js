@@ -43,6 +43,9 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/scout.png");
     img_srcs.push("assets/honey.png");
     img_srcs.push("assets/icon-menu.png");
+    img_srcs.push("assets/button-next.png");
+    img_srcs.push("assets/button-reroll.png");
+    img_srcs.push("assets/button-skip.png");
     for(var i = 0; i < img_srcs.length; i++)
     {
       images[i] = new Image();
