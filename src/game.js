@@ -35,6 +35,7 @@ var Game = function(init)
     {
       document.getElementById("side_a").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
       document.getElementById("side_b").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
+      document.getElementById("side_c").style.backgroundColor = "rgba(0,0,0,"+global_bg_alpha+")";
     }
   };
 
