@@ -1160,7 +1160,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "This is a playground! Play around for a bit, and when you are ready to begin, hit next!";
+    level.blurb_txt = "Welcome to the Wave Combinator! Play around with the controls for a bit, and when you are ready to begin, hit \"next\"!";
     levels.push(level);
 
     s_levels_lvl = n_levels;
@@ -1185,7 +1185,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "A snapshot of a wave can be defined by 3 properties- its Amplitude, Wavelength, and Offset. Alter the red wave's offset to match the dark wave.";
+    level.blurb_txt = "A graph of a wave is a mathematical model of the wave. Use the offset slider to shift the red wave so it matches - or is \"in phase with\" - the grey wave.";
     level.blurb_img = "offset";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1214,7 +1214,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "A wave's Wavelength is the distance between each of its pulses. Again, use the sliders to match the dark wave.";
+    level.blurb_txt = "A graph of a wave can show other properties of a wave, such as wavelength. Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
     level.blurb_img = "wavelength";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1243,7 +1243,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Amplitude is the measurement of how far a wave deviates from its resting (non-oscillating) state (the horizontal line). You will need to move more than one slider to match this wave.";
+    level.blurb_txt = "Amplitude is another wave property. Amplitude is the measure of the wave's greatest displacement from the horizontal line, or 0, on the graph. Amplitude is related to how much energy a wave carries. For example, sound waves with low ampliteude are quieter. Again, try to match the red to the grey wave. You will need to move more than one slider to match the waves.";
     level.blurb_img = "amplitude";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1272,7 +1272,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to match the dark.";
+    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to match the grey.";
     levels.push(level);
 
     //lvl? //all three (low amp wave looks different)
@@ -1296,7 +1296,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Waves can differ drastically from each other- you might say this wave has a \"small amplitude\" and a \"large wavelength\".";
+    level.blurb_txt = "Waves can differ drastically from each other. You might say this wave has a small amplitude and a large wavelength.";
     levels.push(level);
 
     //lvl? //zero amp wave
@@ -1344,7 +1344,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "To eliminate this single wave, just decrease its amplitude.";
+    level.blurb_txt = "To eliminate this single wave, just decrease its amplitude to 0 - a flat line. Silence!.";
     levels.push(level);
 
     s_levels_last_lvl = n_levels;
@@ -1369,7 +1369,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "A pulse is simply a single motion of a wave. Its Amplitude, Wavelength, and Offset can be considered in the very same way as the waves previous.";
+    level.blurb_txt = "Waves are made up of repeating oscillations. A pulse is simply a single oscillation of a wave - like one bead on a string of identical beads. A pulse has the same amplitude, wavelength, and offset as the entire wave.";
     level.blurb_img = "pulse";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1424,7 +1424,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Here is a playground with two pulses. You can see what happens when you let the pulses overlap (this is known as wave interference). When you are ready to resume, hit next.";
+    level.blurb_txt = "A graph can also model how two waves interact when they occur in the same space. This is known as \"wave interference\". Play around with this graph showing two wave pulses to model wave interference. What happens when you let the pulses overlap? When you are ready to move on, hit \"next\".";
     levels.push(level);
 
     pl_levels_lvl = n_levels;
@@ -1449,7 +1449,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "When two like pulses overlap, the result is the additive sum of each. This is called \"constructive interference\".";
+    level.blurb_txt = "When two pulses overlap, they affect each other's amplitude. If both pulses have a displacement in the same direction - both above or both below the horizontal line on our graph - their amplitudes add together. This is called \"constructive interference\".";
     level.blurb_img = "constructive";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1478,7 +1478,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "When two pulses on different sides of the line overlap, the result is one pulse subtracted from the other. This is known as \"destructive interference\".";
+    level.blurb_txt = "If the pulses have displacements in the opposite directions, however, their amplitudes add together. This is called \"constructive interference\".";
     level.blurb_img = "destructive";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1585,7 +1585,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to interfere with the blue wave so that they overlap just enough to greate the dark wave.";
+    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red pulse to interfere with the blue pulse so that they overlap just enough to greate the grey wave.";
     levels.push(level);
 
     pl_random_lvl = n_levels;
@@ -1635,7 +1635,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "This is a playground with two interfering waves. All the rules of interference that applied to pulses apply equally to waves. When you are done experimenting, hit next to resume.";
+    level.blurb_txt = "Now it's time to play with two interfering waves. The rules of interference that applied to pulses also apply to waves. When you are done experimenting, hit \"next\" to move on.";
     levels.push(level);
 
     dl_levels_lvl = n_levels;
@@ -1660,7 +1660,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "When you have a wave with a large wavelength overlapping (interfering with) a wave with a small wavelength, the alternating constructive and destructive interference looks like the smaller wave \"riding\" the larger one.";
+    level.blurb_txt = "When you have a wave with a large wavelength overlapping (interfering with) a wave with a small wavelength, the alternating constructive and destructive interference makes the graph look like the smaller wave \"riding\" the larger one.";
     level.blurb_img = "highlowfq";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1737,7 +1737,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "If this wave looks intimidating, just try to mentally break the dark wave down into two- one for its little squiggles, and one for its big squiggles. Then create that.";
+    level.blurb_txt = "If this wave looks intimidating, just try to mentally break the grey wave down into two - one for its little squiggles, and one for its big squiggles. Then create those shapes.";
     levels.push(level);
 
     //lvl? //zero amp high freq
@@ -1761,7 +1761,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "When there is only one wave, zero Amplitude means a flat line. When there are two, if either of the waves are flat, that wave will simply not effect (interfere with) the other.";
+    level.blurb_txt = "When there is only one wave, zero Amplitude means a flat line. When there are two waves, a wave with zero amplitude will not affect (interfere with) the other.";
     levels.push(level);
 
     //lvl? //zero amp low freq
@@ -1785,7 +1785,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Turn on the \"wave visualization\" to show how increasing the large wave's amplitude effects the result.";
+    level.blurb_txt = "Click \"Show Contributions\" to show how increasing the large wave's amplitude effects the result.";
     levels.push(level);
 
     //lvl? //all three- low freq
@@ -1809,7 +1809,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "For this wave, you will need to alter the Amplitude, Wavelength, and Frequency to create the correct interference.";
+    level.blurb_txt = "For this wave, you will need to alter the Amplitude, Wavelength, and Offset to create the correct interference.";
     levels.push(level);
 
     //lvl? //total interference- low freq
@@ -1833,7 +1833,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Like pulses, if two waves are identical except for their opposite amplitude, they can cancel each other out. (Click the wave visualizer to see this in action).";
+    level.blurb_txt = "Like pulses, if two waves are identical except for their opposite displacement from 0 - above or below - they can cancel each other out. (Click \"Show Contributions\" to see this in action).";
     levels.push(level);
 
     //lvl? //total interference- med freq
@@ -1930,7 +1930,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Now you can edit either wave. Take a look at the dark wave, then the purple wave. Think which wave (the blue or the red) will you need to alter to create the dark?";
+    level.blurb_txt = "Now you can edit either wave. Take a look at the grey wave, then the purple wave. Think which wave (the blue or the red) will you need to alter to create the grey wave.";
     levels.push(level);
 
     ds_levels_last_lvl = n_levels;
@@ -1955,7 +1955,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "If you can, try to guess what change you will need to make to solve this before touching any of the sliders. Then move the one slider to solve this wave.";
+    level.blurb_txt = "If you can, try to guess what change you will need to make to solve this before touching any of the sliders. Then move one slider to solve this wave.";
     levels.push(level);
 
     ds_random_lvl = n_levels;
@@ -2004,7 +2004,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "You've seen this dark wave before. Edit both waves to construct a solution.";
+    level.blurb_txt = "You've seen this grey wave before. Edit both waves to construct a solution.";
     levels.push(level);
 
     d_random_lvl = n_levels;
