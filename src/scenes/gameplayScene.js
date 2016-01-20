@@ -1480,7 +1480,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "If the pulses have displacements in the opposite directions, however, their amplitudes add together. This is called \"constructive interference\".";
+    level.blurb_txt = "If the pulses have displacements in the opposite directions, however, their amplitudes add together. This is called \"destructive interference\".";
     level.blurb_img = "destructive";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -2425,6 +2425,7 @@ var GamePlayScene = function(game, stage)
     if(levels[cur_level].myE1_visible)
     {
       composeButton.draw(self.dc);
+      self.dc.context.fillStyle = "#000000";
       self.dc.context.fillText("show",         composeButton.x+5,composeButton.y-20);
       self.dc.context.fillText("contributions",composeButton.x-10,composeButton.y-5);
     }
