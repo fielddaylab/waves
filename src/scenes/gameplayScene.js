@@ -1005,7 +1005,7 @@ var Blurb = function(scene)
     canv.context.textAlign = "left";
     for(var i = 0; i < self.lines.length; i++)
     {
-      canv.context.fillStyle = "#FFFFFF";
+      canv.context.fillStyle = "#000000";
       canv.context.fillText(self.lines[i],Math.round(300*(5/8)),canv.canvas.height-box_height+Math.round(50*(5/8))+((i+1)*Math.round(40*(5/8))),canv.canvas.width-Math.round(600*(5/8)));
     }
 
