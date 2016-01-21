@@ -1224,7 +1224,8 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "A graph of a wave can show other properties of a wave, such as wavelength. Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
+    //level.blurb_txt = "A graph of a wave can show other properties of a wave, such as wavelength. Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
+    level.blurb_txt = "Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
     level.blurb_img = "wavelength";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1253,7 +1254,8 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Amplitude is another wave property. Amplitude is the measure of the wave's greatest displacement from the horizontal line, or 0, on the graph. Amplitude is related to how much energy a wave carries. For example, sound waves with low ampliteude are quieter. Again, try to match the red to the grey wave. You will need to move more than one slider to match the waves.";
+    //level.blurb_txt = "Amplitude is another wave property. Amplitude is the measure of the wave's greatest displacement from the horizontal line, or 0, on the graph. Amplitude is related to how much energy a wave carries. For example, sound waves with low ampliteude are quieter. Again, try to match the red to the grey wave. You will need to move more than one slider to match the waves.";
+    level.blurb_txt = "Amplitude is the measure of the wave's greatest displacement from the horizontal line. Amplitude relates to how much energy a wave carries. For example, sound waves with low ampliteude are quieter.";
     level.blurb_img = "amplitude";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1379,7 +1381,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Waves are made up of repeating oscillations. A pulse is simply a single oscillation of a wave - like one bead on a string of identical beads. A pulse has the same amplitude, wavelength, and offset as the entire wave.";
+    level.blurb_txt = "Waves are made up of repeating oscillations. A pulse is simply a single oscillation of a wave. A pulse has the same amplitude, wavelength, and offset as the entire wave.";
     level.blurb_img = "pulse";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1434,7 +1436,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "A graph can also model how two waves interact when they occur in the same space. This is known as \"wave interference\". Play around with this graph showing two wave pulses to model wave interference. What happens when you let the pulses overlap? When you are ready to move on, hit \"next\".";
+    level.blurb_txt = "A graph can also model how two waves interact. This is known as \"wave interference\". What happens when you let the pulses overlap? When you are ready to move on, hit \"next\".";
     levels.push(level);
 
     pl_levels_lvl = n_levels;
@@ -1459,7 +1461,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "When two pulses overlap, they affect each other's amplitude. If both pulses have a displacement in the same direction - both above or both below the horizontal line on our graph - their amplitudes add together. This is called \"constructive interference\".";
+    level.blurb_txt = "When two pulses overlap, they affect each other's amplitude. If both pulses have a displacement in the same direction their amplitudes add together. This is called \"constructive interference\".";
     level.blurb_img = "constructive";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1645,7 +1647,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Now it's time to play with two interfering waves. The rules of interference that applied to pulses also apply to waves. When you are done experimenting, hit \"next\" to move on.";
+    level.blurb_txt = "Now it's time to play with two interfering waves. The rules of interference that applied to pulses also apply to waves. When you're done, hit \"next\" to move on.";
     levels.push(level);
 
     dl_levels_lvl = n_levels;
@@ -1670,7 +1672,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "When you have a wave with a large wavelength overlapping (interfering with) a wave with a small wavelength, the alternating constructive and destructive interference makes the graph look like the smaller wave \"riding\" the larger one.";
+    level.blurb_txt = "When you have a wave with a large wavelength overlapping (interfering with) a wave with a small wavelength, the graph looks like the smaller wave is \"riding\" the larger one.";
     level.blurb_img = "highlowfq";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1723,7 +1725,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "The Wavelength of the smaller wave dictates the width of the little squiggles, and the Wavelength of the larger wave dictates the width of the big squiggles. (\"Squiggles\" is not a technical term, but it probably should be.)";
+    level.blurb_txt = "The Wavelength of the smaller wave dictates the width of the little squiggles, and the Wavelength of the larger wave dictates the width of the big squiggles.";
     levels.push(level);
 
     //lvl? //wavelength of low freq
@@ -1747,7 +1749,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "If this wave looks intimidating, just try to mentally break the grey wave down into two - one for its little squiggles, and one for its big squiggles. Then create those shapes.";
+    level.blurb_txt = "If this wave looks intimidating, just try to mentally break the grey wave down into two - one for its little squiggles, and one for its big squiggles.";
     levels.push(level);
 
     //lvl? //zero amp high freq
@@ -1843,7 +1845,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Like pulses, if two waves are identical except for their opposite displacement from 0 - above or below - they can cancel each other out. (Click \"Show Contributions\" to see this in action).";
+    level.blurb_txt = "Like pulses, if two waves are identical except for their opposite displacement from 0, they can cancel each other out. (Click \"Show Contributions\" to see this).";
     levels.push(level);
 
     //lvl? //total interference- med freq
