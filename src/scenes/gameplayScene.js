@@ -1067,6 +1067,7 @@ var GamePlayScene = function(game, stage)
 
   var blurb;
 
+  var yardButton;
   var menuButton;
   var readyButton;
   var skipButton;
@@ -2074,6 +2075,8 @@ var GamePlayScene = function(game, stage)
 
     blurb = new Blurb(self);
 
+    yardButton  = new ButtonBox(Math.round(20*(5/8)),Math.round(10*(5/8)),Math.round(100*(5/8)),Math.round(40*(5/8)), function(on) { window.location.href = "http://theyardgames.org/"; });
+
     menuButton  = new ButtonBox(self.c.width-Math.round(55*(5/8)), Math.round(15*(5/8)), Math.round(30*(5/8)), Math.round(30*(5/8)), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
     {
@@ -2151,12 +2154,14 @@ var GamePlayScene = function(game, stage)
 
     myE0.register(play_dragger, play_presser, play_clicker);
     myE1.register(play_dragger, play_presser, play_clicker);
+    play_presser.register(yardButton);
     play_presser.register(menuButton);
     play_presser.register(readyButton);
     play_presser.register(composeButton);
     play_presser.register(skipButton);
     if(print_debug)
       play_presser.register(printButton);
+    play_clicker.register(yardButton);
     play_clicker.register(menuButton);
     play_clicker.register(readyButton);
     play_clicker.register(composeButton);
@@ -2441,7 +2446,7 @@ var GamePlayScene = function(game, stage)
 
     self.dc.context.fillStyle = blue;
     self.dc.context.fillRect(0,0,self.dc.canvas.width,38);////Math.round(60*(5/8)));
-    self.dc.context.drawImage(global_yard_logo,Math.round(20*(5/8)),Math.round(10*(5/8)),Math.round(100*(5/8)),Math.round(40*(5/8)));
+    self.dc.context.drawImage(global_yard_logo,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
     self.dc.context.fillStyle = "#FFFFFF";
     self.dc.context.font = "25px stump";
     self.dc.context.textAlign = "right";
