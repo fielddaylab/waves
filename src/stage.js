@@ -25,7 +25,6 @@ var Stage = function(init)
 
   self.drawCanv = new Canv({width:self.width,height:self.height,dpr_to_bspr:dpr/bspr});
   self.drawCanv.context.scale(self.drawCanv.dpr_to_bspr, self.drawCanv.dpr_to_bspr);
-  //self.drawCanv.context.scale(self.drawCanv.dpr_to_bspr, self.drawCanv.dpr_to_bspr);
   self.drawCanv.scale = self.drawCanv.dpr_to_bspr;
   self.dispCanv = new Canv({width:self.width,height:self.height,dpr_to_bspr:dpr/bspr});
 
