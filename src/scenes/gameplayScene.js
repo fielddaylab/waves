@@ -941,8 +941,8 @@ var Blurb = function(scene)
 {
   var self = this;
   //dimensions for clicker- to dismiss
-  self.x = scene.dc.canvas.width-Math.round(200*(5/8));
-  self.y = scene.dc.canvas.height-Math.round(200*(5/8));
+  self.x = scene.dc.width-Math.round(200*(5/8));
+  self.y = scene.dc.height-Math.round(200*(5/8));
   self.w = Math.round(100*(5/8));
   self.h = Math.round(50*(5/8));
 
@@ -961,7 +961,7 @@ var Blurb = function(scene)
     var found = 0;
     var searched = 0;
     var tentative_search = 0;
-    var width = canv.canvas.width-Math.round(600*(5/8));
+    var width = canv.width-Math.round(600*(5/8));
 
     canv.context.font = "20px Open Sans";
 
@@ -994,19 +994,19 @@ var Blurb = function(scene)
 
   self.draw = function(canv)
   {
-    global_bg_alpha = (1-((20*10)/canv.canvas.height));
+    global_bg_alpha = (1-((20*10)/canv.height));
     canv.context.fillStyle = "rgba(0,0,0,"+global_bg_alpha+")"; //emulates clipboard fade
-    canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+    canv.context.fillRect(0,0,canv.width,canv.height);
     var box_height = 188;//Math.round(300*(5/8));
     canv.context.fillStyle = blue;
-    canv.context.fillRect(0,canv.canvas.height-box_height,canv.canvas.width,box_height);
+    canv.context.fillRect(0,canv.height-box_height,canv.width,box_height);
 
     canv.context.font = "20px Open Sans";
     canv.context.textAlign = "left";
     for(var i = 0; i < self.lines.length; i++)
     {
       canv.context.fillStyle = "#000000";
-      canv.context.fillText(self.lines[i],Math.round(300*(5/8)),canv.canvas.height-box_height+Math.round(50*(5/8))+((i+1)*Math.round(40*(5/8))),canv.canvas.width-Math.round(600*(5/8)));
+      canv.context.fillText(self.lines[i],Math.round(300*(5/8)),canv.height-box_height+Math.round(50*(5/8))+((i+1)*Math.round(40*(5/8))),canv.width-Math.round(600*(5/8)));
     }
 
     //if(self.img_el)
@@ -1020,7 +1020,7 @@ var Blurb = function(scene)
     canv.context.font = "25px Open Sans";
     canv.context.fillText("Ok!",self.x+10,self.y+self.h-10,self.w);
 
-    canv.context.drawImage(global_tall,Math.round(50*(5/8)),canv.canvas.height-Math.round(500*(5/8)),Math.round(170*(5/8)),Math.round(450*(5/8)));
+    canv.context.drawImage(global_tall,Math.round(50*(5/8)),canv.height-Math.round(500*(5/8)),Math.round(170*(5/8)),Math.round(450*(5/8)));
   }
 
   self.click = function(evt)
@@ -2051,7 +2051,7 @@ var GamePlayScene = function(game, stage)
     play_presser = new Presser({source:stage.dispCanv.canvas});
     play_clicker = new Clicker({source:stage.dispCanv.canvas});
 
-    clip = new ClipBoard(self.c.width,self.c.height,self,levels);
+    clip = new ClipBoard(self.dc.width,self.dc.height,self,levels);
 
     e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, myE0.graph.x, myE0.graph.y, myE0.graph.w, myE0.graph.h);
     e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  myE1.graph.x, myE1.graph.y, myE1.graph.w, myE1.graph.h);
@@ -2077,7 +2077,7 @@ var GamePlayScene = function(game, stage)
 
     yardButton  = new ButtonBox(Math.round(20*(5/8)),Math.round(10*(5/8)),Math.round(100*(5/8)),Math.round(40*(5/8)), function(on) { window.location.href = "http://theyardgames.org/"; });
 
-    menuButton  = new ButtonBox(self.c.width-Math.round(55*(5/8)), Math.round(15*(5/8)), Math.round(30*(5/8)), Math.round(30*(5/8)), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    menuButton  = new ButtonBox(self.dc.width-Math.round(55*(5/8)), Math.round(15*(5/8)), Math.round(30*(5/8)), Math.round(30*(5/8)), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
     {
       canv.context.drawImage(global_menu,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
@@ -2132,7 +2132,7 @@ var GamePlayScene = function(game, stage)
       }
     );
     if(print_debug)
-      printButton = new ButtonBox(self.c.width-Math.round(10*(5/8))-Math.round(80*(5/8)), Math.round(90*(5/8)), Math.round(80*(5/8)), Math.round(20*(5/8)), function(on) { self.print(); });
+      printButton = new ButtonBox(self.dc.width-Math.round(10*(5/8))-Math.round(80*(5/8)), Math.round(90*(5/8)), Math.round(80*(5/8)), Math.round(20*(5/8)), function(on) { self.print(); });
 
     composeButton = new ButtonBox(Math.round(597*(5/8)), Math.round(730*(5/8)), Math.round(37*(5/8)), Math.round(99*(5/8)), function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
     composeButton.draw = function(canv)
@@ -2142,7 +2142,7 @@ var GamePlayScene = function(game, stage)
     }
 
     validator = new Validator(myComp, gComp);
-    vDrawer = new ValidatorDrawer(Math.round(10*(5/8)), Math.round(10*(5/8))+((self.c.height-Math.round(20*(5/8)))/2)-Math.round(20*(5/8)), self.c.width-Math.round(20*(5/8)), Math.round(20*(5/8)), validator);
+    vDrawer = new ValidatorDrawer(Math.round(10*(5/8)), Math.round(10*(5/8))+((self.dc.height-Math.round(20*(5/8)))/2)-Math.round(20*(5/8)), self.dc.width-Math.round(20*(5/8)), Math.round(20*(5/8)), validator);
 
     if(placer_debug)
     {
@@ -2341,7 +2341,7 @@ var GamePlayScene = function(game, stage)
     if(game_mode == GAME_MODE_MENU)
       clip.desired_y = Math.round(20*(5/8));
     else if(game_mode == GAME_MODE_PLAY)
-      clip.desired_y = self.c.height+Math.round(20*(5/8));
+      clip.desired_y = self.dc.height+Math.round(20*(5/8));
   }
 
   var t = 0;
@@ -2404,7 +2404,7 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
-    self.dc.context.drawImage(bg_machine, 0, 0, self.c.width, self.c.height);
+    self.dc.context.drawImage(bg_machine, 0, 0, self.dc.width, self.dc.height);
 
     if(!levels[cur_level].playground)
     {
@@ -2445,12 +2445,12 @@ var GamePlayScene = function(game, stage)
     }
 
     self.dc.context.fillStyle = blue;
-    self.dc.context.fillRect(0,0,self.dc.canvas.width,38);////Math.round(60*(5/8)));
+    self.dc.context.fillRect(0,0,self.dc.width,38);////Math.round(60*(5/8)));
     self.dc.context.drawImage(global_yard_logo,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
     self.dc.context.fillStyle = "#FFFFFF";
     self.dc.context.font = "25px stump";
     self.dc.context.textAlign = "right";
-    self.dc.context.fillText("The Wave Generator",self.dc.canvas.width-Math.round(80*(5/8)),Math.round(40*(5/8)));
+    self.dc.context.fillText("The Wave Generator",self.dc.width-Math.round(80*(5/8)),Math.round(40*(5/8)));
     menuButton.draw(self.dc);
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))

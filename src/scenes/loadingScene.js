@@ -18,7 +18,7 @@ var LoadingScene = function(game, stage)
   self.ready = function()
   {
     pad = 20;
-    barw = (canv.canvas.width-(2*pad));
+    barw = (canv.width-(2*pad));
     progress = 0;
     canv.context.font = "12px stump";
     canv.context.fillText(".",0,0);// funky way to encourage any custom font to load
@@ -63,8 +63,8 @@ var LoadingScene = function(game, stage)
 
   self.draw = function()
   {
-    canv.context.fillRect(pad,canv.canvas.height/2,progress*barw,1);
-    canv.context.strokeRect(pad-1,(canv.canvas.height/2)-1,barw+2,3);
+    canv.context.fillRect(pad,canv.height/2,progress*barw,1);
+    canv.context.strokeRect(pad-1,(canv.height/2)-1,barw+2,3);
   };
 
   self.cleanup = function()
@@ -73,6 +73,6 @@ var LoadingScene = function(game, stage)
     imagesloaded = 0;
     images = [];//just used them to cache assets in browser; let garbage collector handle 'em.
     canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+    canv.context.fillRect(0,0,canv.width,canv.height);
   };
 };
