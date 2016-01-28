@@ -2043,6 +2043,18 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
+    //COOKIES
+    if(document.cookie && document.cookie.indexOf("LEVELS=") != -1)
+    {
+      //console.log("Reading Cookie:"+document.cookie);
+      var levels_cookie = (document.cookie.substring(document.cookie.indexOf("LEVELS=")+7,levels.length)).split('');
+      for(var i = 0; i < levels.length; i++)
+      {
+        var c = parseInt(levels_cookie[i]);
+        if(!isNaN(c)) levels[i].complete += c;
+      }
+    }
+
     placer_clicker = new Clicker({source:stage.dispCanv.canvas});
     placer_dragger = new Dragger({source:stage.dispCanv.canvas});
     menu_clicker = new Clicker({source:stage.dispCanv.canvas});
@@ -2098,6 +2110,17 @@ var GamePlayScene = function(game, stage)
         {
           click_aud.play();
           levels[cur_level].complete++;
+
+          //COOKIES
+          var levels_cookie = "LEVELS=";
+          for(var i = 0; i < levels.length; i++)
+          {
+                 if(levels[i].complete > 9) levels_cookie += "9";
+            else if(levels[i].complete < 0) levels_cookie += "0";
+            else                            levels_cookie += ""+levels[i].complete;
+          }
+          document.cookie = levels_cookie;
+          //console.log("Wrote Cookie:"+document.cookie);
 
           if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
           else
