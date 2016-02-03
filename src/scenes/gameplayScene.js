@@ -974,7 +974,7 @@ var Blurb = function(scene)
 {
   var self = this;
   //dimensions for clicker- to dismiss
-  self.x = scene.dc.width-Math.round(200*(5/8));
+  self.x = scene.dc.width-Math.round(230*(5/8));
   self.y = scene.dc.height-Math.round(200*(5/8));
   self.w = Math.round(100*(5/8));
   self.h = Math.round(50*(5/8));
@@ -1036,22 +1036,29 @@ var Blurb = function(scene)
 
     canv.context.font = "20px Open Sans";
     canv.context.textAlign = "left";
+    canv.context.fillStyle = "#FFFFFF";
     for(var i = 0; i < self.lines.length; i++)
-    {
-      canv.context.fillStyle = "#000000";
       canv.context.fillText(self.lines[i],Math.round(300*(5/8)),canv.height-box_height+Math.round(50*(5/8))+((i+1)*Math.round(40*(5/8))),canv.width-Math.round(600*(5/8)));
-    }
 
     //if(self.img_el)
       //canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
 
+    canv.context.lineWidth = 3;
+    canv.context.strokeStyle = "#5CABB3";
+    canv.context.beginPath();
+    canv.context.moveTo(Math.round(300*(5/8))+canv.width-Math.round(600*(5/8))+10,canv.height-box_height+30);
+    canv.context.lineTo(Math.round(300*(5/8))+canv.width-Math.round(600*(5/8))+10,canv.height-20);
+    canv.context.stroke();
+    canv.context.lineWidth = 1;
+
     canv.context.fillStyle = "#CCCCCC";
-    canv.context.fillRect(self.x,self.y+10,self.w,self.h);
+    canv.context.fillRect(self.x,self.y+8,self.w,self.h);
     canv.context.fillStyle = "#FFFFFF";
     canv.context.fillRect(self.x,self.y,self.w,self.h);
-    canv.context.fillStyle = "#000000";
+    canv.context.fillStyle = "#555555";
     canv.context.font = "25px Open Sans";
-    canv.context.fillText("Ok!",self.x+10,self.y+self.h-10,self.w);
+    canv.context.textAlign = "center";
+    canv.context.fillText("Ok!",self.x+self.w/2,self.y+self.h-8,self.w);
 
     canv.context.drawImage(global_tall,Math.round(50*(5/8)),canv.height-Math.round(500*(5/8)),Math.round(170*(5/8)),Math.round(450*(5/8)));
   }
