@@ -25,7 +25,7 @@ var blue = "#76DAE2";
 
 var default_completeness = 0;
 var print_debug = false;
-var placer_debug = true;
+var placer_debug = false;
 var cookies = false;
 
 var drawcanv;
@@ -304,10 +304,6 @@ var GraphDrawer = function(composition, x, y, w, h)
     }
 
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
-
-    canv.context.lineWidth = 2;
-    canv.context.strokeStyle = "#00FF00";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 
   self.dirty = function()
@@ -423,10 +419,6 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
     }
 
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
-
-    canv.context.lineWidth = 2;
-    canv.context.strokeStyle = "#00FF00";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 
   self.progress = 0;
@@ -499,19 +491,16 @@ var ComponentEditor = function(component, color, side)
   }
   else if(side == "right")
   {
-    self.x = Math.round(666*(5/8));
-    self.y = Math.round(521*(5/8));
-    self.w = Math.round(363*(5/8));
-    self.h = Math.round(325*(5/8));
+    setBox(self,p(0.5402597402597402,drawCanv.width),p(0.509375,drawCanv.height),p(0.2948051948051948,drawCanv.width),p(0.3171875,drawCanv.height));
 
-    self.graph_x = Math.round(673*(5/8));
-    self.graph_y = Math.round(529*(5/8));
-    self.graph_w = Math.round(266*(5/8));
-    self.graph_h = Math.round(106*(5/8));
+    self.graph_x = p(0.5454545454545454,drawCanv.width);
+    self.graph_y = p(0.5171875,drawCanv.height);
+    self.graph_w = p(0.21688311688311687,drawCanv.width);
+    self.graph_h = p(0.103125,drawCanv.height);
 
-    self.sliders_x = Math.round(697*(5/8));
-    self.toggle_x = Math.round(965*(5/8));
-    self.play_reset_x = Math.round(980*(5/8));
+    self.sliders_x = p(0.5662337662337662,drawCanv.width);
+    self.toggle_x = p(0.7831168831168831,drawCanv.width);
+    self.play_reset_x = p(0.7948051948051948,drawCanv.width)
   }
 
   self.default_offset = graph_default_offset;
@@ -651,8 +640,8 @@ var ComponentEditor = function(component, color, side)
   {
     if(!self.visible) return;
 
-    if(side == "left")       canv.context.drawImage(bars,Math.round(210*(5/8)),Math.round(687*(5/8)),Math.round(346*(5/8)),Math.round(158*(5/8)));
-    else if(side == "right") canv.context.drawImage(bars,Math.round(681*(5/8)),Math.round(686*(5/8)),Math.round(348*(5/8)),Math.round(159*(5/8)));
+    if(side == "left")       canv.context.drawImage(bars,p(0.17012987012987013,drawCanv.width),p(0.6703125,drawCanv.height),p(0.2818181818181818,drawCanv.width),p(0.1546875,drawCanv.height))
+    else if(side == "right") canv.context.drawImage(bars,p(0.5558441558441558,drawCanv.width),p(0.6703125,drawCanv.height),p(0.2818181818181818,drawCanv.width),p(0.1546875,drawCanv.height))
 
     canv.context.textAlign = "left";
     canv.context.font = "11px Open Sans";
@@ -682,22 +671,9 @@ var ComponentEditor = function(component, color, side)
     if(!self.enabled)
     {
       canv.context.fillStyle = "rgba(100,100,100,0.5)";
-      if(side == "left")       canv.context.fillRect(Math.round(210*(5/8)),Math.round(687*(5/8)),Math.round(346*(5/8)),Math.round(158*(5/8)));
-      else if(side == "right") canv.context.fillRect(Math.round(681*(5/8)),Math.round(686*(5/8)),Math.round(348*(5/8)),Math.round(159*(5/8)));
-
+      if(side == "left")       canv.context.fillRect(p(0.17012987012987013,drawCanv.width),p(0.65625,drawCanv.height),p(0.2922077922077922,drawCanv.width),p(0.175,drawCanv.height))
+      else if(side == "right") canv.context.fillRect(p(0.5506493506493506,drawCanv.width),p(0.65625,drawCanv.height),p(0.2922077922077922,drawCanv.width),p(0.175,drawCanv.height))
     }
-
-    canv.context.lineWidth = 2;
-    canv.context.strokeStyle = "#00FF00";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
-
-    canv.context.strokeRect(self.sliders_x,self.offset_y,self.sliders_w,self.sliders_h);
-    canv.context.strokeRect(self.sliders_x,self.wavelength_y,self.sliders_w,self.sliders_h);
-    canv.context.strokeRect(self.sliders_x,self.amplitude_y,self.sliders_w,self.sliders_h);
-
-    canv.context.strokeRect(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h);
-    canv.context.strokeRect(self.play_x, self.play_y, self.play_w, self.play_h);
-    canv.context.strokeRect(self.reset_x, self.reset_y, self.reset_w, self.reset_h);
   }
 }
 
@@ -757,10 +733,6 @@ var ValidatorDrawer = function(x, y, w, h, validator)
     if(len < 0) len = 0;
     if(len > self.w) len = self.w;
     canv.context.fillRect(self.x,self.y,len,self.h);
-
-    canv.context.lineWidth = 2;
-    canv.context.strokeStyle = "#00FF00";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 }
 
@@ -816,13 +788,13 @@ var ClipBoard = function(w,h,scene,levels)
 
   self.w = w;
   self.h = h;
-  self.pretend_y = Math.round(20*(5/8));
-  self.desired_y = Math.round(20*(5/8));
+  self.pretend_y = 0;
+  self.desired_y = 0;
 
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(self.w-Math.round(420*(5/8)),Math.round(90*(5/8)),Math.round(70*(5/8)),Math.round(70*(5/8)), function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(p(0.6597402597402597,drawCanv.width),p(0.08125,drawCanv.height),p(0.06363636363636363,drawCanv.width),p(0.075,drawCanv.height), function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
     canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
@@ -830,7 +802,7 @@ var ClipBoard = function(w,h,scene,levels)
 
   if(cookies)
   {
-    self.clear_cookies_button = new ButtonBox(self.w-Math.round(900*(5/8)),Math.round(90*(5/8)),Math.round(70*(5/8)),Math.round(70*(5/8)),
+    self.clear_cookies_button = new ButtonBox(p(0.274025974025974,drawCanv.width),p(0.08125,drawCanv.height),p(0.06363636363636363,drawCanv.width),p(0.075,drawCanv.height),
       function(on)
       {
         click_aud.play();
@@ -852,16 +824,16 @@ var ClipBoard = function(w,h,scene,levels)
     }
   }
 
-  var bs = Math.round(110*(5/8));
-  var p = Math.round(40*(5/8));
-  var c0 = self.w/2-(bs/2)-2*bs-2*p;
-  var c1 = self.w/2-(bs/2)-1*bs-1*p;
-  var c2 = self.w/2-(bs/2)-0*bs-0*p;
-  var c3 = self.w/2+(bs/2)+0*bs+1*p;
-  var c4 = self.w/2+(bs/2)+1*bs+2*p;
-  var r0 = self.h/2-(bs/2)-1*bs-1*(p+10)-10;
-  var r1 = self.h/2-(bs/2)-0*bs-0*(p+10)-10;
-  var r2 = self.h/2+(bs/2)+0*bs+1*(p+10)-10;
+  var bs = p(0.08961038961038961,drawCanv.width);
+  var pad = p(0.033766233766233764,drawCanv.width);
+  var c0 = self.w/2-(bs/2)-2*bs-2*pad;
+  var c1 = self.w/2-(bs/2)-1*bs-1*pad;
+  var c2 = self.w/2-(bs/2)-0*bs-0*pad;
+  var c3 = self.w/2+(bs/2)+0*bs+1*pad;
+  var c4 = self.w/2+(bs/2)+1*bs+2*pad;
+  var r0 = self.h/2-(bs/2)-1*bs-1*(pad+10)-10;
+  var r1 = self.h/2-(bs/2)-0*bs-0*(pad+10)-10;
+  var r2 = self.h/2+(bs/2)+0*bs+1*(pad+10)-10;
   //sections: s (single), pl (pulse locked), dl (double locked), ds (double single), d (double)
   self.s_play   = new ButtonBox(c0,r0,bs,bs, function(on) { /* the one level that's always unlocked */ click_aud.play(); scene.requestLevel(s_play_lvl); });     self.s_play.lvl   = s_play_lvl;   self.s_play.req_lvl   = -1;                self.s_play.complete_lvl = s_play_lvl;     self.s_play.title = "P";   self.buttons.push(self.s_play);
   self.s_levels = new ButtonBox(c0,r1,bs,bs, function(on) { if(levels[self.s_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(s_levels_lvl);}}); self.s_levels.lvl = s_levels_lvl; self.s_levels.req_lvl = s_play_lvl;        self.s_levels.complete_lvl = s_levels_last_lvl; self.s_levels.title = "1"; self.buttons.push(self.s_levels);
@@ -871,7 +843,7 @@ var ClipBoard = function(w,h,scene,levels)
   self.pl_levels = new ButtonBox(c1,r1,bs,bs, function(on) { if(levels[self.pl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_levels_lvl);}}); self.pl_levels.lvl = pl_levels_lvl; self.pl_levels.req_lvl = pl_play_lvl;        self.pl_levels.complete_lvl = pl_levels_last_lvl; self.pl_levels.title = "2"; self.buttons.push(self.pl_levels);
   self.pl_random = new ButtonBox(c1,r2,bs,bs, function(on) { if(levels[self.pl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(pl_random_lvl);}}); self.pl_random.lvl = pl_random_lvl; self.pl_random.req_lvl = pl_levels_last_lvl; self.pl_random.complete_lvl = pl_random_lvl; self.pl_random.title = "?"; self.buttons.push(self.pl_random);
 
-  self.d_play    = new ButtonBox(c2,r0,bs*3+p*2,bs, function(on) { if(levels[self.d_play.req_lvl].complete)    { click_aud.play(); scene.requestLevel(d_play_lvl);}});    self.d_play.lvl = d_play_lvl;       self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.complete_lvl = d_play_lvl;       self.d_play.title = "P";    self.buttons.push(self.d_play);
+  self.d_play    = new ButtonBox(c2,r0,bs*3+pad*2,bs, function(on) { if(levels[self.d_play.req_lvl].complete)    { click_aud.play(); scene.requestLevel(d_play_lvl);}});    self.d_play.lvl = d_play_lvl;       self.d_play.req_lvl    = pl_levels_last_lvl; self.d_play.complete_lvl = d_play_lvl;       self.d_play.title = "P";    self.buttons.push(self.d_play);
   self.dl_levels = new ButtonBox(c2,r1,bs,bs,       function(on) { if(levels[self.dl_levels.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_levels_lvl);}}); self.dl_levels.lvl = dl_levels_lvl; self.dl_levels.req_lvl = dl_play_lvl;        self.dl_levels.complete_lvl = dl_levels_last_lvl; self.dl_levels.title = "3"; self.buttons.push(self.dl_levels);
   self.dl_random = new ButtonBox(c2,r2,bs,bs,       function(on) { if(levels[self.dl_random.req_lvl].complete) { click_aud.play(); scene.requestLevel(dl_random_lvl);}}); self.dl_random.lvl = dl_random_lvl; self.dl_random.req_lvl = dl_levels_last_lvl; self.dl_random.complete_lvl = dl_random_lvl; self.dl_random.title = "?"; self.buttons.push(self.dl_random);
 
@@ -888,7 +860,7 @@ var ClipBoard = function(w,h,scene,levels)
     {
       if(!levels[this.lvl].complete)
       {
-        var s = (((Math.sin(global_n_ticks/20)+1)/4)+0.5)*Math.round(10*(5/8));
+        var s = (((Math.sin(global_n_ticks/20)+1)/4)+0.5)*10;
         canv.context.drawImage(global_lvl_button_outline,this.x-s,this.y-s,this.w+s*2,this.h+s*2);
       }
       canv.context.drawImage(global_lvl_button,this.x,this.y,this.w,this.h);
@@ -896,16 +868,16 @@ var ClipBoard = function(w,h,scene,levels)
     else
     {
       canv.context.drawImage(global_fade_lvl_button,this.x,this.y,this.w,this.h);
-      canv.context.drawImage(global_lvl_lock,this.x+this.w-Math.round(40*(5/8)),this.y-Math.round(20*(5/8)),Math.round(60*(5/8)),Math.round(60*(5/8)));
+      canv.context.drawImage(global_lvl_lock,this.x+this.w-this.w/4,this.y-this.h/4,this.h/2,this.h/2);
     }
     if(levels[this.complete_lvl].complete)
     {
-      canv.context.drawImage(global_check,this.x+Math.round(20*(5/8)),this.y+Math.round(20*(5/8)),this.h-Math.round(40*(5/8)),this.h-Math.round(40*(5/8)));
+      canv.context.drawImage(global_check,this.x+this.w/8,this.y+this.h/8,this.h*(3/4),this.h*(3/4));
     }
     else
     {
       canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillText(this.title,this.x+this.w/2,this.y+this.h-Math.round(20*(5/8)));
+      canv.context.fillText(this.title,this.x+this.w/2,this.y+this.h-this.h/8);
     }
   }
   for(var i = 0; i < self.buttons.length; i++)
@@ -926,32 +898,28 @@ var ClipBoard = function(w,h,scene,levels)
 
   self.draw = function(canv)
   {
-    global_bg_alpha = (1-((self.pretend_y*10)/self.h));
+    global_bg_alpha = (1-(((self.pretend_y+20)*10)/self.h));
     canv.context.fillStyle = "rgba(0,0,0,"+global_bg_alpha+")";
     canv.context.fillRect(0,0,self.w,self.h);
 
     canv.context.font = "80px stump";
     canv.context.textAlign = "center";
     canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillText("Levels",self.w/2,Math.round(150*(5/8))+self.pretend_y);
+    canv.context.fillText("Levels",self.w/2,p(0.0703125,drawCanv.height)+60+self.pretend_y);
     canv.context.font = "30px stump";
-    canv.context.fillText("Wave",c0+bs/2,r0-Math.round(50*(5/8))+self.pretend_y);
-    canv.context.fillText("Pulse",c1+bs/2,r0-Math.round(50*(5/8))+self.pretend_y);
-    canv.context.fillText("Composition",c3+bs/2,r0-Math.round(50*(5/8))+self.pretend_y);
+    canv.context.fillText("Wave",c0+bs/2,p(0.20625,drawCanv.height)+20+self.pretend_y);
+    canv.context.fillText("Pulse",c1+bs/2,p(0.20625,drawCanv.height)+20+self.pretend_y);
+    canv.context.fillText("Composition",c3+bs/2,p(0.20625,drawCanv.height)+20+self.pretend_y);
     canv.context.textAlign = "right";
-    canv.context.fillText("Playground",c0-20,r0+bs/2+self.pretend_y);
-    canv.context.fillText("Challenges",c0-20,r1+bs/2+self.pretend_y);
-    canv.context.fillText("Random",c0-20,r2+bs/2+self.pretend_y);
+    canv.context.fillText("Playground",c0-20,r0+bs/2+20+self.pretend_y);
+    canv.context.fillText("Challenges",c0-20,r1+bs/2+20+self.pretend_y);
+    canv.context.fillText("Random",c0-20,r2+bs/2+20+self.pretend_y);
 
     canv.context.font = "65px stump";
     canv.context.textAlign = "center";
     canv.context.fillStyle = "#FFFFFF";
     for(var i = 0; i < self.buttons.length; i++)
       self.buttons[i].draw(canv);
-
-    canv.context.lineWidth = 2;
-    canv.context.strokeStyle = "#00FF00";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 
   self.tick = function()
@@ -979,11 +947,7 @@ var ClipBoard = function(w,h,scene,levels)
 var Blurb = function(scene)
 {
   var self = this;
-  //dimensions for clicker- to dismiss
-  self.x = scene.dc.width-Math.round(230*(5/8));
-  self.y = scene.dc.height-Math.round(200*(5/8));
-  self.w = Math.round(100*(5/8));
-  self.h = Math.round(50*(5/8));
+  setBox(self,p(0.812987012987013,drawCanv.width),p(0.8046875,drawCanv.height),p(0.11168831168831168,drawCanv.width),p(0.0546875,drawCanv.height));
 
   self.txt = "";
   self.lines;
@@ -994,13 +958,16 @@ var Blurb = function(scene)
   self.img_h = 0;
   self.img_el;
 
+  self.text_x = p(0.21948051948051947,drawCanv.width);
+  self.text_y = p(0.7515625,drawCanv.height);
+  self.text_width = p(0.5324675324675324,drawCanv.width);
+
   self.format = function(canv)
   {
     self.lines = [];
     var found = 0;
     var searched = 0;
     var tentative_search = 0;
-    var width = canv.width-Math.round(600*(5/8));
 
     canv.context.font = "20px Open Sans";
 
@@ -1011,7 +978,7 @@ var Blurb = function(scene)
       if(searched == -1) searched = self.txt.length;
       tentative_search = self.txt.indexOf(" ",searched+1);
       if(tentative_search == -1) tentative_search = self.txt.length;
-      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < width && searched != self.txt.length)
+      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.text_width && searched != self.txt.length)
       {
         searched = tentative_search;
         tentative_search = self.txt.indexOf(" ",searched+1);
@@ -1036,7 +1003,7 @@ var Blurb = function(scene)
     global_bg_alpha = (1-((20*10)/canv.height));
     canv.context.fillStyle = "rgba(0,0,0,"+global_bg_alpha+")"; //emulates clipboard fade
     canv.context.fillRect(0,0,canv.width,canv.height);
-    var box_height = 188;//Math.round(300*(5/8));
+    var box_height = 188;
     canv.context.fillStyle = blue;
     canv.context.fillRect(0,canv.height-box_height,canv.width,box_height);
 
@@ -1044,7 +1011,7 @@ var Blurb = function(scene)
     canv.context.textAlign = "left";
     canv.context.fillStyle = "#FFFFFF";
     for(var i = 0; i < self.lines.length; i++)
-      canv.context.fillText(self.lines[i],Math.round(300*(5/8)),canv.height-box_height+Math.round(50*(5/8))+((i+1)*Math.round(40*(5/8))),canv.width-Math.round(600*(5/8)));
+      canv.context.fillText(self.lines[i],self.text_x,self.text_y+((i+1)*24),self.text_width);
 
     //if(self.img_el)
       //canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
@@ -1052,8 +1019,8 @@ var Blurb = function(scene)
     canv.context.lineWidth = 3;
     canv.context.strokeStyle = "#5CABB3";
     canv.context.beginPath();
-    canv.context.moveTo(Math.round(300*(5/8))+canv.width-Math.round(600*(5/8))+10,canv.height-box_height+30);
-    canv.context.lineTo(Math.round(300*(5/8))+canv.width-Math.round(600*(5/8))+10,canv.height-20);
+    canv.context.moveTo(p(0.7688311688311689,drawCanv.width),p(0.75,drawCanv.height));
+    canv.context.lineTo(p(0.7688311688311689,drawCanv.width),p(0.96875,drawCanv.height));
     canv.context.stroke();
     canv.context.lineWidth = 1;
 
@@ -1066,11 +1033,7 @@ var Blurb = function(scene)
     canv.context.textAlign = "center";
     canv.context.fillText("Ok!",self.x+self.w/2,self.y+self.h-8,self.w);
 
-    canv.context.drawImage(global_tall,Math.round(50*(5/8)),canv.height-Math.round(500*(5/8)),Math.round(170*(5/8)),Math.round(450*(5/8)));
-
-    canv.context.lineWidth = 2;
-    canv.context.strokeStyle = "#00FF00";
-    canv.context.strokeRect(self.x,self.y,self.w,self.h);
+    canv.context.drawImage(global_tall,p(0.02987012987012987,drawCanv.width),p(0.5,drawCanv.height),p(0.14675324675324675,drawCanv.width),p(0.4671875,drawCanv.height));
   }
 
   self.click = function(evt)
@@ -1191,7 +1154,7 @@ var GamePlayScene = function(game, stage)
     myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
-    myDisplay = new GraphDrawer(myComp, Math.round(268*(5/8)), Math.round(207*(5/8)), Math.round(703*(5/8)), Math.round(249*(5/8)));
+    myDisplay = new GraphDrawer(myComp, p(0.21818181818181817,drawCanv.width),p(0.2015625,drawCanv.height),p(0.5701298701298702,drawCanv.width),p(0.24375,drawCanv.height));
     myDisplay.color = "#FF00FF";
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
@@ -2141,15 +2104,16 @@ var GamePlayScene = function(game, stage)
 
     blurb = new Blurb(self);
 
-    yardButton  = new ButtonBox(Math.round(20*(5/8)),Math.round(10*(5/8)),Math.round(100*(5/8)),Math.round(40*(5/8)), function(on) { window.location.href = "http://theyardgames.org/"; });
 
-    menuButton  = new ButtonBox(self.dc.width-Math.round(55*(5/8)), Math.round(15*(5/8)), Math.round(30*(5/8)), Math.round(30*(5/8)), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    yardButton  = new ButtonBox(p(0.01818181818181818,drawCanv.width),p(0.0046875,drawCanv.height),p(0.08311688311688312,drawCanv.width),p(0.05,drawCanv.height), function(on) { window.location.href = "http://theyardgames.org/"; });
+
+    menuButton  = new ButtonBox(p(0.951948051948052,drawCanv.width),p(0.0078125,drawCanv.height),p(0.032467532467532464,drawCanv.width),p(0.040625,drawCanv.height), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
     {
       canv.context.drawImage(global_menu,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
     }
 
-    readyButton = new ButtonBox(Math.round(821*(5/8)),Math.round(219*(5/8)),Math.round(139*(5/8)),Math.round(49*(5/8)),
+    readyButton = new ButtonBox(p(0.6662337662337663,drawCanv.width),p(0.2234375,drawCanv.height),p(0.11168831168831168,drawCanv.width),p(0.04375,drawCanv.height),
       function(on)
       {
         if( //if this is showing
@@ -2212,17 +2176,17 @@ var GamePlayScene = function(game, stage)
       }
     );
     if(print_debug)
-      printButton = new ButtonBox(self.dc.width-Math.round(10*(5/8))-Math.round(80*(5/8)), Math.round(90*(5/8)), Math.round(80*(5/8)), Math.round(20*(5/8)), function(on) { self.print(); });
+      printButton = new ButtonBox(10, 10, 100, 100, function(on) { self.print(); });
 
-    composeButton = new ButtonBox(Math.round(597*(5/8)), Math.round(730*(5/8)), Math.round(37*(5/8)), Math.round(99*(5/8)), function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
+    composeButton = new ButtonBox(p(0.4844155844155844,drawCanv.width),p(0.7078125,drawCanv.height),p(0.02987012987012987,drawCanv.width),p(0.096875,drawCanv.height), function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
     composeButton.draw = function(canv)
     {
-      if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(toggle_up,composeButton.x,composeButton.y,composeButton.w,composeButton.h-Math.round(28*(5/8)));
-      else                   canv.context.drawImage(toggle_down,composeButton.x,composeButton.y+Math.round(28*(5/8)),composeButton.w,composeButton.h-Math.round(28*(5/8)));
+      if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(  toggle_up,composeButton.x,composeButton.y,composeButton.w,composeButton.h-Math.round(28*(5/8)));
+      else                                     canv.context.drawImage(toggle_down,composeButton.x,composeButton.y+Math.round(28*(5/8)),composeButton.w,composeButton.h-Math.round(28*(5/8)));
     }
 
     validator = new Validator(myComp, gComp);
-    vDrawer = new ValidatorDrawer(Math.round(10*(5/8)), Math.round(10*(5/8))+((self.dc.height-Math.round(20*(5/8)))/2)-Math.round(20*(5/8)), self.dc.width-Math.round(20*(5/8)), Math.round(20*(5/8)), validator);
+    vDrawer = new ValidatorDrawer(10, 10, 200, 200, validator);
 
     if(placer_debug)
     {
@@ -2419,9 +2383,9 @@ var GamePlayScene = function(game, stage)
     game_mode = mode;
 
     if(game_mode == GAME_MODE_MENU)
-      clip.desired_y = Math.round(20*(5/8));
+      clip.desired_y = 0;
     else if(game_mode == GAME_MODE_PLAY)
-      clip.desired_y = self.dc.height+Math.round(20*(5/8));
+      clip.desired_y = self.dc.height+20;
   }
 
   var t = 0;
@@ -2525,22 +2489,22 @@ var GamePlayScene = function(game, stage)
     }
 
     self.dc.context.fillStyle = blue;
-    self.dc.context.fillRect(0,0,self.dc.width,38);////Math.round(60*(5/8)));
+    self.dc.context.fillRect(0,0,self.dc.width,38);
     self.dc.context.drawImage(global_yard_logo,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
     self.dc.context.fillStyle = "#FFFFFF";
     self.dc.context.font = "25px stump";
     self.dc.context.textAlign = "right";
-    self.dc.context.fillText("The Wave Generator",self.dc.width-Math.round(80*(5/8)),Math.round(40*(5/8)));
+    self.dc.context.fillText("The Wave Generator",p(0.9311688311688312,drawCanv.width),p(0.040625,drawCanv.height));
     menuButton.draw(self.dc);
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
     {
-      var s = ((Math.sin(global_n_ticks/20)+1)/2)*Math.round(10*(5/8));
+      var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
       self.dc.context.drawImage(global_next,readyButton.x,readyButton.y+s,readyButton.w,readyButton.h);
     }
     else if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
-      var s = ((Math.sin(global_n_ticks/20)+1)/2)*Math.round(10*(5/8));
+      var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
       //skipButton.draw(self.dc); //don't need to "draw button"
       self.dc.context.font = "40px Open Sans";
       self.dc.context.textAlign = "right";

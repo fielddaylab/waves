@@ -77,7 +77,7 @@ var Placer = function(asset, x,y,w,h, canv)
   self.click = function(evt)
   {
     //console.log(self.x+","+self.y+","+self.w+","+self.h);
-    console.log("p("+invp(self.x,self.canv.width)+"),p("+invp(self.y,self.canv.height)+"),p("+invp(self.w,self.canv.width)+"),p("+invp(self.h,self.canv.height)+")");
+    console.log("p("+invp(self.x,self.canv.width)+",drawCanv.width),p("+invp(self.y,self.canv.height)+",drawCanv.height),p("+invp(self.w,self.canv.width)+",drawCanv.width),p("+invp(self.h,self.canv.height)+",drawCanv.height)");
 
     self.stroke = !self.stroke;
   }
