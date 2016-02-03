@@ -25,7 +25,7 @@ var blue = "#76DAE2";
 
 var default_completeness = 0;
 var print_debug = false;
-var placer_debug = false;
+var placer_debug = true;
 var cookies = false;
 
 var dbugger;
@@ -259,9 +259,9 @@ var GraphDrawer = function(composition, x, y, w, h)
         self.canv.context.beginPath();
         var x;
         if(self.draw_zero_x_at_composition)
-          x = mapRange(graph_max_x,graph_min_x,self.composition.offset,self.w,0)
+          x = mapVal(graph_max_x,graph_min_x,self.w,0,self.composition.offset)
         else
-          x = mapRange(graph_max_x,graph_min_x,self.draw_zero_x_at_offset,self.w,0)
+          x = mapVal(graph_max_x,graph_min_x,self.w,0,self.draw_zero_x_at_offset)
         self.canv.context.moveTo(x+0.5,0);
         self.canv.context.lineTo(x+0.5,self.h);
         self.canv.context.stroke();
@@ -272,7 +272,7 @@ var GraphDrawer = function(composition, x, y, w, h)
 
       self.canv.context.beginPath();
       sample = self.composition.f(graph_min_x);
-      self.canv.context.moveTo(0,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+      self.canv.context.moveTo(0,mapVal(graph_min_y,graph_max_y,self.h,0,sample));
 
       var pen_down = true;
       for(var i = 1; i < graph_n_samples; i++)
@@ -285,10 +285,10 @@ var GraphDrawer = function(composition, x, y, w, h)
           if(!pen_down)
           {
             self.canv.context.beginPath();
-            self.canv.context.moveTo(t*self.w,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+            self.canv.context.moveTo(t*self.w,mapVal(graph_min_y,graph_max_y,self.h,0,sample));
             pen_down = true;
           }
-          else self.canv.context.lineTo(t*self.w,mapRange(graph_min_y,graph_max_y,sample,self.h,0));
+          else self.canv.context.lineTo(t*self.w,mapVal(graph_min_y,graph_max_y,self.h,0,sample));
         }
         else
         {
@@ -379,7 +379,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
         x = t*self.w;
 
         sample = self.component_a.f(lerp(graph_min_x,graph_max_x,t));
-        y_a = mapRange(graph_min_y,graph_max_y,sample,self.h,0);
+        y_a = mapVal(graph_min_y,graph_max_y,self.h,0,sample);
         if(i < self.n_samples)
         {
           h = y_a-self.h/2;
@@ -398,7 +398,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
         if(i > self.n_samples)
         {
           sample = self.component_b.f(lerp(graph_min_x,graph_max_x,t));
-          y_b = mapRange(graph_min_y,graph_max_y,sample,self.h,0);
+          y_b = mapVal(graph_min_y,graph_max_y,self.h,0,sample);
 
           h = y_b-self.h/2;
           allowed_dist = Math.abs((self.progress-i)/self.frames_per_sample);
@@ -1169,7 +1169,7 @@ var GamePlayScene = function(game, stage)
     {
       var asset = new Image();
       asset.src = "assets/right-panel.png";
-      placer = new Placer(asset,Math.round(100*(5/8)),Math.round(100*(5/8)),Math.round(100*(5/8)),Math.round(100*(5/8)));
+      placer = new Placer(asset,100,100,100,100,stage.drawCanv);
     }
     var level;
     cur_level = 0;
