@@ -28,6 +28,7 @@ var print_debug = false;
 var placer_debug = true;
 var cookies = false;
 
+var drawcanv;
 var dbugger;
 
 var graph_n_samples = 500;
@@ -303,6 +304,10 @@ var GraphDrawer = function(composition, x, y, w, h)
     }
 
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
+
+    canv.context.lineWidth = 2;
+    canv.context.strokeStyle = "#00FF00";
+    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 
   self.dirty = function()
@@ -418,6 +423,10 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
     }
 
     canv.context.drawImage(self.canv.canvas, 0, 0, self.w, self.h, self.x, self.y, self.w, self.h);
+
+    canv.context.lineWidth = 2;
+    canv.context.strokeStyle = "#00FF00";
+    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 
   self.progress = 0;
@@ -459,39 +468,34 @@ var ComponentEditor = function(component, color, side)
 
   self.color = color;
 
+  self.sliders_w = p(0.19480519480519481,drawCanv.width);
+  self.sliders_h = p(0.0203125,drawCanv.height);
+
+  self.offset_y     = p(0.7078125,drawCanv.height);
+  self.wavelength_y = p(0.74375,drawCanv.height)
+  self.amplitude_y  = p(0.7796875,drawCanv.height);
+
+  self.toggle_y = p(0.5,drawCanv.height);
+  self.toggle_w = p(0.02987012987012987,drawCanv.width);
+  self.toggle_h = p(0.096875,drawCanv.height);
+
+  self.play_reset_w = p(0.03896103896103896,drawCanv.width);
+  self.play_reset_h = p(0.046875,drawCanv.height);
+  self.play_y = p(0.684375,drawCanv.height);
+  self.reset_y = p(0.7578125,drawCanv.height);
+
   if(side == "left")
   {
-    self.x = Math.round(209*(5/8));
-    self.y = Math.round(522*(5/8));
-    self.w = Math.round(369*(5/8));
-    self.h = Math.round(325*(5/8));
+    setBox(self,p(0.17012987012987013,drawCanv.width),p(0.509375,drawCanv.height),p(0.3,drawCanv.width),p(0.3171875,drawCanv.height));
 
-    self.graph_x = Math.round(309*(5/8));
-    self.graph_y = Math.round(529*(5/8));
-    self.graph_w = Math.round(266*(5/8));
-    self.graph_h = Math.round(106*(5/8));
+    self.graph_x = p(0.2506493506493506,drawCanv.width);
+    self.graph_y = p(0.5171875,drawCanv.height);
+    self.graph_w = p(0.21558441558441557,drawCanv.width);
+    self.graph_h = p(0.103125,drawCanv.height);
 
-    self.sliders_x = Math.round(301*(5/8));
-    self.sliders_w = Math.round(240*(5/8));
-    self.sliders_h = Math.round(20*(5/8));
-    self.offset_y = Math.round(725*(5/8));
-    self.wavelength_y = Math.round(762*(5/8));
-    self.amplitude_y = Math.round(798*(5/8));
-
-    self.toggle_x = Math.round(233*(5/8));
-    self.toggle_y = Math.round(512*(5/8));
-    self.toggle_w = Math.round(37*(5/8));
-    self.toggle_h = Math.round(99*(5/8));
-
-    self.play_x = Math.round(212*(5/8));
-    self.play_y = Math.round(700*(5/8));
-    self.play_w = Math.round(48*(5/8));
-    self.play_h = Math.round(48*(5/8));
-
-    self.reset_x = Math.round(212*(5/8));
-    self.reset_y = Math.round(776*(5/8));
-    self.reset_w = Math.round(48*(5/8));
-    self.reset_h = Math.round(48*(5/8));
+    self.sliders_x = p(0.24415584415584415,drawCanv.width)
+    self.toggle_x = p(0.18961038961038962,drawCanv.width);
+    self.play_reset_x = p(0.17272727272727273,drawCanv.width);
   }
   else if(side == "right")
   {
@@ -506,26 +510,8 @@ var ComponentEditor = function(component, color, side)
     self.graph_h = Math.round(106*(5/8));
 
     self.sliders_x = Math.round(697*(5/8));
-    self.sliders_w = Math.round(240*(5/8));
-    self.sliders_h = Math.round(20*(5/8));
-    self.offset_y = Math.round(725*(5/8));
-    self.wavelength_y = Math.round(762*(5/8));
-    self.amplitude_y = Math.round(798*(5/8));
-
     self.toggle_x = Math.round(965*(5/8));
-    self.toggle_y = Math.round(512*(5/8));
-    self.toggle_w = Math.round(37*(5/8));
-    self.toggle_h = Math.round(99*(5/8));
-
-    self.play_x = Math.round(980*(5/8));
-    self.play_y = Math.round(700*(5/8));
-    self.play_w = Math.round(48*(5/8));
-    self.play_h = Math.round(48*(5/8));
-
-    self.reset_x = Math.round(980*(5/8));
-    self.reset_y = Math.round(776*(5/8));
-    self.reset_w = Math.round(48*(5/8));
-    self.reset_h = Math.round(48*(5/8));
+    self.play_reset_x = Math.round(980*(5/8));
   }
 
   self.default_offset = graph_default_offset;
@@ -537,14 +523,14 @@ var ComponentEditor = function(component, color, side)
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   var b_h = ((self.h/2)-(4*10))/3;
-  self.reset_button  = new ButtonBox(self.reset_x, self.reset_y, self.reset_w, self.reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
+  self.reset_button  = new ButtonBox(self.play_reset_x, self.reset_y, self.play_reset_w, self.play_reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
   self.toggle_button = new ToggleBox(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
   self.toggle_button.draw = function(canv)
   {
     if(!self.goal_contribution) canv.context.drawImage(global_toggle_down, self.toggle_button.x,self.toggle_button.y+Math.round(28*(5/8)),self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
     else                        canv.context.drawImage(global_toggle_up,   self.toggle_button.x,self.toggle_button.y   ,self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
   }
-  self.play_button   = new ToggleBox(self.play_x, self.play_y, self.play_w, self.play_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
+  self.play_button   = new ToggleBox(self.play_reset_x, self.play_y, self.play_reset_w, self.play_reset_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
   self.goal_contribution = 1;
 
   self.amplitude_slider  = new SmoothSliderBox(    self.sliders_x, self.amplitude_y,  self.sliders_w, self.sliders_h, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
@@ -700,6 +686,18 @@ var ComponentEditor = function(component, color, side)
       else if(side == "right") canv.context.fillRect(Math.round(681*(5/8)),Math.round(686*(5/8)),Math.round(348*(5/8)),Math.round(159*(5/8)));
 
     }
+
+    canv.context.lineWidth = 2;
+    canv.context.strokeStyle = "#00FF00";
+    canv.context.strokeRect(self.x,self.y,self.w,self.h);
+
+    canv.context.strokeRect(self.sliders_x,self.offset_y,self.sliders_w,self.sliders_h);
+    canv.context.strokeRect(self.sliders_x,self.wavelength_y,self.sliders_w,self.sliders_h);
+    canv.context.strokeRect(self.sliders_x,self.amplitude_y,self.sliders_w,self.sliders_h);
+
+    canv.context.strokeRect(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h);
+    canv.context.strokeRect(self.play_x, self.play_y, self.play_w, self.play_h);
+    canv.context.strokeRect(self.reset_x, self.reset_y, self.reset_w, self.reset_h);
   }
 }
 
@@ -759,6 +757,10 @@ var ValidatorDrawer = function(x, y, w, h, validator)
     if(len < 0) len = 0;
     if(len > self.w) len = self.w;
     canv.context.fillRect(self.x,self.y,len,self.h);
+
+    canv.context.lineWidth = 2;
+    canv.context.strokeStyle = "#00FF00";
+    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 }
 
@@ -946,6 +948,10 @@ var ClipBoard = function(w,h,scene,levels)
     canv.context.fillStyle = "#FFFFFF";
     for(var i = 0; i < self.buttons.length; i++)
       self.buttons[i].draw(canv);
+
+    canv.context.lineWidth = 2;
+    canv.context.strokeStyle = "#00FF00";
+    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 
   self.tick = function()
@@ -1061,6 +1067,10 @@ var Blurb = function(scene)
     canv.context.fillText("Ok!",self.x+self.w/2,self.y+self.h-8,self.w);
 
     canv.context.drawImage(global_tall,Math.round(50*(5/8)),canv.height-Math.round(500*(5/8)),Math.round(170*(5/8)),Math.round(450*(5/8)));
+
+    canv.context.lineWidth = 2;
+    canv.context.strokeStyle = "#00FF00";
+    canv.context.strokeRect(self.x,self.y,self.w,self.h);
   }
 
   self.click = function(evt)
@@ -1075,6 +1085,7 @@ var GamePlayScene = function(game, stage)
   var self = this;
   self.dc = stage.drawCanv;
   self.c = self.dc.canvas;
+  drawCanv = self.dc;
 
   var menu_clicker;
   var blurb_clicker;

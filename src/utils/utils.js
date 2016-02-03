@@ -212,4 +212,11 @@ var dec2Hex = function(n)
 //short name- will be used often to place elements by percent, while guaranteeing integer results
 var p    = function(percent, of) { return Math.floor(percent * of); }
 var invp = function(      n, of) { return n/of; }
+var setBox = function(obj, x,y,w,h)
+{
+  obj.x = x;
+  obj.y = y;
+  obj.w = w;
+  obj.h = h;
+}
 
