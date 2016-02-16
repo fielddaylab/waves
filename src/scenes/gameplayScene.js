@@ -2063,11 +2063,11 @@ var GamePlayScene = function(game, stage)
     {
       var levels_string;
       if(save_cookie) levels_string = document.cookie;
-      else if(save_url) levels_string = document.location.hash;
+      else if(save_url) levels_string = document.location.hash.substring(1);
       if(levels_string && levels_string.indexOf("LEVELS=") != -1)
       {
         console.log("Reading levels:"+levels_string);
-        var levels_string = (levels_string.substring(levels_string.indexOf("LEVELS=")+7,levels.length)).split('');
+        levels_string = (levels_string.substr(levels_string.indexOf("LEVELS=")+7,levels.length)).split('');
         for(var i = 0; i < levels.length; i++)
         {
           var c = parseInt(levels_string[i]);
