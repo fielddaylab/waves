@@ -26,7 +26,9 @@ var blue = "#76DAE2";
 var default_completeness = 0;
 var print_debug = false;
 var placer_debug = false;
-var cookies = false;
+var save_state = true;
+var save_cookie = false;
+var save_url = !save_cookie;
 
 var drawcanv;
 var dbugger;
@@ -800,25 +802,25 @@ var ClipBoard = function(w,h,scene,levels)
     canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
   }
 
-  if(cookies)
+  if(save_state)
   {
-    self.clear_cookies_button = new ButtonBox(p(0.274025974025974,drawCanv.width),p(0.08125,drawCanv.height),p(0.06363636363636363,drawCanv.width),p(0.075,drawCanv.height),
+    self.clear_save_state_button = new ButtonBox(p(0.274025974025974,drawCanv.width),p(0.08125,drawCanv.height),p(0.06363636363636363,drawCanv.width),p(0.075,drawCanv.height),
       function(on)
       {
         click_aud.play();
 
-        //COOKIES
-        var levels_cookie = "LEVELS=";
+        var levels_string = "LEVELS=";
         for(var i = 0; i < levels.length; i++)
         {
           levels[i].complete = 0;
-          levels_cookie += "0";
+          levels_string += "0";
         }
-        document.cookie = levels_cookie;
-        //console.log("Wrote Cookie:"+document.cookie);
+        if(save_cookie) document.cookie = levels_string;
+        else if(save_url)  document.location.hash = levels_string;
+        console.log("Wrote levels:"+levels_string);
       });
-    self.buttons.push(self.clear_cookies_button);
-    self.clear_cookies_button.draw = function(canv)
+    self.buttons.push(self.clear_save_state_button);
+    self.clear_save_state_button.draw = function(canv)
     {
       canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
     }
@@ -884,9 +886,9 @@ var ClipBoard = function(w,h,scene,levels)
   {
     var b = self.buttons[i];
     b.def_y = b.y-self.pretend_y;
-    if(cookies)
+    if(save_state)
     {
-      if(i > 1) //for dismiss + clear_cookies button, I know, hack
+      if(i > 1) //for dismiss + clear_save_state button, I know, hack
         b.draw = draw;
     }
     else
@@ -2057,16 +2059,18 @@ var GamePlayScene = function(game, stage)
     level.complete = default_completeness;
     levels.push(level);
 
-    if(cookies)
+    if(save_state)
     {
-      //COOKIES
-      if(document.cookie && document.cookie.indexOf("LEVELS=") != -1)
+      var levels_string;
+      if(save_cookie) levels_string = document.cookie;
+      else if(save_url) levels_string = document.location.hash;
+      if(levels_string && levels_string.indexOf("LEVELS=") != -1)
       {
-        //console.log("Reading Cookie:"+document.cookie);
-        var levels_cookie = (document.cookie.substring(document.cookie.indexOf("LEVELS=")+7,levels.length)).split('');
+        console.log("Reading levels:"+levels_string);
+        var levels_string = (levels_string.substring(levels_string.indexOf("LEVELS=")+7,levels.length)).split('');
         for(var i = 0; i < levels.length; i++)
         {
-          var c = parseInt(levels_cookie[i]);
+          var c = parseInt(levels_string[i]);
           if(!isNaN(c)) levels[i].complete += c;
         }
       }
@@ -2129,18 +2133,18 @@ var GamePlayScene = function(game, stage)
           click_aud.play();
           levels[cur_level].complete++;
 
-          if(cookies)
+          if(save_state)
           {
-            //COOKIES
-            var levels_cookie = "LEVELS=";
+            var levels_string = "LEVELS=";
             for(var i = 0; i < levels.length; i++)
             {
-                   if(levels[i].complete > 9) levels_cookie += "9";
-              else if(levels[i].complete < 0) levels_cookie += "0";
-              else                            levels_cookie += ""+levels[i].complete;
+                   if(levels[i].complete > 9) levels_string += "9";
+              else if(levels[i].complete < 0) levels_string += "0";
+              else                            levels_string += ""+levels[i].complete;
             }
-            document.cookie = levels_cookie;
-            //console.log("Wrote Cookie:"+document.cookie);
+            if(save_cookie) document.cookie = levels_string;
+            else if(save_url) document.location.hash = levels_string;
+            console.log("Wrote levels:"+levels_string);
           }
 
           if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
