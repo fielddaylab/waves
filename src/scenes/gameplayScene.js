@@ -1271,8 +1271,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    //level.blurb_txt = "Amplitude is another wave property. Amplitude is the measure of the wave's greatest displacement from the horizontal line, or 0, on the graph. Amplitude is related to how much energy a wave carries. For example, sound waves with low ampliteude are quieter. Again, try to match the red to the grey wave. You will need to move more than one slider to match the waves.";
-    level.blurb_txt = "Amplitude is the measure of the wave's greatest displacement from the horizontal line. Amplitude relates to how much energy a wave carries. For example, sound waves with low ampliteude are quieter.";
+    level.blurb_txt = "Amplitude is the measure of the wave's greatest displacement from the horizontal line. Amplitude relates to how much energy a wave carries. For example, sound waves with low amplitude are quieter.";
     level.blurb_img = "amplitude";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1373,7 +1372,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "To eliminate this single wave, just decrease its amplitude to 0 - a flat line. Silence!.";
+    level.blurb_txt = "To eliminate this single wave, just decrease its amplitude to 0 - a flat line. Silence!";
     levels.push(level);
 
     s_levels_last_lvl = n_levels;
@@ -1478,7 +1477,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "When two pulses overlap, they affect each other's amplitude. If both pulses have a displacement in the same direction their amplitudes add together. This is called \"constructive interference\".";
+    level.blurb_txt = "When two pulses overlap, they affect each other's amplitude. If both pulses have a displacement in the same direction, their amplitudes add together. This is called \"constructive interference\".";
     level.blurb_img = "constructive";
     level.blurb_img_x = 250;
     level.blurb_img_y = 300;
@@ -1614,7 +1613,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red pulse to interfere with the blue pulse so that they overlap just enough to greate the grey wave.";
+    level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red pulse to interfere with the blue pulse so that they overlap just enough to create the grey wave.";
     levels.push(level);
 
     pl_random_lvl = n_levels;
