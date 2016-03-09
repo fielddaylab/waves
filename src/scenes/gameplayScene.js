@@ -2495,9 +2495,9 @@ var GamePlayScene = function(game, stage)
     self.dc.context.fillRect(0,0,self.dc.width,38);
     self.dc.context.drawImage(global_yard_logo,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
     self.dc.context.fillStyle = "#FFFFFF";
-    self.dc.context.font = "25px stump";
+    self.dc.context.font = "22px Open Sans";
     self.dc.context.textAlign = "right";
-    self.dc.context.fillText("The Wave Generator",p(0.9311688311688312,drawCanv.width),p(0.040625,drawCanv.height));
+    self.dc.context.fillText("THE WAVE GENERATOR",p(0.9311688311688312,drawCanv.width),p(0.040625,drawCanv.height));
     menuButton.draw(self.dc);
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
