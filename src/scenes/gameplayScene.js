@@ -964,6 +964,16 @@ var Blurb = function(scene)
   self.text_y = p(0.7515625,drawCanv.height);
   self.text_width = p(0.5324675324675324,drawCanv.width);
 
+  self.loadDialog = function(dialog, canv)
+  {
+    var first_line = dialog[0];
+    self.img = first_line[0];
+    self.txt = first_line[1];
+    self.rest_lines = dialog.slice(1);
+    self.canv = canv;
+    self.format(canv);
+  }
+
   self.format = function(canv)
   {
     self.lines = [];
@@ -995,6 +1005,34 @@ var Blurb = function(scene)
     {
       self.img_el = new Image();
       self.img_el.src = "assets/"+self.img+".png";
+      switch (self.img)
+      {
+        case 'francis':
+          self.img_x = p(0,canv.width);
+          self.img_y = p(0.55,canv.height);
+          self.img_w = p(0.2,drawCanv.width);
+          self.img_h = p(0.4247159090909091,drawCanv.height);
+          break;
+        case 'honey':
+          self.img_x = p(0,canv.width);
+          self.img_y = p(0.55,canv.height);
+          self.img_w = p(0.23,drawCanv.width);
+          self.img_h = p(0.4,drawCanv.height);
+          break;
+        case 'jack':
+          self.img_x = p(0,canv.width);
+          self.img_y = p(0.6,canv.height);
+          self.img_w = p(0.23,drawCanv.width);
+          self.img_h = p(0.368,drawCanv.height);
+          break;
+        case 'scout':
+        default:
+          self.img_x = p(0.02987012987012987,canv.width);
+          self.img_y = p(0.5,canv.height);
+          self.img_w = p(0.14675324675324675,drawCanv.width);
+          self.img_h = p(0.4671875,drawCanv.height);
+          break;
+      }
     }
     else
       self.img_el = undefined;
@@ -1015,8 +1053,8 @@ var Blurb = function(scene)
     for(var i = 0; i < self.lines.length; i++)
       canv.context.fillText(self.lines[i],self.text_x,self.text_y+((i+1)*24),self.text_width);
 
-    //if(self.img_el)
-      //canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
+    if(self.img_el)
+      canv.context.drawImage(self.img_el, self.img_x, self.img_y, self.img_w, self.img_h);
 
     canv.context.lineWidth = 3;
     canv.context.strokeStyle = "#5CABB3";
@@ -1034,14 +1072,15 @@ var Blurb = function(scene)
     canv.context.font = "25px Open Sans";
     canv.context.textAlign = "center";
     canv.context.fillText("Ok!",self.x+self.w/2,self.y+self.h-8,self.w);
-
-    canv.context.drawImage(global_tall,p(0.02987012987012987,drawCanv.width),p(0.5,drawCanv.height),p(0.14675324675324675,drawCanv.width),p(0.4671875,drawCanv.height));
   }
 
   self.click = function(evt)
   {
     click_aud.play();
-    scene.setMode(GAME_MODE_PLAY);
+    if (self.rest_lines && self.rest_lines.length > 0)
+      self.loadDialog(self.rest_lines, self.canv);
+    else
+      scene.setMode(GAME_MODE_PLAY);
   }
 }
 
@@ -1186,6 +1225,9 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["jack", "Look at all of the buttons! This is cool. I wonder what they all do."],
+    ];
     level.blurb = true;
     level.blurb_txt = "Welcome to the Wave Combinator! Play around with the controls for a bit, and when you are ready to begin, hit \"next\"!";
     levels.push(level);
@@ -1211,6 +1253,9 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["francis", "Quick, move that offset slider. I bet you can match the waves."],
+    ];
     level.blurb = true;
     level.blurb_txt = "A graph of a wave is a mathematical model of the wave. Use the offset slider to shift the red wave so it matches - or is \"in phase with\" - the grey wave.";
     level.blurb_img = "offset";
@@ -1240,6 +1285,9 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["francis", "According to the manual, the distance between those bumps are wavelengths."],
+    ];
     level.blurb = true;
     //level.blurb_txt = "A graph of a wave can show other properties of a wave, such as wavelength. Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
     level.blurb_txt = "Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
@@ -1270,6 +1318,10 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["honey", "What is ampalamptitooo... wait—what's that word?"],
+      ["francis", "It's AMPLITUDE. Amplitude is how tall those waves are."]
+    ];
     level.blurb = true;
     level.blurb_txt = "Amplitude is the measure of the wave's greatest displacement from the horizontal line. Amplitude relates to how much energy a wave carries. For example, sound waves with low amplitude are quieter.";
     level.blurb_img = "amplitude";
@@ -1299,6 +1351,10 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["jack", "This one is kinda tricky—you have to move all the sliders to match it up!"],
+      ["francis", "Well according to the manual, a wave has three parts so it makes sense that you have to adjust all three sliders to line up the waves."]
+    ];
     level.blurb = true;
     level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red wave to match the grey.";
     levels.push(level);
@@ -1323,6 +1379,9 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["honey", "Whoa!—this wave is going to be squished and stretched."],
+    ];
     level.blurb = true;
     level.blurb_txt = "Waves can differ drastically from each other. You might say this wave has a small amplitude and a large wavelength.";
     levels.push(level);
@@ -1347,6 +1406,10 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["jack", "Why is this one flat?"],
+      ["francis", "The manual says that \"If a wave has an amplitude of 0, then it just looks like a flat line.\" To give it some shape, what slider should you use?"],
+    ];
     level.blurb = true;
     level.blurb_txt = "If a wave has 0 amplitude, it can be represented simply as a flat line. With no amplitude, wavelength and offset are meaningless.";
     levels.push(level);
@@ -1371,6 +1434,9 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = false;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["francis", "I know how we can silence this wave—make it flat!"],
+    ];
     level.blurb = true;
     level.blurb_txt = "To eliminate this single wave, just decrease its amplitude to 0 - a flat line. Silence!";
     levels.push(level);
@@ -1396,6 +1462,9 @@ var GamePlayScene = function(game, stage)
     level.random = false;
     level.return_to_menu = true;
     level.complete = default_completeness;
+    level.new_blurbs = [
+      ["francis", "Where is the rest of the wave? This is just one part—a pulse—of the wave. BEEP! Can you match them up?"],
+    ];
     level.blurb = true;
     level.blurb_txt = "Waves are made up of repeating oscillations. A pulse is simply a single oscillation of a wave. A pulse has the same amplitude, wavelength, and offset as the entire wave.";
     level.blurb_img = "pulse";
@@ -1427,7 +1496,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = false;
     level.complete = default_completeness;
     level.blurb = true;
-    level.blurb_txt = "Complete as many random levels as you'd like, then return to menu.";
+    level.blurb_txt = "Complete as many random levels as you'd like, then return to the menu.";
     levels.push(level);
 
     pl_play_lvl = n_levels;
@@ -2233,7 +2302,13 @@ var GamePlayScene = function(game, stage)
 
   self.popBlurb = function()
   {
-    if(levels[cur_level].blurb && !levels[cur_level].blurb_seen)
+    if(levels[cur_level].new_blurbs && !levels[cur_level].blurb_seen)
+    {
+      blurb.loadDialog(levels[cur_level].new_blurbs, stage.drawCanv);
+      self.setMode(GAME_MODE_BLURB);
+      levels[cur_level].blurb_seen = true;
+    }
+    else if(levels[cur_level].blurb && !levels[cur_level].blurb_seen)
     {
       var curl = levels[cur_level];
       blurb.txt = curl.blurb_txt;
