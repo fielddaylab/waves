@@ -38,15 +38,10 @@ var Game = function(init)
       if(known_global_bg_alpha != global_bg_alpha)
       {
         known_global_bg_alpha = global_bg_alpha;
-        document.getElementById("side_a").style.backgroundColor = "rgba(118,218,227,"+global_bg_alpha+")";
-        document.getElementById("side_b").style.backgroundColor = "rgba(118,218,227,"+global_bg_alpha+")";
-        document.getElementById("side_c").style.backgroundColor = "rgba(118,218,227,"+global_bg_alpha+")";
       }
       if(known_global_blurb_up != global_blurb_up)
       {
         known_global_blurb_up = global_blurb_up;
-        if(global_blurb_up) document.getElementById('blurb_bg').style.visibility = 'visible';
-        else                document.getElementById('blurb_bg').style.visibility = 'hidden';
       }
     }
   };

@@ -56,43 +56,29 @@ body,div
 
 <script type="text/javascript">
 var g;
-//1024 -> 640
-//1233 -> 770
 function begin()
 {
-  var w = (window.innerWidth-770)/2;
-  document.getElementById("side_a").style.width = w+"px";
-  document.getElementById("side_b").style.width = w+"px";
-  document.getElementById("stage_container").style.left = w+"px";
-  document.getElementById("side_b").style.left = (w+770)+"px";
-  document.getElementById("side_c").style.height = (window.innerHeight-640)+"px";
-  document.getElementById("blurb_bg").style.height = (window.innerHeight-452)+"px";
+  var w = 880;
+  var h = 660;
+  var content          = document.getElementById("content");
+  var stage_container  = document.getElementById("stage_container");
+  content.style.width          = w; content.style.height          = h;
+  stage_container.style.width  = w; stage_container.style.height  = h;
 
-  g = new Game({width:770,height:640,container:"stage_container"});
+  g = new Game({width:w,height:h,container:"stage_container"});
   g.begin();
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
-window.onresize = function(event)
-{
-  var w = (window.innerWidth-770)/2;
-  document.getElementById("side_a").style.width = w+"px";
-  document.getElementById("side_b").style.width = w+"px";
-  document.getElementById("stage_container").style.left = w+"px";
-  document.getElementById("side_b").style.left = (w+770)+"px";
-  document.getElementById("side_c").style.height = (window.innerHeight-640)+"px";
-  document.getElementById("blurb_bg").style.height = (window.innerHeight-452)+"px";
-};
 </script>
 
 </head>
 <body style="background-image:url('assets/wave-machine-background.jpg'); width:100%; user-select:none;">
-<div style="position:absolute; top:0px; left:0px; background-color:#76DAE2; width:100%; height:38px; user-select:none;"></div>
-<div id="side_a" style="position:absolute; height:640px; user-select:none;"> </div>
-<div id="side_b" style="position:absolute; height:640px; user-select:none;"> </div>
-<div id="side_c" style="position:absolute; top:640px; width:100%; user-select:none;"> </div>
-<div id="blurb_bg" style="visibility:hidden; position:absolute; top:452px; left:0px; background-color:#76DAE2; width:100%; user-select:none;"></div>
-<div id="stage_container" style="position:absolute; width:770px; height:640px; user-select:none;"> </div>
+
+<div id="content" style="margin:50px auto; position:relative;">
+  <div id="stage_container" style="position:absolute; top:0px; left:0px; user-select:none;"> </div>
+</div>
+
 </body>
 </html>
 
