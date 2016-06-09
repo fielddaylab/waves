@@ -26,7 +26,7 @@ var blue = "#76DAE2";
 var default_completeness = 0;
 var print_debug = false;
 var placer_debug = false;
-var save_state = true;
+var save_state = false;
 var save_cookie = false;
 var save_url = !save_cookie;
 
