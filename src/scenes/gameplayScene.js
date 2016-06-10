@@ -30,7 +30,8 @@ var save_state = false;
 var save_cookie = false;
 var save_url = !save_cookie;
 
-var drawcanv;
+var dc;
+var ctx;
 var dbugger;
 
 var graph_n_samples = 500;
@@ -462,47 +463,47 @@ var ComponentEditor = function(component, color, side)
 
   self.color = color;
 
-  self.sliders_w = p(0.19480519480519481,drawCanv.width);
-  self.sliders_h = p(0.0203125,drawCanv.height);
+  self.sliders_w = p(0.19480519480519481,dc.width);
+  self.sliders_h = p(0.0203125,dc.height);
 
-  self.offset_y     = p(0.7078125,drawCanv.height);
-  self.wavelength_y = p(0.74375,drawCanv.height)
-  self.amplitude_y  = p(0.7796875,drawCanv.height);
+  self.offset_y     = p(0.7078125,dc.height);
+  self.wavelength_y = p(0.74375,dc.height)
+  self.amplitude_y  = p(0.7796875,dc.height);
 
-  self.toggle_y = p(0.5,drawCanv.height);
-  self.toggle_w = p(0.02987012987012987,drawCanv.width);
-  self.toggle_h = p(0.096875,drawCanv.height);
+  self.toggle_y = p(0.5,dc.height);
+  self.toggle_w = p(0.02987012987012987,dc.width);
+  self.toggle_h = p(0.096875,dc.height);
 
-  self.play_reset_w = p(0.03896103896103896,drawCanv.width);
-  self.play_reset_h = p(0.046875,drawCanv.height);
-  self.play_y = p(0.684375,drawCanv.height);
-  self.reset_y = p(0.7578125,drawCanv.height);
+  self.play_reset_w = p(0.03896103896103896,dc.width);
+  self.play_reset_h = p(0.046875,dc.height);
+  self.play_y = p(0.684375,dc.height);
+  self.reset_y = p(0.7578125,dc.height);
 
   if(side == "left")
   {
-    setBox(self,p(0.17012987012987013,drawCanv.width),p(0.509375,drawCanv.height),p(0.3,drawCanv.width),p(0.3171875,drawCanv.height));
+    setBox(self,p(0.17012987012987013,dc.width),p(0.509375,dc.height),p(0.3,dc.width),p(0.3171875,dc.height));
 
-    self.graph_x = p(0.2506493506493506,drawCanv.width);
-    self.graph_y = p(0.5171875,drawCanv.height);
-    self.graph_w = p(0.21558441558441557,drawCanv.width);
-    self.graph_h = p(0.103125,drawCanv.height);
+    self.graph_x = p(0.2506493506493506,dc.width);
+    self.graph_y = p(0.5171875,dc.height);
+    self.graph_w = p(0.21558441558441557,dc.width);
+    self.graph_h = p(0.103125,dc.height);
 
-    self.sliders_x = p(0.24415584415584415,drawCanv.width)
-    self.toggle_x = p(0.18961038961038962,drawCanv.width);
-    self.play_reset_x = p(0.17272727272727273,drawCanv.width);
+    self.sliders_x = p(0.24415584415584415,dc.width)
+    self.toggle_x = p(0.18961038961038962,dc.width);
+    self.play_reset_x = p(0.17272727272727273,dc.width);
   }
   else if(side == "right")
   {
-    setBox(self,p(0.5402597402597402,drawCanv.width),p(0.509375,drawCanv.height),p(0.2948051948051948,drawCanv.width),p(0.3171875,drawCanv.height));
+    setBox(self,p(0.5402597402597402,dc.width),p(0.509375,dc.height),p(0.2948051948051948,dc.width),p(0.3171875,dc.height));
 
-    self.graph_x = p(0.5454545454545454,drawCanv.width);
-    self.graph_y = p(0.5171875,drawCanv.height);
-    self.graph_w = p(0.21688311688311687,drawCanv.width);
-    self.graph_h = p(0.103125,drawCanv.height);
+    self.graph_x = p(0.5454545454545454,dc.width);
+    self.graph_y = p(0.5171875,dc.height);
+    self.graph_w = p(0.21688311688311687,dc.width);
+    self.graph_h = p(0.103125,dc.height);
 
-    self.sliders_x = p(0.5662337662337662,drawCanv.width);
-    self.toggle_x = p(0.7831168831168831,drawCanv.width);
-    self.play_reset_x = p(0.7948051948051948,drawCanv.width)
+    self.sliders_x = p(0.5662337662337662,dc.width);
+    self.toggle_x = p(0.7831168831168831,dc.width);
+    self.play_reset_x = p(0.7948051948051948,dc.width)
   }
 
   self.default_offset = graph_default_offset;
@@ -642,8 +643,8 @@ var ComponentEditor = function(component, color, side)
   {
     if(!self.visible) return;
 
-    if(side == "left")       canv.context.drawImage(bars,p(0.17012987012987013,drawCanv.width),p(0.6703125,drawCanv.height),p(0.2818181818181818,drawCanv.width),p(0.1546875,drawCanv.height))
-    else if(side == "right") canv.context.drawImage(bars,p(0.5558441558441558,drawCanv.width),p(0.6703125,drawCanv.height),p(0.2818181818181818,drawCanv.width),p(0.1546875,drawCanv.height))
+    if(side == "left")       canv.context.drawImage(bars,p(0.17012987012987013,dc.width),p(0.6703125,dc.height),p(0.2818181818181818,dc.width),p(0.1546875,dc.height))
+    else if(side == "right") canv.context.drawImage(bars,p(0.5558441558441558,dc.width),p(0.6703125,dc.height),p(0.2818181818181818,dc.width),p(0.1546875,dc.height))
 
     canv.context.textAlign = "left";
     canv.context.font = "11px Open Sans";
@@ -673,8 +674,8 @@ var ComponentEditor = function(component, color, side)
     if(!self.enabled)
     {
       canv.context.fillStyle = "rgba(100,100,100,0.5)";
-      if(side == "left")       canv.context.fillRect(p(0.17012987012987013,drawCanv.width),p(0.65625,drawCanv.height),p(0.2922077922077922,drawCanv.width),p(0.175,drawCanv.height))
-      else if(side == "right") canv.context.fillRect(p(0.5506493506493506,drawCanv.width),p(0.65625,drawCanv.height),p(0.2922077922077922,drawCanv.width),p(0.175,drawCanv.height))
+      if(side == "left")       canv.context.fillRect(p(0.17012987012987013,dc.width),p(0.65625,dc.height),p(0.2922077922077922,dc.width),p(0.175,dc.height))
+      else if(side == "right") canv.context.fillRect(p(0.5506493506493506,dc.width),p(0.65625,dc.height),p(0.2922077922077922,dc.width),p(0.175,dc.height))
     }
   }
 }
@@ -796,7 +797,7 @@ var ClipBoard = function(w,h,scene,levels)
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(p(0.6597402597402597,drawCanv.width),p(0.08125,drawCanv.height),p(0.06363636363636363,drawCanv.width),p(0.075,drawCanv.height), function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(p(0.6597402597402597,dc.width),p(0.08125,dc.height),p(0.06363636363636363,dc.width),p(0.075,dc.height), function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
     canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
@@ -804,7 +805,7 @@ var ClipBoard = function(w,h,scene,levels)
 
   if(save_state)
   {
-    self.clear_save_state_button = new ButtonBox(p(0.274025974025974,drawCanv.width),p(0.08125,drawCanv.height),p(0.06363636363636363,drawCanv.width),p(0.075,drawCanv.height),
+    self.clear_save_state_button = new ButtonBox(p(0.274025974025974,dc.width),p(0.08125,dc.height),p(0.06363636363636363,dc.width),p(0.075,dc.height),
       function(on)
       {
         click_aud.play();
@@ -826,8 +827,8 @@ var ClipBoard = function(w,h,scene,levels)
     }
   }
 
-  var bs = p(0.08961038961038961,drawCanv.width);
-  var pad = p(0.033766233766233764,drawCanv.width);
+  var bs = p(0.08961038961038961,dc.width);
+  var pad = p(0.033766233766233764,dc.width);
   var c0 = self.w/2-(bs/2)-2*bs-2*pad;
   var c1 = self.w/2-(bs/2)-1*bs-1*pad;
   var c2 = self.w/2-(bs/2)-0*bs-0*pad;
@@ -907,11 +908,11 @@ var ClipBoard = function(w,h,scene,levels)
     canv.context.font = "80px stump";
     canv.context.textAlign = "center";
     canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillText("Levels",self.w/2,p(0.0703125,drawCanv.height)+60+self.pretend_y);
+    canv.context.fillText("Levels",self.w/2,p(0.0703125,dc.height)+60+self.pretend_y);
     canv.context.font = "30px stump";
-    canv.context.fillText("Wave",c0+bs/2,p(0.20625,drawCanv.height)+20+self.pretend_y);
-    canv.context.fillText("Pulse",c1+bs/2,p(0.20625,drawCanv.height)+20+self.pretend_y);
-    canv.context.fillText("Composition",c3+bs/2,p(0.20625,drawCanv.height)+20+self.pretend_y);
+    canv.context.fillText("Wave",c0+bs/2,p(0.20625,dc.height)+20+self.pretend_y);
+    canv.context.fillText("Pulse",c1+bs/2,p(0.20625,dc.height)+20+self.pretend_y);
+    canv.context.fillText("Composition",c3+bs/2,p(0.20625,dc.height)+20+self.pretend_y);
     canv.context.textAlign = "right";
     canv.context.fillText("Playground",c0-20,r0+bs/2+20+self.pretend_y);
     canv.context.fillText("Challenges",c0-20,r1+bs/2+20+self.pretend_y);
@@ -949,7 +950,7 @@ var ClipBoard = function(w,h,scene,levels)
 var Blurb = function(scene)
 {
   var self = this;
-  setBox(self,p(0.812987012987013,drawCanv.width),p(0.8046875,drawCanv.height),p(0.11168831168831168,drawCanv.width),p(0.0546875,drawCanv.height));
+  setBox(self,p(0.812987012987013,dc.width),p(0.8046875,dc.height),p(0.11168831168831168,dc.width),p(0.0546875,dc.height));
 
   self.txt = "";
   self.lines;
@@ -960,9 +961,9 @@ var Blurb = function(scene)
   self.img_h = 0;
   self.img_el;
 
-  self.text_x = p(0.21948051948051947,drawCanv.width);
-  self.text_y = p(0.7515625,drawCanv.height);
-  self.text_width = p(0.5324675324675324,drawCanv.width);
+  self.text_x = p(0.21948051948051947,dc.width);
+  self.text_y = p(0.7515625,dc.height);
+  self.text_width = p(0.5324675324675324,dc.width);
 
   self.loadDialog = function(dialog, canv)
   {
@@ -983,7 +984,7 @@ var Blurb = function(scene)
 
     canv.context.font = "20px Open Sans";
 
-    //stage.drawCanv.context.font=whaaaat;
+    //ctx.font=whaaaat;
     while(found < self.txt.length)
     {
       searched = self.txt.indexOf(" ",found);
@@ -1010,27 +1011,27 @@ var Blurb = function(scene)
         case 'francis':
           self.img_x = p(0,canv.width);
           self.img_y = p(0.55,canv.height);
-          self.img_w = p(0.2,drawCanv.width);
-          self.img_h = p(0.4247159090909091,drawCanv.height);
+          self.img_w = p(0.2,dc.width);
+          self.img_h = p(0.4247159090909091,dc.height);
           break;
         case 'honey':
           self.img_x = p(0,canv.width);
           self.img_y = p(0.55,canv.height);
-          self.img_w = p(0.23,drawCanv.width);
-          self.img_h = p(0.4,drawCanv.height);
+          self.img_w = p(0.23,dc.width);
+          self.img_h = p(0.4,dc.height);
           break;
         case 'jack':
           self.img_x = p(0,canv.width);
           self.img_y = p(0.6,canv.height);
-          self.img_w = p(0.23,drawCanv.width);
-          self.img_h = p(0.368,drawCanv.height);
+          self.img_w = p(0.23,dc.width);
+          self.img_h = p(0.368,dc.height);
           break;
         case 'scout':
         default:
           self.img_x = p(0.02987012987012987,canv.width);
           self.img_y = p(0.5,canv.height);
-          self.img_w = p(0.14675324675324675,drawCanv.width);
-          self.img_h = p(0.4671875,drawCanv.height);
+          self.img_w = p(0.14675324675324675,dc.width);
+          self.img_h = p(0.4671875,dc.height);
           break;
       }
     }
@@ -1059,8 +1060,8 @@ var Blurb = function(scene)
     canv.context.lineWidth = 3;
     canv.context.strokeStyle = "#5CABB3";
     canv.context.beginPath();
-    canv.context.moveTo(p(0.7688311688311689,drawCanv.width),p(0.75,drawCanv.height));
-    canv.context.lineTo(p(0.7688311688311689,drawCanv.width),p(0.96875,drawCanv.height));
+    canv.context.moveTo(p(0.7688311688311689,dc.width),p(0.75,dc.height));
+    canv.context.lineTo(p(0.7688311688311689,dc.width),p(0.96875,dc.height));
     canv.context.stroke();
     canv.context.lineWidth = 1;
 
@@ -1086,10 +1087,10 @@ var Blurb = function(scene)
 
 var GamePlayScene = function(game, stage)
 {
+  dc = stage.drawCanv;
+  ctx = dc.context;
   var self = this;
-  self.dc = stage.drawCanv;
-  self.c = self.dc.canvas;
-  drawCanv = self.dc;
+  self.c = dc.canvas;
 
   var menu_clicker;
   var blurb_clicker;
@@ -1184,7 +1185,7 @@ var GamePlayScene = function(game, stage)
     {
       var asset = new Image();
       asset.src = "assets/right-panel.png";
-      placer = new Placer(asset,100,100,100,100,stage.drawCanv);
+      placer = new Placer(asset,100,100,100,100,dc);
     }
     var level;
     cur_level = 0;
@@ -1195,7 +1196,7 @@ var GamePlayScene = function(game, stage)
     myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myComp = new Composition(myC0, myC1);
-    myDisplay = new GraphDrawer(myComp, p(0.21818181818181817,drawCanv.width),p(0.2015625,drawCanv.height),p(0.5701298701298702,drawCanv.width),p(0.24375,drawCanv.height));
+    myDisplay = new GraphDrawer(myComp, p(0.21818181818181817,dc.width),p(0.2015625,dc.height),p(0.5701298701298702,dc.width),p(0.24375,dc.height));
     myDisplay.color = "#FF00FF";
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
@@ -2233,7 +2234,7 @@ var GamePlayScene = function(game, stage)
     play_presser = new Presser({source:stage.dispCanv.canvas});
     play_clicker = new Clicker({source:stage.dispCanv.canvas});
 
-    clip = new ClipBoard(self.dc.width,self.dc.height,self,levels);
+    clip = new ClipBoard(dc.width,dc.height,self,levels);
 
     e0AnimDisplay = new CompositionAnimationDrawer(myC0,  nullC, myE0.graph.x, myE0.graph.y, myE0.graph.w, myE0.graph.h);
     e1AnimDisplay = new CompositionAnimationDrawer(nullC, myC1,  myE1.graph.x, myE1.graph.y, myE1.graph.w, myE1.graph.h);
@@ -2258,15 +2259,15 @@ var GamePlayScene = function(game, stage)
     blurb = new Blurb(self);
 
 
-    yardButton  = new ButtonBox(p(0.01818181818181818,drawCanv.width),p(0.0046875,drawCanv.height),p(0.08311688311688312,drawCanv.width),p(0.05,drawCanv.height), function(on) { window.location.href = "http://theyardgames.org/"; });
+    yardButton  = new ButtonBox(p(0.01818181818181818,dc.width),p(0.0046875,dc.height),p(0.08311688311688312,dc.width),p(0.05,dc.height), function(on) { window.location.href = "http://theyardgames.org/"; });
 
-    menuButton  = new ButtonBox(p(0.951948051948052,drawCanv.width),p(0.0078125,drawCanv.height),p(0.032467532467532464,drawCanv.width),p(0.040625,drawCanv.height), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    menuButton  = new ButtonBox(p(0.951948051948052,dc.width),p(0.0078125,dc.height),p(0.032467532467532464,dc.width),p(0.040625,dc.height), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
     {
       canv.context.drawImage(global_menu,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
     }
 
-    readyButton = new ButtonBox(p(0.6662337662337663,drawCanv.width),p(0.2234375,drawCanv.height),p(0.11168831168831168,drawCanv.width),p(0.04375,drawCanv.height),
+    readyButton = new ButtonBox(p(0.6662337662337663,dc.width),p(0.2234375,dc.height),p(0.11168831168831168,dc.width),p(0.04375,dc.height),
       function(on)
       {
         if( //if this is showing
@@ -2331,7 +2332,7 @@ var GamePlayScene = function(game, stage)
     if(print_debug)
       printButton = new ButtonBox(10, 10, 100, 100, function(on) { self.print(); });
 
-    composeButton = new ButtonBox(p(0.4844155844155844,drawCanv.width),p(0.7078125,drawCanv.height),p(0.02987012987012987,drawCanv.width),p(0.096875,drawCanv.height), function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
+    composeButton = new ButtonBox(p(0.4844155844155844,dc.width),p(0.7078125,dc.height),p(0.02987012987012987,dc.width),p(0.096875,dc.height), function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
     composeButton.draw = function(canv)
     {
       if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(  toggle_up,composeButton.x,composeButton.y,composeButton.w,composeButton.h-Math.round(28*(5/8)));
@@ -2385,7 +2386,7 @@ var GamePlayScene = function(game, stage)
   {
     if(levels[cur_level].new_blurbs && !levels[cur_level].blurb_seen)
     {
-      blurb.loadDialog(levels[cur_level].new_blurbs, stage.drawCanv);
+      blurb.loadDialog(levels[cur_level].new_blurbs, dc);
       self.setMode(GAME_MODE_BLURB);
       levels[cur_level].blurb_seen = true;
     }
@@ -2398,7 +2399,7 @@ var GamePlayScene = function(game, stage)
       blurb.img_y = curl.blurb_img_y;
       blurb.img_w = curl.blurb_img_w;
       blurb.img_h = curl.blurb_img_h;
-      blurb.format(stage.drawCanv);
+      blurb.format(dc);
       self.setMode(GAME_MODE_BLURB);
       levels[cur_level].blurb_seen = true;
     }
@@ -2544,7 +2545,7 @@ var GamePlayScene = function(game, stage)
     if(game_mode == GAME_MODE_MENU)
       clip.desired_y = 0;
     else if(game_mode == GAME_MODE_PLAY)
-      clip.desired_y = self.dc.height+20;
+      clip.desired_y = dc.height+20;
   }
 
   var t = 0;
@@ -2607,15 +2608,15 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
-    self.dc.context.drawImage(bg_machine, 0, 0, self.dc.width, self.dc.height);
+    ctx.drawImage(bg_machine, 0, 0, dc.width, dc.height);
 
     if(!levels[cur_level].playground)
     {
       //pulsing goal
-      self.dc.context.globalAlpha = 1-(Math.pow(((Math.sin(t*2)+1)/2),2)/2);
-      gDisplay.draw(self.dc);
-      g2Display.draw(self.dc);
-      self.dc.context.globalAlpha = 1;
+      ctx.globalAlpha = 1-(Math.pow(((Math.sin(t*2)+1)/2),2)/2);
+      gDisplay.draw(dc);
+      g2Display.draw(dc);
+      ctx.globalAlpha = 1;
     }
 
     var redComponent = "00";
@@ -2627,67 +2628,67 @@ var GamePlayScene = function(game, stage)
 
     myDisplay.color = "#"+redComponent+"00"+blueComponent;
 
-    myDisplay.draw(self.dc);
-    myE0.draw(self.dc);
-    myE1.draw(self.dc);
-    e0AnimDisplay.draw(self.dc);
-    e1AnimDisplay.draw(self.dc);
-    myAnimDisplay.draw(self.dc);
+    myDisplay.draw(dc);
+    myE0.draw(dc);
+    myE1.draw(dc);
+    e0AnimDisplay.draw(dc);
+    e1AnimDisplay.draw(dc);
+    myAnimDisplay.draw(dc);
 
 
     if(print_debug)
-      printButton.draw(self.dc);
+      printButton.draw(dc);
 
     if(levels[cur_level].myE1_visible)
     {
-      composeButton.draw(self.dc);
-      self.dc.context.fillStyle = "#000000";
-      self.dc.context.textAlign = "center";
-      self.dc.context.fillText("show",         composeButton.x+composeButton.w/2,composeButton.y-20);
-      self.dc.context.fillText("contributions",composeButton.x+composeButton.w/2,composeButton.y-5);
+      composeButton.draw(dc);
+      ctx.fillStyle = "#000000";
+      ctx.textAlign = "center";
+      ctx.fillText("show",         composeButton.x+composeButton.w/2,composeButton.y-20);
+      ctx.fillText("contributions",composeButton.x+composeButton.w/2,composeButton.y-5);
     }
 
-    self.dc.context.fillStyle = blue;
-    self.dc.context.fillRect(0,0,self.dc.width,38);
-    self.dc.context.drawImage(global_yard_logo,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
-    self.dc.context.fillStyle = "#FFFFFF";
-    self.dc.context.font = "22px Open Sans";
-    self.dc.context.textAlign = "right";
-    self.dc.context.fillText("THE WAVE GENERATOR",p(0.9311688311688312,drawCanv.width),p(0.040625,drawCanv.height));
-    menuButton.draw(self.dc);
+    ctx.fillStyle = blue;
+    ctx.fillRect(0,0,dc.width,38);
+    ctx.drawImage(global_yard_logo,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = "22px Open Sans";
+    ctx.textAlign = "right";
+    ctx.fillText("THE WAVE GENERATOR",p(0.9311688311688312,dc.width),p(0.040625,dc.height));
+    menuButton.draw(dc);
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
     {
       var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
-      self.dc.context.drawImage(global_next,readyButton.x,readyButton.y+s,readyButton.w,readyButton.h);
+      ctx.drawImage(global_next,readyButton.x,readyButton.y+s,readyButton.w,readyButton.h);
     }
     else if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
       var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
-      //skipButton.draw(self.dc); //don't need to "draw button"
-      self.dc.context.font = "40px Open Sans";
-      self.dc.context.textAlign = "right";
+      //skipButton.draw(dc); //don't need to "draw button"
+      ctx.font = "40px Open Sans";
+      ctx.textAlign = "right";
 
       if(levels[cur_level].random)
-        self.dc.context.drawImage(global_reroll,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
+        ctx.drawImage(global_reroll,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
       else
-        self.dc.context.drawImage(global_skip,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
+        ctx.drawImage(global_skip,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
     }
     //if(!levels[cur_level].playground)
-      //vDrawer.draw(levels[cur_level].allowed_wiggle_room, self.dc);
+      //vDrawer.draw(levels[cur_level].allowed_wiggle_room, dc);
 
-    clip.draw(self.dc);
+    clip.draw(dc);
 
     if(game_mode == GAME_MODE_BLURB)
     {
       global_blurb_up = true;
-      blurb.draw(self.dc);
+      blurb.draw(dc);
     }
     else global_blurb_up = false;
 
     if(placer_debug)
     {
-      placer.draw(self.dc);
+      placer.draw(dc);
     }
 
     myComp.cleanse();
