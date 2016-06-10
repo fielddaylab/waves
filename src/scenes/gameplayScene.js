@@ -1,25 +1,5 @@
-var click_aud;
-var global_slider_img;
-var global_dial_img;
-var global_toggle_up;
-var global_toggle_down;
-var global_lvl_button;
-var global_fade_lvl_button;
-var global_lvl_button_outline;
-var global_lvl_lock;
-var global_check;
-var global_close;
-var global_yard_logo;
-var global_tall;
-var global_short;
-var global_menu;
-var global_next;
-var global_reroll;
-var global_skip;
-
 var global_n_ticks;
 var global_bg_alpha;
-var global_blurb_up;
 
 var blue = "#76DAE2";
 
@@ -515,14 +495,14 @@ var ComponentEditor = function(component, color, side)
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   var b_h = ((self.h/2)-(4*10))/3;
-  self.reset_button  = new ButtonBox(self.play_reset_x, self.reset_y, self.play_reset_w, self.play_reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
+  self.reset_button  = new ButtonBox(self.play_reset_x, self.reset_y, self.play_reset_w, self.play_reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(knob_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
   self.toggle_button = new ToggleBox(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
   self.toggle_button.draw = function(canv)
   {
-    if(!self.goal_contribution) canv.context.drawImage(global_toggle_down, self.toggle_button.x,self.toggle_button.y+Math.round(28*(5/8)),self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
-    else                        canv.context.drawImage(global_toggle_up,   self.toggle_button.x,self.toggle_button.y   ,self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
+    if(!self.goal_contribution) canv.context.drawImage(toggle_down_img, self.toggle_button.x,self.toggle_button.y+Math.round(28*(5/8)),self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
+    else                        canv.context.drawImage(toggle_up_img,   self.toggle_button.x,self.toggle_button.y   ,self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
   }
-  self.play_button   = new ToggleBox(self.play_reset_x, self.play_y, self.play_reset_w, self.play_reset_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(global_dial_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
+  self.play_button   = new ToggleBox(self.play_reset_x, self.play_y, self.play_reset_w, self.play_reset_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(knob_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
   self.goal_contribution = 1;
 
   self.amplitude_slider  = new SmoothSliderBox(    self.sliders_x, self.amplitude_y,  self.sliders_w, self.sliders_h, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
@@ -800,7 +780,7 @@ var ClipBoard = function(w,h,scene,levels)
   self.dismiss_button = new ButtonBox(p(0.6597402597402597,dc.width),p(0.08125,dc.height),p(0.06363636363636363,dc.width),p(0.075,dc.height), function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
-    canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
+    canv.context.drawImage(close_img,this.x,this.y,this.w,this.h);
   }
 
   if(save_state)
@@ -823,7 +803,7 @@ var ClipBoard = function(w,h,scene,levels)
     self.buttons.push(self.clear_save_state_button);
     self.clear_save_state_button.draw = function(canv)
     {
-      canv.context.drawImage(global_close,this.x,this.y,this.w,this.h);
+      canv.context.drawImage(close_img,this.x,this.y,this.w,this.h);
     }
   }
 
@@ -864,18 +844,18 @@ var ClipBoard = function(w,h,scene,levels)
       if(!levels[this.lvl].complete)
       {
         var s = (((Math.sin(global_n_ticks/20)+1)/4)+0.5)*10;
-        canv.context.drawImage(global_lvl_button_outline,this.x-s,this.y-s,this.w+s*2,this.h+s*2);
+        canv.context.drawImage(lvl_button_outline_img,this.x-s,this.y-s,this.w+s*2,this.h+s*2);
       }
-      canv.context.drawImage(global_lvl_button,this.x,this.y,this.w,this.h);
+      canv.context.drawImage(lvl_button_img,this.x,this.y,this.w,this.h);
     }
     else
     {
-      canv.context.drawImage(global_fade_lvl_button,this.x,this.y,this.w,this.h);
-      canv.context.drawImage(global_lvl_lock,this.x+this.w-this.w/4,this.y-this.h/4,this.h/2,this.h/2);
+      canv.context.drawImage(fade_lvl_button_img,this.x,this.y,this.w,this.h);
+      canv.context.drawImage(lvl_lock_img,this.x+this.w-this.w/4,this.y-this.h/4,this.h/2,this.h/2);
     }
     if(levels[this.complete_lvl].complete)
     {
-      canv.context.drawImage(global_check,this.x+this.w/8,this.y+this.h/8,this.h*(3/4),this.h*(3/4));
+      canv.context.drawImage(check_img,this.x+this.w/8,this.y+this.h/8,this.h*(3/4),this.h*(3/4));
     }
     else
     {
@@ -1138,47 +1118,10 @@ var GamePlayScene = function(game, stage)
   var n_levels;
   var levels;
 
-  var bg_machine = new Image(); bg_machine.src = "assets/wave-machine.png";
-  var toggle_up = new Image(); toggle_up.src = "assets/toggle-up-button.png";
-  var toggle_down = new Image(); toggle_down.src = "assets/toggle-down-button.png";
-  var slider = new Image(); slider.src = "assets/slider-button.png";
-  var knob = new Image(); knob.src = "assets/knob-button.png";
-  var lvl_button = new Image(); lvl_button.src = "assets/level-bg.png";
-  var fade_lvl_button = new Image(); fade_lvl_button.src = "assets/fade-level-bg.png";
-  var lvl_button_outline = new Image(); lvl_button_outline.src = "assets/level-bg-outline.png";
-  var lvl_lock = new Image(); lvl_lock.src = "assets/icon-locked.png";
-  var check = new Image(); check.src = "assets/icon-check.png";
-  var close = new Image(); close.src = "assets/icon-close.png";
-  var yard_logo = new Image(); yard_logo.src = "assets/theyard-logo.png";
-  var tall = new Image(); tall.src = "assets/scout.png";
-  var short = new Image(); short.src = "assets/honey.png";
-  var menu = new Image(); menu.src = "assets/icon-menu.png";
-  var next = new Image(); next.src = "assets/button-next.png";
-  var skip = new Image(); skip.src = "assets/button-skip.png";
-  var reroll = new Image(); reroll.src = "assets/button-reroll.png";
-  global_slider_img = slider;
-  global_dial_img = knob;
-  global_toggle_up = toggle_up;
-  global_toggle_down = toggle_down;
-  global_lvl_button = lvl_button;
-  global_fade_lvl_button = fade_lvl_button;
-  global_lvl_button_outline = lvl_button_outline;
-  global_lvl_lock = lvl_lock;
-  global_check = check;
-  global_close = close;
-  global_yard_logo = yard_logo;
-  global_tall = tall;
-  global_short = short;
-  global_menu = menu;
-  global_next = next;
-  global_skip = skip;
-  global_reroll = reroll;
-
   self.ready = function()
   {
     global_n_ticks = 0;
     global_bg_alpha = 0;
-    global_blurb_up = false;
 
     //dbugger = new Debugger({source:document.getElementById("debug_div")});
     if(placer_debug)
@@ -2264,7 +2207,7 @@ var GamePlayScene = function(game, stage)
     menuButton  = new ButtonBox(p(0.951948051948052,dc.width),p(0.0078125,dc.height),p(0.032467532467532464,dc.width),p(0.040625,dc.height), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
     {
-      canv.context.drawImage(global_menu,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
+      canv.context.drawImage(menu_img,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
     }
 
     readyButton = new ButtonBox(p(0.6662337662337663,dc.width),p(0.2234375,dc.height),p(0.11168831168831168,dc.width),p(0.04375,dc.height),
@@ -2608,7 +2551,7 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
-    ctx.drawImage(bg_machine, 0, 0, dc.width, dc.height);
+    ctx.drawImage(bg_machine_img, 0, 0, dc.width, dc.height);
 
     if(!levels[cur_level].playground)
     {
@@ -2650,7 +2593,7 @@ var GamePlayScene = function(game, stage)
 
     ctx.fillStyle = blue;
     ctx.fillRect(0,0,dc.width,38);
-    ctx.drawImage(global_yard_logo,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
+    ctx.drawImage(yard_logo_img,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
     ctx.fillStyle = "#FFFFFF";
     ctx.font = "22px Open Sans";
     ctx.textAlign = "right";
@@ -2660,7 +2603,7 @@ var GamePlayScene = function(game, stage)
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
     {
       var s = ((Math.sin(global_n_ticks/20)+1)/2)*10;
-      ctx.drawImage(global_next,readyButton.x,readyButton.y+s,readyButton.w,readyButton.h);
+      ctx.drawImage(next_img,readyButton.x,readyButton.y+s,readyButton.w,readyButton.h);
     }
     else if(!levels[cur_level].playground && (levels[cur_level].complete || levels[cur_level].random))
     {
@@ -2670,9 +2613,9 @@ var GamePlayScene = function(game, stage)
       ctx.textAlign = "right";
 
       if(levels[cur_level].random)
-        ctx.drawImage(global_reroll,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
+        ctx.drawImage(reroll_img,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
       else
-        ctx.drawImage(global_skip,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
+        ctx.drawImage(skip_img,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
     }
     //if(!levels[cur_level].playground)
       //vDrawer.draw(levels[cur_level].allowed_wiggle_room, dc);
@@ -2680,11 +2623,7 @@ var GamePlayScene = function(game, stage)
     clip.draw(dc);
 
     if(game_mode == GAME_MODE_BLURB)
-    {
-      global_blurb_up = true;
       blurb.draw(dc);
-    }
-    else global_blurb_up = false;
 
     if(placer_debug)
     {
