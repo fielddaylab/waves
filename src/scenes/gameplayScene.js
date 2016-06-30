@@ -1045,14 +1045,7 @@ var Blurb = function(scene)
     canv.context.stroke();
     canv.context.lineWidth = 1;
 
-    canv.context.fillStyle = "#CCCCCC";
-    canv.context.fillRect(self.x,self.y+8,self.w,self.h);
-    canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillRect(self.x,self.y,self.w,self.h);
-    canv.context.fillStyle = "#555555";
-    canv.context.font = "25px Open Sans";
-    canv.context.textAlign = "center";
-    canv.context.fillText("Ok!",self.x+self.w/2,self.y+self.h-8,self.w);
+    canv.context.drawImage(next_button_img,self.x,self.y,self.w,self.h);
   }
 
   self.click = function(evt)

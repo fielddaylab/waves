@@ -17,4 +17,5 @@ var menu_img = new Image(); menu_img.src = "assets/icon-menu.png";
 var next_img = new Image(); next_img.src = "assets/button-next.png";
 var skip_img = new Image(); skip_img.src = "assets/button-skip.png";
 var reroll_img = new Image(); reroll_img.src = "assets/button-reroll.png";
+var next_button_img = new Image(); next_button_img.src = "assets/nextbtn-white.png";
 
