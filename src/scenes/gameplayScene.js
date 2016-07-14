@@ -1,5 +1,6 @@
 var global_n_ticks;
 var global_bg_alpha;
+var global_lvl_complete;
 
 var blue = "#76DAE2";
 
@@ -250,8 +251,8 @@ var GraphDrawer = function(composition, x, y, w, h)
         self.canv.context.lineTo(x+0.5,self.h);
         self.canv.context.stroke();
       }
-
-      self.canv.context.strokeStyle = self.color;
+      if(global_lvl_complete) self.canv.context.strokeStyle = "#00FF00";
+      else                    self.canv.context.strokeStyle = self.color;
       self.canv.context.lineWidth = self.lineWidth;
 
       self.canv.context.beginPath();
@@ -2271,8 +2272,8 @@ var GamePlayScene = function(game, stage)
     composeButton = new ButtonBox(p(0.4844155844155844,dc.width),p(0.7078125,dc.height),p(0.02987012987012987,dc.width),p(0.096875,dc.height), function(on) { if(levels[cur_level].myE1_visible) { click_aud.play(); self.animateComposition(); } });
     composeButton.draw = function(canv)
     {
-      if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(  toggle_up,composeButton.x,composeButton.y,composeButton.w,composeButton.h-Math.round(28*(5/8)));
-      else                                     canv.context.drawImage(toggle_down,composeButton.x,composeButton.y+Math.round(28*(5/8)),composeButton.w,composeButton.h-Math.round(28*(5/8)));
+      if(myAnimDisplay.intended_progress != 0) canv.context.drawImage(  toggle_up_img,composeButton.x,composeButton.y,composeButton.w,composeButton.h-Math.round(28*(5/8)));
+      else                                     canv.context.drawImage(toggle_down_img,composeButton.x,composeButton.y+Math.round(28*(5/8)),composeButton.w,composeButton.h-Math.round(28*(5/8)));
     }
 
     validator = new Validator(myComp, gComp);
@@ -2537,6 +2538,8 @@ var GamePlayScene = function(game, stage)
 
     if(!levels[cur_level].playground)
       validator.validate(levels[cur_level].allowed_wiggle_room)
+
+    global_lvl_complete = (!levels[cur_level].playground && (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing));
 
     t += 0.05;
     if(t > 4*Math.PI) t-=4*Math.PI;
