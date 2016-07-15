@@ -1,5 +1,4 @@
 var global_n_ticks;
-var global_bg_alpha;
 var global_lvl_complete;
 
 var blue = "#76DAE2";
@@ -30,6 +29,7 @@ var graph_min_amplitude = 0;
 var graph_default_amplitude = graph_max_y/4;
 var graph_max_amplitude = graph_max_y*(3/5);
 
+var blurb_t;
 var char_xs;
 var char_ys;
 var char_ws;
@@ -989,35 +989,33 @@ var Blurb = function(scene)
 
   self.draw = function(canv)
   {
-    global_bg_alpha = (1-((20*10)/canv.height));
-    canv.context.fillStyle = "rgba(118,218,227,"+global_bg_alpha+")";
-    canv.context.fillRect(0,0,canv.width,canv.height);
     var box_height = 188;
+    var yoff = 400-400*blurb_t;
     canv.context.fillStyle = blue;
-    canv.context.fillRect(0,canv.height-box_height,canv.width,box_height);
+    canv.context.fillRect(0,canv.height-box_height+yoff,canv.width,box_height);
 
     canv.context.font = "20px Open Sans";
     canv.context.textAlign = "left";
     canv.context.fillStyle = "#FFFFFF";
     for(var i = 0; i < self.lines.length; i++)
-      canv.context.fillText(self.lines[i],self.text_x,self.text_y+((i+1)*24),self.text_width);
+      canv.context.fillText(self.lines[i],self.text_x,self.text_y+((i+1)*24)+yoff,self.text_width);
 
     for(var i = 0; i < char_imgs.length; i++)
     {
       if(i == self.img) char_ts[i] = lerp(char_ts[i],1,0.1);
       else              char_ts[i] = lerp(char_ts[i],0,0.1);
-      canv.context.drawImage(char_imgs[i],char_xs[i],char_ys[i]+400-(400*char_ts[i]),char_ws[i],char_hs[i]);
+      canv.context.drawImage(char_imgs[i],char_xs[i],char_ys[i]+400-(400*char_ts[i])+yoff,char_ws[i],char_hs[i]);
     }
 
     canv.context.lineWidth = 3;
     canv.context.strokeStyle = "#5CABB3";
     canv.context.beginPath();
-    canv.context.moveTo(p(0.7688311688311689,dc.width),p(0.75,dc.height));
-    canv.context.lineTo(p(0.7688311688311689,dc.width),p(0.96875,dc.height));
+    canv.context.moveTo(p(0.7688311688311689,dc.width),p(0.75,dc.height)+yoff);
+    canv.context.lineTo(p(0.7688311688311689,dc.width),p(0.96875,dc.height)+yoff);
     canv.context.stroke();
     canv.context.lineWidth = 1;
 
-    canv.context.drawImage(next_button_img,self.x,self.y,self.w,self.h);
+    canv.context.drawImage(next_button_img,self.x,self.y+yoff,self.w,self.h);
   }
 
   self.click = function(evt)
@@ -2124,6 +2122,7 @@ var GamePlayScene = function(game, stage)
     g2Display.color = "#FFFFFF";
     g2Display.dotted = false;
 
+    blurb_t = 0;
     char_xs = [p(0,dc.width),p(0,dc.width),p(0,dc.width),p(0.02987012987012987,dc.width)];
     char_ys = [p(0.55,dc.height),p(0.55,dc.height),p(0.6,dc.height),p(0.5,dc.height)];
     char_ws = [p(0.2,dc.width),p(0.23,dc.width),p(0.23,dc.width),p(0.14675324675324675,dc.width)];
@@ -2558,7 +2557,16 @@ var GamePlayScene = function(game, stage)
     clip.draw(dc);
 
     if(game_mode == GAME_MODE_BLURB)
+    {
+      blurb_t = lerp(blurb_t,1,0.1);
       blurb.draw(dc);
+    }
+    else
+    {
+      blurb_t = lerp(blurb_t,0,0.1);
+      for(var i = 0; i < char_ts.length; i++)
+        char_ts[i] = lerp(char_ts[i],0,0.1);
+    }
 
     if(placer_debug)
     {
