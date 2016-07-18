@@ -96,7 +96,7 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/button-next.png");
     img_srcs.push("assets/button-reroll.png");
     img_srcs.push("assets/button-skip.png");
-    for(var i = 0; i < 1; i++)
+    for(var i = 0; i < 16; i++)
       img_srcs.push("assets/comic/comic_"+i+".png");
     for(var i = 0; i < img_srcs.length; i++)
     {
