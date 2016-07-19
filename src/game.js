@@ -14,9 +14,10 @@ var Game = function(init)
   var scenes = [
     new NullScene(self, stage),
     new LoadingScene(self, stage),
-    new ComicScene(self, stage),
-    /*new TestScene(self, stage),*/
-    new GamePlayScene(self, stage)
+    new ComicScene(self, stage, 0),
+    new GamePlayScene(self, stage, 0),
+    new ComicScene(self, stage, 1),
+    new GamePlayScene(self, stage, 1)
   ];
   var currentScene = 0;
 

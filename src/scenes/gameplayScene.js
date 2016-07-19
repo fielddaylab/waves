@@ -1033,7 +1033,7 @@ var Blurb = function(scene)
   }
 }
 
-var GamePlayScene = function(game, stage)
+var GamePlayScene = function(game, stage, section)
 {
   dc = stage.drawCanv;
   ctx = dc.context;
@@ -1136,7 +1136,7 @@ var GamePlayScene = function(game, stage)
     level.playground = true;
     level.random = false;
     level.return_to_menu = true;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? section == 0 ? default_completeness : 1 : 1;
     level.new_blurbs = [
       [CHAR_AXE, "Look at all of the buttons! This is cool. I wonder what they all do?"],
     ];
@@ -1164,7 +1164,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_GIRL, "Quick, move that offset slider. I bet you can match the waves."],
     ];
@@ -1191,7 +1191,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_GIRL, "According to the manual, the distance between those bumps are wavelengths."],
     ];
@@ -1219,7 +1219,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_ANNOY, "What is ampalamptitooo... wait—what's that word?"],
       [CHAR_GIRL, "It's AMPLITUDE. Amplitude is how tall those waves are."]
@@ -1247,7 +1247,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "This one is kinda tricky—you have to move all the sliders to match it up!"],
       [CHAR_GIRL, "Well according to the manual, a wave has three parts so it makes sense that you have to adjust all three sliders to line up the waves."]
@@ -1275,7 +1275,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_ANNOY, "Whoa!—this wave is going to be squished and stretched."],
     ];
@@ -1302,7 +1302,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "Why is this one flat?"],
       [CHAR_GIRL, "The manual says that \"If a wave has an amplitude of 0, then it just looks like a flat line.\" To give it some shape, what slider should you use?"],
@@ -1330,7 +1330,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_GIRL, "I know how we can silence this wave—make it flat!"],
     ];
@@ -1358,7 +1358,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = true;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_GIRL, "Where is the rest of the wave? This is just one part—a pulse—of the wave. BEEP! Can you match them up?"],
     ];
@@ -1386,7 +1386,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = 1;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "Now that we have all the parts figured out, let's practice matching up some waves. There are some crazy ones in here!"],
     ];
@@ -1414,7 +1414,7 @@ var GamePlayScene = function(game, stage)
     level.playground = true;
     level.random = false;
     level.return_to_menu = true;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "Wow! Now there are two waves together! They are running into each other!"],
     ];
@@ -1442,7 +1442,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_GIRL, "There are two waves here but we can only change one of them. The manual says \"When two pulses interfere with one another, their amplitudes are added together.\""],
       [CHAR_AXE, "Ha ha!—this one looks weird. So I can put the red one on top of the blue one to add them together?"],
@@ -1470,7 +1470,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "Whoa! It looks like the little wave is taking a chunk out of the big wave!"],
       [CHAR_GIRL, "Yeah, it's interfering with it. That is how this machine works—you can make a wave that can destroy another wave by interfering with it."],
@@ -1498,7 +1498,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "This one is really weird looking when you add them together."],
     ];
@@ -1525,7 +1525,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_GIRL, "Turn on the middle button \"Show Contributions\" and you'll see how you are adding them together."],
     ];
@@ -1552,7 +1552,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = false;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_GIRL, "If you add a pulse that is up to a pulse that is going down, it will erase it. They cancel each other out if they are the same amplitude and wavelength."],
       [CHAR_TALL, "That is how we can destroy the horrible sound!"],
@@ -1581,7 +1581,7 @@ var GamePlayScene = function(game, stage)
     level.playground = false;
     level.random = false;
     level.return_to_menu = true;
-    level.complete = default_completeness;
+    level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_TALL, "Hmmmmm... what's the trick to this one?"],
     ];
@@ -2421,6 +2421,10 @@ var GamePlayScene = function(game, stage)
     blurb_clicker.ignore();
 
     game_mode = mode;
+
+    if (game_mode == GAME_MODE_MENU && section == 0 && levels[clip.d_play.req_lvl].complete) {
+      game.nextScene();
+    }
 
     if(game_mode == GAME_MODE_MENU)
       clip.desired_y = 0;

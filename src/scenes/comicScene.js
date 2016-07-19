@@ -1,4 +1,4 @@
-var ComicScene = function(game, stage)
+var ComicScene = function(game, stage, section)
 {
   var self = this;
 
@@ -29,10 +29,11 @@ var ComicScene = function(game, stage)
     clicker = new Clicker({source:stage.dispCanv.canvas});
 
     imgs = [];
-    for(var i = 0; i < 16; i++)
+    for(var i = (section == 0 ? 0 : 8); i < (section == 0 ? 8 : 16); i++)
     {
-      imgs[i] = new Image();
-      imgs[i].src = "assets/comic/comic_"+i+".png";
+      var j = section == 0 ? i : i - 8;
+      imgs[j] = new Image();
+      imgs[j].src = "assets/comic/comic_"+i+".png";
     }
 
     node_y = dc.height-50;
@@ -76,7 +77,7 @@ var ComicScene = function(game, stage)
         if(hit_ui)return;hit_ui = true;
         cur_img=imgs.length;
       });
-    full_btn = new ButtonBox(0,0,dc.width,dc.height,function(evt){if(!hit_ui)next_btn.click(evt);});
+    full_btn = new ButtonBox(0,0,dc.width,dc.height,function(evt){if(!hit_ui)next_btn.hit(evt);});
     nodes = [];
     for(var i = 0; i < imgs.length; i++)
     {
