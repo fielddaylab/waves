@@ -19,3 +19,10 @@ var skip_img = new Image(); skip_img.src = "assets/button-skip.png";
 var reroll_img = new Image(); reroll_img.src = "assets/button-reroll.png";
 var next_button_img = new Image(); next_button_img.src = "assets/nextbtn-white.png";
 
+var grad_img = GenIcon(10,100);
+var grd=grad_img.context.createLinearGradient(0,0,0,grad_img.height);
+grd.addColorStop(0,"rgba(99,228,248,0)");
+grd.addColorStop(0.5,"rgba(99,228,248,1)");
+grad_img.context.fillStyle = grd;
+grad_img.context.fillRect(0,0,grad_img.width,grad_img.height);
+

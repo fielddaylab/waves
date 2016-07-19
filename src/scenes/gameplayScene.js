@@ -939,15 +939,19 @@ var ClipBoard = function(w,h,scene,levels)
 var Blurb = function(scene)
 {
   var self = this;
-  setBox(self,p(0.812987012987013,dc.width),p(0.8046875,dc.height),p(0.11168831168831168,dc.width),p(0.0546875,dc.height));
+  self.x = 0;
+  self.y = 0;
+  self.w = dc.width;
+  self.h = dc.height;
 
   self.txt = "";
   self.lines;
   self.img = 0;
 
-  self.text_x = p(0.21948051948051947,dc.width);
-  self.text_y = p(0.7515625,dc.height);
-  self.text_width = p(0.5324675324675324,dc.width);
+  self.text_x = 250;
+  self.text_w = dc.width-self.text_x-20;
+  self.text_h = 100;
+  self.text_y = dc.height-self.text_h-20;
 
   self.loadDialog = function(dialog, canv)
   {
@@ -968,14 +972,13 @@ var Blurb = function(scene)
 
     canv.context.font = "20px Open Sans";
 
-    //ctx.font=whaaaat;
     while(found < self.txt.length)
     {
       searched = self.txt.indexOf(" ",found);
       if(searched == -1) searched = self.txt.length;
       tentative_search = self.txt.indexOf(" ",searched+1);
       if(tentative_search == -1) tentative_search = self.txt.length;
-      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.text_width && searched != self.txt.length)
+      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.text_w-20 && searched != self.txt.length)
       {
         searched = tentative_search;
         tentative_search = self.txt.indexOf(" ",searched+1);
@@ -991,31 +994,30 @@ var Blurb = function(scene)
   {
     var box_height = 188;
     var yoff = 400-400*blurb_t;
-    canv.context.fillStyle = blue;
-    canv.context.fillRect(0,canv.height-box_height+yoff,canv.width,box_height);
+    canv.context.drawImage(grad_img,0,canv.height-box_height+yoff,canv.width,box_height);
 
-    canv.context.font = "20px Open Sans";
-    canv.context.textAlign = "left";
-    canv.context.fillStyle = "#FFFFFF";
-    for(var i = 0; i < self.lines.length; i++)
-      canv.context.fillText(self.lines[i],self.text_x,self.text_y+((i+1)*24)+yoff,self.text_width);
+    if(self.lines)
+    {
+      canv.context.font = "20px Open Sans";
+      canv.context.textAlign = "left";
+      canv.context.fillStyle = "#FFFFFF";
+      canv.fillRoundRect(self.text_x,self.text_y,self.text_w,self.text_h,5);
+      canv.context.beginPath();
+      canv.context.moveTo(self.text_x   ,self.text_y+10);
+      canv.context.lineTo(self.text_x-10,self.text_y+15);
+      canv.context.lineTo(self.text_x   ,self.text_y+20);
+      canv.context.fill();
+      canv.context.fillStyle = "#000000";
+      for(var i = 0; i < self.lines.length; i++)
+        canv.context.fillText(self.lines[i],self.text_x+10,self.text_y+((i+1)*24),self.text_w);
+    }
 
     for(var i = 0; i < char_imgs.length; i++)
     {
       if(i == self.img) char_ts[i] = lerp(char_ts[i],1,0.1);
       else              char_ts[i] = lerp(char_ts[i],0,0.1);
-      canv.context.drawImage(char_imgs[i],char_xs[i],char_ys[i]+400-(400*char_ts[i])+yoff,char_ws[i],char_hs[i]);
+      canv.context.drawImage(char_imgs[i],char_xs[i]+20,char_ys[i]+150+400-(400*char_ts[i])+yoff,char_ws[i],char_hs[i]);
     }
-
-    canv.context.lineWidth = 3;
-    canv.context.strokeStyle = "#5CABB3";
-    canv.context.beginPath();
-    canv.context.moveTo(p(0.7688311688311689,dc.width),p(0.75,dc.height)+yoff);
-    canv.context.lineTo(p(0.7688311688311689,dc.width),p(0.96875,dc.height)+yoff);
-    canv.context.stroke();
-    canv.context.lineWidth = 1;
-
-    canv.context.drawImage(next_button_img,self.x,self.y+yoff,self.w,self.h);
   }
 
   self.click = function(evt)
@@ -1024,7 +1026,10 @@ var Blurb = function(scene)
     if (self.rest_lines && self.rest_lines.length > 0)
       self.loadDialog(self.rest_lines, self.canv);
     else
+    {
+      self.lines = undefined;
       scene.setMode(GAME_MODE_PLAY);
+    }
   }
 }
 
@@ -1133,7 +1138,7 @@ var GamePlayScene = function(game, stage)
     level.return_to_menu = true;
     level.complete = default_completeness;
     level.new_blurbs = [
-      [CHAR_AXE, "Look at all of the buttons! This is cool. I wonder what they all do."],
+      [CHAR_AXE, "Look at all of the buttons! This is cool. I wonder what they all do?"],
     ];
     level.blurb = true;
     level.blurb_txt = "Welcome to the Wave Combinator! Play around with the controls for a bit, and when you are ready to begin, hit \"next\"!";
@@ -2559,7 +2564,6 @@ var GamePlayScene = function(game, stage)
     if(game_mode == GAME_MODE_BLURB)
     {
       blurb_t = lerp(blurb_t,1,0.1);
-      blurb.draw(dc);
     }
     else
     {
@@ -2567,6 +2571,7 @@ var GamePlayScene = function(game, stage)
       for(var i = 0; i < char_ts.length; i++)
         char_ts[i] = lerp(char_ts[i],0,0.1);
     }
+    blurb.draw(dc);
 
     if(placer_debug)
     {
