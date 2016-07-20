@@ -1139,6 +1139,8 @@ var GamePlayScene = function(game, stage, section)
     level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "Look at all of the buttons! This is cool. I wonder what they all do?"],
+      [CHAR_TALL, "Try dragging the three sliders and clicking the arrow buttons, and see what they do."],
+      [CHAR_TALL, "Then click 'next' to start playing!"],
     ];
     level.blurb = true;
     level.blurb_txt = "Welcome to the Wave Combinator! Play around with the controls for a bit, and when you are ready to begin, hit \"next\"!";
