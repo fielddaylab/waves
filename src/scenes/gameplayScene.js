@@ -509,14 +509,14 @@ var ComponentEditor = function(component, color, side)
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   var b_h = ((self.h/2)-(4*10))/3;
-  self.reset_button  = new ButtonBox(self.play_reset_x, self.reset_y, self.play_reset_w, self.play_reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(knob_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
+  self.reset_button  = new ButtonBox(self.play_reset_x, self.reset_y, self.play_reset_w, self.play_reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(knob_blue_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
   self.toggle_button = new ToggleBox(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
   self.toggle_button.draw = function(canv)
   {
     if(!self.goal_contribution) canv.context.drawImage(toggle_down_img, self.toggle_button.x,self.toggle_button.y+Math.round(28*(5/8)),self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
     else                        canv.context.drawImage(toggle_up_img,   self.toggle_button.x,self.toggle_button.y   ,self.toggle_button.w,self.toggle_button.h-Math.round(28*(5/8)));
   }
-  self.play_button   = new ToggleBox(self.play_reset_x, self.play_y, self.play_reset_w, self.play_reset_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(knob_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
+  self.play_button   = new ToggleBox(self.play_reset_x, self.play_y, self.play_reset_w, self.play_reset_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(self.component.playing ? knob_red_img : knob_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
   self.goal_contribution = 1;
 
   self.amplitude_slider  = new SmoothSliderBox(    self.sliders_x, self.amplitude_y,  self.sliders_w, self.sliders_h, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });

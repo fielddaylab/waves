@@ -4,6 +4,8 @@ var toggle_up_img = new Image(); toggle_up_img.src = "assets/toggle-up-button.pn
 var toggle_down_img = new Image(); toggle_down_img.src = "assets/toggle-down-button.png";
 var slider_img = new Image(); slider_img.src = "assets/slider-button.png";
 var knob_img = new Image(); knob_img.src = "assets/knob-button.png";
+var knob_red_img = new Image(); knob_red_img.src = "assets/knob-button-red.png";
+var knob_blue_img = new Image(); knob_blue_img.src = "assets/knob-button-blue.png";
 var lvl_button_img = new Image(); lvl_button_img.src = "assets/level-bg.png";
 var fade_lvl_button_img = new Image(); fade_lvl_button_img.src = "assets/fade-level-bg.png";
 var lvl_button_outline_img = new Image(); lvl_button_outline_img.src = "assets/level-bg-outline.png";

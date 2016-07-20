@@ -83,6 +83,8 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/toggle-down-button.png");
     img_srcs.push("assets/slider-button.png");
     img_srcs.push("assets/knob-button.png");
+    img_srcs.push("assets/knob-button-red.png");
+    img_srcs.push("assets/knob-button-blue.png");
     img_srcs.push("assets/level-bg.png");
     img_srcs.push("assets/fade-level-bg.png");
     img_srcs.push("assets/level-bg-outline.png");
