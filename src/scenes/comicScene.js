@@ -29,9 +29,10 @@ var ComicScene = function(game, stage, section)
     clicker = new Clicker({source:stage.dispCanv.canvas});
 
     imgs = [];
-    for(var i = (section == 0 ? 0 : 8); i < (section == 0 ? 8 : 16); i++)
+    var split_point = 4;
+    for(var i = (section == 0 ? 0 : split_point); i < (section == 0 ? split_point : 16); i++)
     {
-      var j = section == 0 ? i : i - 8;
+      var j = section == 0 ? i : i - split_point;
       imgs[j] = new Image();
       imgs[j].src = "assets/comic/comic_"+i+".png";
     }
