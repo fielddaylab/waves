@@ -2154,7 +2154,7 @@ var GamePlayScene = function(game, stage, section)
       canv.context.drawImage(menu_img,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
     }
 
-    readyButton = new ButtonBox(p(0.6662337662337663,dc.width),p(0.2234375,dc.height),p(0.11168831168831168,dc.width),p(0.04375,dc.height),
+    readyButton = new ButtonBox(p(0.65,dc.width),p(0.2234375,dc.height),p(0.12,dc.width),p(0.06,dc.height),
       function(on)
       {
         if( //if this is showing
@@ -2558,7 +2558,7 @@ var GamePlayScene = function(game, stage, section)
       ctx.textAlign = "right";
 
       if(levels[cur_level].random)
-        ctx.drawImage(reroll_img,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
+        ctx.drawImage(reroll_img,skipButton.x-7,skipButton.y+s,p(1.15,skipButton.w),skipButton.h);
       else
         ctx.drawImage(skip_img,skipButton.x,skipButton.y+s,skipButton.w,skipButton.h);
     }
