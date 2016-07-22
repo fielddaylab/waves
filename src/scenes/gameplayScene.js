@@ -1071,7 +1071,6 @@ var GamePlayScene = function(game, stage, section)
 
   var blurb;
 
-  var yardButton;
   var menuButton;
   var readyButton;
   var skipButton;
@@ -2146,9 +2145,7 @@ var GamePlayScene = function(game, stage, section)
     char_imgs[CHAR_TALL].src = "assets/scout.png";
     blurb = new Blurb(self);
 
-    yardButton  = new ButtonBox(p(0.01818181818181818,dc.width),p(0.0046875,dc.height),p(0.08311688311688312,dc.width),p(0.05,dc.height), function(on) { window.location.href = "http://theyardgames.org/"; });
-
-    menuButton  = new ButtonBox(p(0.951948051948052,dc.width),p(0.0078125,dc.height),p(0.032467532467532464,dc.width),p(0.040625,dc.height), function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    menuButton  = new ButtonBox(10,10,80,30, function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
     {
       canv.context.drawImage(menu_img,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
@@ -2239,14 +2236,12 @@ var GamePlayScene = function(game, stage, section)
 
     myE0.register(play_dragger, play_presser, play_clicker);
     myE1.register(play_dragger, play_presser, play_clicker);
-    play_presser.register(yardButton);
     play_presser.register(menuButton);
     play_presser.register(readyButton);
     play_presser.register(composeButton);
     play_presser.register(skipButton);
     if(print_debug)
       play_presser.register(printButton);
-    play_clicker.register(yardButton);
     play_clicker.register(menuButton);
     play_clicker.register(readyButton);
     play_clicker.register(composeButton);
@@ -2536,14 +2531,12 @@ var GamePlayScene = function(game, stage, section)
       ctx.fillText("contributions",composeButton.x+composeButton.w/2,composeButton.y-5);
     }
 
-    ctx.fillStyle = blue;
-    ctx.fillRect(0,0,dc.width,38);
-    ctx.drawImage(yard_logo_img,yardButton.x,yardButton.y,yardButton.w,yardButton.h);
     ctx.fillStyle = "#FFFFFF";
-    ctx.font = "22px Open Sans";
-    ctx.textAlign = "right";
-    ctx.fillText("THE WAVE GENERATOR",p(0.9311688311688312,dc.width),p(0.040625,dc.height));
-    menuButton.draw(dc);
+    dc.fillRoundRect(menuButton.x,menuButton.y,menuButton.w,menuButton.h,10);
+    ctx.fillStyle = "#000000";
+    ctx.textAlign = "center";
+    ctx.font = "20px Open Sans";
+    ctx.fillText("MENU",menuButton.x+menuButton.w/2,menuButton.y+menuButton.h-8);
 
     if(levels[cur_level].playground || (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing))
     {
