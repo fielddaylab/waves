@@ -57,13 +57,16 @@ body,div
 <script type="text/javascript" src="src/scenes/testScene.js"></script>
 <script type="text/javascript" src="src/scenes/gameplayScene.js"></script>
 
+<script src="https://cdn.brainpop.com/games/assets/js/html2canvas.js"></script>
+<script src="https://cdn.brainpop.com/games/assets/js/cameraProxyDOMCrossDomain.js"></script>
+
 <script type="text/javascript">
 var g;
 function begin()
 {
   var w = 880;
   var h = 660;
-  var content          = document.getElementById("content");
+  var content          = document.getElementById("BrainPOPsnapArea");
   var stage_container  = document.getElementById("stage_container");
   content.style.width          = w; content.style.height          = h;
   stage_container.style.width  = w; stage_container.style.height  = h;
@@ -78,7 +81,7 @@ window.addEventListener("load",begin,false);
 </head>
 <body style="background-image:url('assets/wave-machine-background.jpg'); width:100%; user-select:none;">
 
-<div id="content" style="position:relative;">
+<div id="BrainPOPsnapArea" style="position:relative;">
   <div id="stage_container" style="position:absolute; top:0px; left:0px; user-select:none;"> </div>
 </div>
 
