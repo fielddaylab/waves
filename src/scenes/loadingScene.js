@@ -6,6 +6,8 @@ var LoadingScene = function(game, stage)
   var canvas = dc.canvas;
   var ctx = dc.context;
 
+  var allow_play;
+
   var pad;
   var barw;
 
@@ -36,6 +38,8 @@ var LoadingScene = function(game, stage)
 
   self.ready = function()
   {
+    allow_play = true;
+
     pad = 20;
     barw = (dc.width-(2*pad));
 
@@ -111,6 +115,10 @@ var LoadingScene = function(game, stage)
 
   self.tick = function()
   {
+    var buffer = 200;
+    if(window.screen.width < 880+buffer || window.screen.height < 660+buffer) allow_play = false;
+    else allow_play = true;
+
     //note- assets used on loading screen itself NOT included in wait
     loading_percent_loaded = n_loading_imgs_loaded/(loading_img_srcs.length+1);
     if(loading_percent_loaded >= 1.0) ticks_since_loading_ready++;
@@ -119,7 +127,7 @@ var LoadingScene = function(game, stage)
     lerp_percent_loaded = lerp(lerp_percent_loaded,percent_loaded,0.1);
     lerp_chase_percent_loaded = lerp(lerp_chase_percent_loaded,chase_percent_loaded,0.1);
     if(percent_loaded >= 1.0) ticks_since_ready++;
-    if(ticks_since_ready >= post_load_countdown)
+    if(ticks_since_ready >= post_load_countdown && allow_play)
     {
       //bake();
       game.nextScene();
@@ -135,62 +143,86 @@ var LoadingScene = function(game, stage)
     ctx.fillStyle = "#15A9CB"; //blue
     ctx.fillRect(0,0,dc.width,dc.height);
 
-    if(loading_percent_loaded >= 1)
+    if(allow_play)
     {
-      //do any special drawing here
-      var a = ticks_since_loading_ready/20;
-      if(a > 1) a = 1;
-      ctx.globalAlpha = a;
-
-      //continue to draw underlying bar during fade in
-      ctx.fillStyle = "#EFC72F"; //yellow
-      ctx.fillRect(pole_x+15,dc.height-pole_h*lerp_percent_loaded,pole_w-30,pole_h);
-
-      var w;
-      var h;
-      w = 1540*3/4;
-      h = 564*3/4;
-      ctx.drawImage(loading_imgs[1],-w+(ticks_since_loading_ready%w),0,w,h); //clouds
-      ctx.drawImage(loading_imgs[1],(ticks_since_loading_ready%w),0,w,h); //clouds
-      w = pole_w;
-      h = pole_h;
-      ctx.drawImage(loading_imgs[4],pole_x,dc.height-h,w,h); //pole
-      w = 280;
-      h = 122;
-      ctx.drawImage(loading_imgs[2],pole_x+pole_w-20,dc.height-(pole_h-50)*lerp_percent_loaded,w,h); //flag
-
-      var n = 170;
-      if(ticks_since_ready > post_load_countdown-n)
+      if(loading_percent_loaded >= 1)
       {
-        f = (ticks_since_ready-(post_load_countdown-n))/50;
-        if(f < 0) f = 0;
-        if(f > 1) f = 1;
-        ctx.globalAlpha = f;
-        w = 640/2;
-        h = 118/2;
-        ctx.drawImage(loading_imgs[3],240,260+20,w,h);
-        w = 534/1.5;
-        h = 22/1.5;
-        ctx.drawImage(loading_imgs[0],240,260+100,w,h);
-      }
-      ctx.globalAlpha = 1;
+        //do any special drawing here
+        var a = ticks_since_loading_ready/20;
+        if(a > 1) a = 1;
+        ctx.globalAlpha = a;
 
-      var n = 20;
-      if(ticks_since_ready > post_load_countdown-n)
-      {
-        f = (ticks_since_ready-(post_load_countdown-n))/n;
-        if(f > 1) f = 1;
-        if(f < 0) f = 0;
-        ctx.globalAlpha = f;
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(0,0,dc.width,dc.height);
+        //continue to draw underlying bar during fade in
+        ctx.fillStyle = "#EFC72F"; //yellow
+        ctx.fillRect(pole_x+15,dc.height-pole_h*lerp_percent_loaded,pole_w-30,pole_h);
+
+        var w;
+        var h;
+        w = 1540*3/4;
+        h = 564*3/4;
+        ctx.drawImage(loading_imgs[1],-w+(ticks_since_loading_ready%w),0,w,h); //clouds
+        ctx.drawImage(loading_imgs[1],(ticks_since_loading_ready%w),0,w,h); //clouds
+        w = pole_w;
+        h = pole_h;
+        ctx.drawImage(loading_imgs[4],pole_x,dc.height-h,w,h); //pole
+        w = 280;
+        h = 122;
+        ctx.drawImage(loading_imgs[2],pole_x+pole_w-20,dc.height-(pole_h-50)*lerp_percent_loaded,w,h); //flag
+
+        var n = 170;
+        if(ticks_since_ready > post_load_countdown-n)
+        {
+          f = (ticks_since_ready-(post_load_countdown-n))/50;
+          if(f < 0) f = 0;
+          if(f > 1) f = 1;
+          ctx.globalAlpha = f;
+          w = 640/2;
+          h = 118/2;
+          ctx.drawImage(loading_imgs[3],240,260+20,w,h);
+          w = 534/1.5;
+          h = 22/1.5;
+          ctx.drawImage(loading_imgs[0],240,260+100,w,h);
+        }
+        ctx.globalAlpha = 1;
+
+        var n = 20;
+        if(ticks_since_ready > post_load_countdown-n)
+        {
+          f = (ticks_since_ready-(post_load_countdown-n))/n;
+          if(f > 1) f = 1;
+          if(f < 0) f = 0;
+          ctx.globalAlpha = f;
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0,0,dc.width,dc.height);
+        }
+        ctx.globalAlpha = 1;
       }
-      ctx.globalAlpha = 1;
+      else
+      {
+        ctx.fillStyle = "#EFC72F"; //yellow
+        ctx.fillRect(pole_x+25,dc.height-pole_h*lerp_chase_percent_loaded,pole_w-50,pole_h);
+      }
     }
     else
     {
-      ctx.fillStyle = "#EFC72F"; //yellow
-      ctx.fillRect(pole_x+25,dc.height-pole_h*lerp_chase_percent_loaded,pole_w-50,pole_h);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "30px Open Sans";
+      ctx.textAlign = "center";
+      //single
+      var x = 440;
+      var y = 330;
+      var w = 640/2;
+      var h = 118/2;
+      ctx.drawImage(loading_imgs[3],x-w/2,y-h/2-50,w,h); //logo
+      ctx.fillText("Game requires larger screen!",x,y+50);
+      ctx.fillText("Sorry!",x,y+50+40);
+
+      ctx.font = "12px Open Sans";
+      ctx.textAlign = "left";
+      x = 10;
+      y = 20
+      ctx.fillText("Game requires screen size of at least 880x660 pixels.",x,y);
+      ctx.fillText("Try playing on a desktop, laptop, or tablet!",x,y+20);
     }
 
   };
