@@ -123,9 +123,9 @@ var LoadingScene = function(game, stage)
     {
       var sc = document.getElementById("stage_container");
       var content = document.getElementById("BrainPOPsnapArea");
-      sc.innerHTML = "<div style='background-color:#15A9CB; color:#FFFFFF;'>Game requires screen size of at least 880x660 pixels.<br />Try playing on a desktop, laptop, or tablet!</div>";
-      sc.style.width      = (window.screen.width-40)+"px";
-      content.style.width = (window.screen.width-40)+"px";
+      sc.innerHTML = "<div style='background-color:#15A9CB; color:#FFFFFF; padding:20px;'>Game requires screen size of at least 880x660 pixels.<br />Try playing on a desktop, laptop, or tablet!</div>";
+      sc.style.width      = (window.screen.width-60)+"px";
+      content.style.width = (window.screen.width-60)+"px";
     }
 
     //note- assets used on loading screen itself NOT included in wait
