@@ -134,7 +134,7 @@ var LoadingScene = function(game, stage)
       sc.style.justifyContent = "center";
       sc.style.alignItems = "center";
       sc.style.backgroundColor = "#15A9CB";
-      sc.innerHTML = "<img width='300' src='assets/loading/logo.png'></img><div style='font-family:Open Sans; font-size:16px; color:#FFFFFF; padding:20px; text-align:center;'>Sorry! Game requires screen size of at least "+(880+buffer)+"x"+(660+buffer)+" pixels.<br />(Your screen size is "+window.screen.width+"x"+window.screen.height+")<br />Try playing on a desktop, laptop, or tablet!</div>";
+      sc.innerHTML = "<img width='300' src='assets/loading/logo.png'></img><div style='font-family:Open Sans; font-size:16px; color:#FFFFFF; padding:20px; text-align:center;'>Sorry!<br />Game requires screen size<br />of at least "+(880+buffer)+"x"+(660+buffer)+" pixels.<br />(Your screen size is "+window.screen.width+"x"+window.screen.height+")<br />Try playing on a desktop, laptop, or tablet!</div>";
     }
 
     //note- assets used on loading screen itself NOT included in wait
