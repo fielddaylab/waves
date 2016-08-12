@@ -115,7 +115,7 @@ var LoadingScene = function(game, stage)
 
   self.tick = function()
   {
-    var buffer = 200;
+    var buffer = 40;
     var old_allow_play = allow_play;
     if(window.screen.width < 880+buffer || window.screen.height < 660+buffer) allow_play = false;
     else allow_play = true;
