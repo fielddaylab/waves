@@ -2166,6 +2166,7 @@ var GamePlayScene = function(game, stage, section)
         {
           click_aud.play();
           levels[cur_level].complete++;
+          ga('send', 'event', 'wave_level', 'complete', cur_level, 0);
 
           if(save_state)
           {
