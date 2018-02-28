@@ -308,7 +308,7 @@ function SliderBox(x,y,w,h,min_val,max_val,val,callback)
   }
 }
 
-function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
+function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback,validator,log_callback)
 //register to dragger, ticker
 {
   var self = this;
@@ -326,9 +326,18 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   self.val = val;
 
   self.dragging = false;
+  self.drag_begin_val = 0;
+  self.drag_end_val = 0;
+  self.drag_min_val = 0;
+  self.drag_max_val = 0;
+  self.drag_validator_begin = 0;
   self.dragStart = function(evt)
   {
     self.dragging = true;
+    self.drag_begin_val = self.val;
+    self.drag_min_val = self.drag_begin_val;
+    self.drag_max_val = self.drag_begin_val;
+    self.drag_validator_begin = validator.delta;
     self.drag(evt);
   }
   self.drag = function(evt)
@@ -336,10 +345,14 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
     if(evt.doX < self.slit_x) evt.doX = self.slit_x;
     if(evt.doX > self.slit_x+self.maxPixel()) evt.doX = self.slit_x+self.maxPixel();
     self.desired_val = self.valAtPixel(evt.doX-self.slit_x);
+    if(self.desired_val < self.drag_min_val) self.drag_min_val = self.desired_val;
+    if(self.desired_val > self.drag_max_val) self.drag_max_val = self.desired_val;
   }
   self.dragFinish = function()
   {
     self.dragging = false;
+    self.drag_end_val = self.desired_val;
+    log_callback(self);
   }
   self.set = function(n)
   {
@@ -387,7 +400,7 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback)
   }
 }
 
-function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback)
+function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback,validator,log_callback)
 //register to dragger, ticker
 {
   var self = this;
@@ -405,9 +418,18 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback)
   self.val = val;
 
   self.dragging = false;
+  self.drag_begin_val = 0;
+  self.drag_end_val = 0;
+  self.drag_min_val = 0;
+  self.drag_max_val = 0;
+  self.drag_validator_begin = 0;
   self.dragStart = function(evt)
   {
     self.dragging = true;
+    self.drag_begin_val = self.val;
+    self.drag_min_val = self.drag_begin_val;
+    self.drag_max_val = self.drag_begin_val;
+    self.drag_validator_begin = validator.delta;
     self.drag(evt);
   }
   self.drag = function(evt)
@@ -415,10 +437,14 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback)
     if(evt.doX < self.slit_x) evt.doX = self.slit_x;
     if(evt.doX > self.slit_x+self.maxPixel()) evt.doX = self.slit_x+self.maxPixel();
     self.desired_val = self.valAtPixel(evt.doX-self.slit_x);
+    if(self.desired_val < self.drag_min_val) self.drag_min_val = self.desired_val;
+    if(self.desired_val > self.drag_max_val) self.drag_max_val = self.desired_val;
   }
   self.dragFinish = function()
   {
     self.dragging = false;
+    self.drag_end_val = self.desired_val;
+    log_callback(self);
   }
   self.set = function(n)
   {

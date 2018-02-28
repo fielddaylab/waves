@@ -209,6 +209,23 @@ var dec2Hex = function(n)
   return n.toString(16);
 }
 
+var UUIDint = function()
+{
+  var d = new Date();
+  var id = ""+d.getFullYear(); //4
+  if(d.getMonth() < 10) id += "0";
+  id += d.getMonth(); //6
+  if(d.getDay() < 10) id += "0";
+  id += d.getDay(); //8
+  if(d.getMilliseconds() < 100) id += "0";
+  if(d.getMilliseconds() < 10)  id += "0";
+  id += d.getMilliseconds(); //11
+  for(var i = 0; i < 6; i++)
+    id += Math.floor(Math.random()*10); //17
+
+  return parseInt(id);
+}
+
 //short name- will be used often to place elements by percent, while guaranteeing integer results
 var p    = function(percent, of) { return Math.floor(percent * of); }
 var invp = function(      n, of) { return n/of; }

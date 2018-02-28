@@ -450,7 +450,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
   }
 }
 
-var ComponentEditor = function(component, color, side)
+var ComponentEditor = function(component, color, side, validator, log_slider_move, log_arrow_move)
 {
   var self = this;
   self.component = component;
@@ -519,16 +519,16 @@ var ComponentEditor = function(component, color, side)
   self.play_button   = new ToggleBox(self.play_reset_x, self.play_y, self.play_reset_w, self.play_reset_h, true, function(on) { click_aud.play(); self.component.setPlaying(!on); }); self.play_button.draw = function(canv) { canv.context.drawImage(self.component.playing ? knob_red_img : knob_img,self.play_button.x,self.play_button.y,self.play_button.w,self.play_button.h); };
   self.goal_contribution = 1;
 
-  self.amplitude_slider  = new SmoothSliderBox(    self.sliders_x, self.amplitude_y,  self.sliders_w, self.sliders_h, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } });
-  self.wavelength_slider = new SmoothSliderSqrtBox(self.sliders_x, self.wavelength_y, self.sliders_w, self.sliders_h, graph_min_wavelength, graph_max_wavelength, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } });
-  self.offset_slider     = new SmoothSliderBox(    self.sliders_x, self.offset_y,     self.sliders_w, self.sliders_h, graph_min_offset,         graph_max_offset,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } });
+  self.amplitude_slider  = new SmoothSliderBox(    self.sliders_x, self.amplitude_y,  self.sliders_w, self.sliders_h, graph_min_amplitude,   graph_max_amplitude,  self.default_amplitude, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.amplitude_slider.val  = self.component.amplitude;  self.amplitude_slider.desired_val  = self.component.amplitude;  } else { self.component.amplitude  = n; self.component.dirty(); } }, validator, function(mslider) { log_slider_move(mslider,"AMPLITUDE", side); });
+  self.wavelength_slider = new SmoothSliderSqrtBox(self.sliders_x, self.wavelength_y, self.sliders_w, self.sliders_h, graph_min_wavelength, graph_max_wavelength, self.default_wavelength, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.wavelength_slider.val = self.component.wavelength; self.wavelength_slider.desired_val = self.component.wavelength; } else { self.component.wavelength = n; self.component.dirty(); } }, validator, function(mslider) { log_slider_move(mslider,"WAVELENGTH",side); });
+  self.offset_slider     = new SmoothSliderBox(    self.sliders_x, self.offset_y,     self.sliders_w, self.sliders_h, graph_min_offset,         graph_max_offset,     self.default_offset, function(n) { if(!self.enabled || !self.component.enabled || self.component.playing) { self.offset_slider.val     = self.component.offset;     self.offset_slider.desired_val     = self.component.offset;     } else { self.component.offset     = n; self.component.dirty(); } }, validator, function(mslider) { log_slider_move(mslider,"OFFSET",    side); });
 
-  self.offset_dec_button = new ButtonBox(self.sliders_x-20, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1); }); self.offset_dec_button.draw = function(canv) {};
-  self.offset_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.offset_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1); }); self.offset_inc_button.draw = function(canv) {};
-  self.wavelength_dec_button = new ButtonBox(self.sliders_x-20, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); }); self.wavelength_dec_button.draw = function(canv) {};
-  self.wavelength_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); }); self.wavelength_inc_button.draw = function(canv) {};
-  self.amplitude_dec_button = new ButtonBox(self.sliders_x-20, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1); }); self.amplitude_dec_button.draw = function(canv) {};
-  self.amplitude_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.amplitude_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1); }); self.amplitude_inc_button.draw = function(canv) {};
+  self.offset_dec_button     = new ButtonBox(self.sliders_x-20, self.offset_y, 20, 20,                 function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val     = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))-1);             log_arrow_move(self.offset_slider,     "OFFSET",     side); }); self.offset_dec_button.draw     = function(canv) {};
+  self.offset_inc_button     = new ButtonBox(self.sliders_x+self.sliders_w, self.offset_y, 20, 20,     function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.offset_slider.desired_val     = self.offset_slider.valAtPixel(Math.round(self.offset_slider.pixelAtVal(self.offset_slider.val))+1);             log_arrow_move(self.offset_slider,     "OFFSET",     side); }); self.offset_inc_button.draw     = function(canv) {};
+  self.wavelength_dec_button = new ButtonBox(self.sliders_x-20, self.wavelength_y, 20, 20,             function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))-1); log_arrow_move(self.wavelength_slider, "WAVELENGTH", side); }); self.wavelength_dec_button.draw = function(canv) {};
+  self.wavelength_inc_button = new ButtonBox(self.sliders_x+self.sliders_w, self.wavelength_y, 20, 20, function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.wavelength_slider.desired_val = self.wavelength_slider.valAtPixel(Math.round(self.wavelength_slider.pixelAtVal(self.wavelength_slider.val))+1); log_arrow_move(self.wavelength_slider, "WAVELENGTH", side); }); self.wavelength_inc_button.draw = function(canv) {};
+  self.amplitude_dec_button  = new ButtonBox(self.sliders_x-20, self.amplitude_y, 20, 20,              function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val  = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))-1);    log_arrow_move(self.amplitude_slider,  "AMPLITUDE",  side); }); self.amplitude_dec_button.draw  = function(canv) {};
+  self.amplitude_inc_button  = new ButtonBox(self.sliders_x+self.sliders_w, self.amplitude_y, 20, 20,  function(on) { if(!self.enabled || !self.component.enabled) return; click_aud.play(); self.amplitude_slider.desired_val  = self.amplitude_slider.valAtPixel(Math.round(self.amplitude_slider.pixelAtVal(self.amplitude_slider.val))+1);    log_arrow_move(self.amplitude_slider,  "AMPLITUDE",  side); }); self.amplitude_inc_button.draw  = function(canv) {};
 
   self.enabled = true;
   self.visible = true;
@@ -1081,12 +1081,131 @@ var GamePlayScene = function(game, stage, section)
   var validator;
   var vDrawer;
 
-  var cur_level;
   var n_levels;
   var levels;
+  var cur_level;
+
+  var log_slider_move = function(mslider,type,side)
+  {
+    var log_data =
+    {
+      level:cur_level,
+      event:"CUSTOM",
+      event_custom:0, //0 = SLIDER_MOVE_RELEASE
+      event_data_complex:
+      {
+        event_custom:"SLIDER_MOVE_RELEASE",
+        slider:type,
+        wave:side,
+        begin_val:mslider.drag_begin_val,
+        end_val:mslider.drag_end_val,
+        min_val:mslider.drag_min_val,
+        max_val:mslider.drag_max_val,
+        begin_closeness:mslider.drag_validator_begin,
+        end_closeness:validator.delta,
+      }
+    };
+    if(type == "AMPLITUDE")  log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_amplitude  : levels[cur_level].gC1_amplitude));
+    if(type == "WAVELENGTH") log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_wavelength : levels[cur_level].gC1_wavelength));
+    if(type == "OFFSET")     log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_offset     : levels[cur_level].gC1_offset));
+    mySlog.log(log_data);
+  }
+  var log_arrow_move = function(mslider,type,side)
+  {
+    var log_data =
+    {
+      level:cur_level,
+      event:"CUSTOM",
+      event_custom:1, //1 = ARROW_MOVE_RELEASE
+      event_data_complex:
+      {
+        event_custom:"ARROW_MOVE_RELEASE",
+        slider:type,
+        wave:side,
+        begin_val:mslider.val,
+        end_val:mslider.desired_val,
+        closeness:validator.delta,
+      }
+    };
+    if(type == "AMPLITUDE")  log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_amplitude  : levels[cur_level].gC1_amplitude));
+    if(type == "WAVELENGTH") log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_wavelength : levels[cur_level].gC1_wavelength));
+    if(type == "OFFSET")     log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_offset     : levels[cur_level].gC1_offset));
+    mySlog.log(log_data);
+  }
+  var log_level_begin = function()
+  {
+    var log_data =
+    {
+      level:cur_level,
+      event:"BEGIN",
+    };
+    mySlog.log(log_data);
+  }
+  var log_level_complete = function()
+  {
+    var log_data =
+    {
+      level:cur_level,
+      event:"COMPLETE",
+      event_data_complex:
+      {
+        event_custom:"COMPLETE",
+        amplitude_left:myC0.amplitude,
+        wavelength_left:myC0.wavelength,
+        offset_left:myC0.offset,
+        amplitude_right:myC1.amplitude,
+        wavelength_right:myC1.wavelength,
+        offset_right:myC1.offset,
+        closeness:validator.delta,
+      }
+    };
+    mySlog.log(log_data);
+  }
+  var log_level_succeed = function()
+  {
+    var log_data =
+    {
+      level:cur_level,
+      event:"SUCCEED",
+      event_data_complex:
+      {
+        event_custom:"SUCCEED",
+        amplitude_left:myC0.amplitude,
+        wavelength_left:myC0.wavelength,
+        offset_left:myC0.offset,
+        amplitude_right:myC1.amplitude,
+        wavelength_right:myC1.wavelength,
+        offset_right:myC1.offset,
+        closeness:validator.delta,
+      }
+    };
+    mySlog.log(log_data);
+  }
+  var log_level_fail = function()
+  {
+    var log_data =
+    {
+      level:cur_level,
+      event:"FAIL",
+      event_data_complex:
+      {
+        event_custom:"FAIL",
+        amplitude_left:myC0.amplitude,
+        wavelength_left:myC0.wavelength,
+        offset_left:myC0.offset,
+        amplitude_right:myC1.amplitude,
+        wavelength_right:myC1.wavelength,
+        offset_right:myC1.offset,
+        closeness:validator.delta,
+      }
+    };
+    mySlog.log(log_data);
+  }
 
   self.ready = function()
   {
+    validator = new Validator(myComp, gComp); //garbage to alloc
+
     global_n_ticks = 0;
     global_bg_alpha = 0;
 
@@ -1102,6 +1221,8 @@ var GamePlayScene = function(game, stage, section)
     n_levels = 0;
     levels = [];
 
+    mySlog = new slog("WAVES",1);
+
     nullC = new Component(COMP_TYPE_NONE, 0, 0, 0, 0);
     myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
     myC1 = new Component(COMP_TYPE_NONE, -1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
@@ -1111,9 +1232,9 @@ var GamePlayScene = function(game, stage, section)
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
     myDisplay.draw_zero_y = true;
-    nullEditor = new ComponentEditor(myC0, "#FF0000", "left");
-    myE0 = new ComponentEditor(myC0, "#FF0000", "left");
-    myE1 = new ComponentEditor(myC1, "#0000FF", "right");
+    nullEditor = new ComponentEditor(myC0, "#FF0000", "left", validator, log_slider_move, log_arrow_move);
+    myE0 = new ComponentEditor(myC0, "#FF0000", "left", validator, log_slider_move, log_arrow_move);
+    myE1 = new ComponentEditor(myC1, "#0000FF", "right", validator, log_slider_move, log_arrow_move);
 
     s_play_lvl = n_levels;
     //lvl? //single-wave playground
@@ -1138,7 +1259,7 @@ var GamePlayScene = function(game, stage, section)
     level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
       [CHAR_AXE, "Look at all of the buttons! This is cool. I wonder what they all do?"],
-      [CHAR_TALL, "Try dragging the three sliders and clicking the arrow buttons, and see what they do."],
+      [CHAR_TALL, "Try dragging the three sliders, and see what they do."],
       [CHAR_TALL, "Then click 'next' to start playing!"],
     ];
     level.blurb = true;
@@ -1167,7 +1288,7 @@ var GamePlayScene = function(game, stage, section)
     level.return_to_menu = false;
     level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
-      [CHAR_GIRL, "Quick, move that offset slider. I bet you can match the waves."],
+      [CHAR_GIRL, "Move the offset slider- I bet you can match the waves."],
     ];
     level.blurb = true;
     level.blurb_txt = "A graph of a wave is a mathematical model of the wave. Use the offset slider to shift the red wave so it matches - or is \"in phase with\" - the grey wave.";
@@ -1198,7 +1319,7 @@ var GamePlayScene = function(game, stage, section)
     ];
     level.blurb = true;
     //level.blurb_txt = "A graph of a wave can show other properties of a wave, such as wavelength. Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
-    level.blurb_txt = "Wavelength is the distance between successive repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
+    level.blurb_txt = "Wavelength is the distance between repeating points on a wave - for example, from one crest to the next. Use the wavelength slider to change the wavelength of the red wave to match the wavelength of the grey wave.";
     levels.push(level);
 
     //lvl? //learn amplitude (plus a bit of offset)
@@ -1222,7 +1343,7 @@ var GamePlayScene = function(game, stage, section)
     level.return_to_menu = false;
     level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
-      [CHAR_ANNOY, "What is ampalamptitooo... wait—what's that word?"],
+      [CHAR_ANNOY, "What's, uh... \"am - pla - tood\"...?"],
       [CHAR_GIRL, "It's AMPLITUDE. Amplitude is how tall those waves are."]
     ];
     level.blurb = true;
@@ -2166,6 +2287,7 @@ var GamePlayScene = function(game, stage, section)
         {
           click_aud.play();
           levels[cur_level].complete++;
+          log_level_complete();
           ga('send', 'event', 'wave_level', 'complete', cur_level, 0);
 
           if(save_state)
@@ -2188,6 +2310,7 @@ var GamePlayScene = function(game, stage, section)
             if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
             self.populateWithLevel(levels[cur_level]);
             self.popBlurb();
+            log_level_begin();
           }
         }
       }
@@ -2224,7 +2347,9 @@ var GamePlayScene = function(game, stage, section)
       else                                     canv.context.drawImage(toggle_down_img,composeButton.x,composeButton.y+Math.round(28*(5/8)),composeButton.w,composeButton.h-Math.round(28*(5/8)));
     }
 
-    validator = new Validator(myComp, gComp);
+    //validator = new Validator(myComp, gComp); //need ref previously, so can't alloc here
+    validator.myC = myComp;
+    validator.gC = gComp;
     vDrawer = new ValidatorDrawer(10, 10, 200, 200, validator);
 
     if(placer_debug)
@@ -2263,6 +2388,7 @@ var GamePlayScene = function(game, stage, section)
     self.populateWithLevel(levels[cur_level]);
     self.setMode(GAME_MODE_PLAY);
     self.popBlurb();
+    log_level_begin();
   }
 
   self.popBlurb = function()
@@ -2484,7 +2610,13 @@ var GamePlayScene = function(game, stage, section)
     if(!levels[cur_level].playground)
       validator.validate(levels[cur_level].allowed_wiggle_room)
 
+    var old_glc = global_lvl_complete;
     global_lvl_complete = (!levels[cur_level].playground && (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing));
+    if(old_glc != global_lvl_complete)
+    {
+      if(global_lvl_complete) log_level_succeed();
+      else                    log_level_fail();
+    }
 
     t += 0.05;
     if(t > 4*Math.PI) t-=4*Math.PI;
