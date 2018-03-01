@@ -27,6 +27,9 @@ var slog = function(app_id,app_version)
   }
   self.flush = function()
   {
+    //HACK
+    //self.accrued_log = []; return;
+
     if(!self.accrued_log.length) return;
     var xhr = new XMLHttpRequest();
     xhr.flushed = self.accrued_log[self.accrued_log.length-1].session_n;

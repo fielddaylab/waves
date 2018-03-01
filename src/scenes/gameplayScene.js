@@ -30,11 +30,13 @@ var graph_default_amplitude = graph_max_y/4;
 var graph_max_amplitude = graph_max_y*(3/5);
 
 var blurb_t;
+var quiz_t;
 var char_xs;
 var char_ys;
 var char_ws;
 var char_hs;
 var char_ts;
+var quiz_char_ts;
 var char_imgs;
 
 var s_play_lvl = 0;
@@ -74,6 +76,7 @@ ENUM = 0;
 var GAME_MODE_MENU  = ENUM; ENUM++;
 var GAME_MODE_PLAY  = ENUM; ENUM++;
 var GAME_MODE_BLURB = ENUM; ENUM++;
+var GAME_MODE_QUIZ  = ENUM; ENUM++;
 var game_mode = GAME_MODE_MENU;
 
 ENUM = 0;
@@ -706,6 +709,11 @@ var Validator = function(myC, gC)
     }
     //console.log(self.delta);
     self.valid = self.delta < wiggle_room;
+
+    //HACK
+    //self.delta = 0;
+    //self.valid = true;
+
     return self.valid;
   }
 
@@ -772,6 +780,10 @@ var Level = function()
   self.blurb = false;
   self.blurb_txt = "";
   self.blurb_seen = false;
+
+  self.quiz = false;
+  self.quiz_txt = "";
+  self.quiz_seen = false;
 }
 
 var ClipBoard = function(w,h,scene,levels)
@@ -1033,6 +1045,104 @@ var Blurb = function(scene)
   }
 }
 
+var Quiz = function(scene)
+{
+  var self = this;
+  self.x = 0;
+  self.y = 0;
+  self.w = dc.width;
+  self.h = dc.height;
+
+  self.txt = "";
+  self.lines;
+  self.img = 0;
+
+  self.text_x = 250;
+  self.text_w = dc.width-self.text_x-20;
+  self.text_h = 100;
+  self.text_y = dc.height-self.text_h-20;
+
+  self.loadQuiz = function(quiz, canv)
+  {
+    var first_line = quiz[0];
+    self.img = first_line[0];
+    self.txt = first_line[1];
+    self.rest_lines = quiz.slice(1);
+    self.canv = canv;
+    self.format(canv);
+  }
+
+  self.format = function(canv)
+  {
+    self.lines = [];
+    var found = 0;
+    var searched = 0;
+    var tentative_search = 0;
+
+    canv.context.font = "20px Open Sans";
+
+    while(found < self.txt.length)
+    {
+      searched = self.txt.indexOf(" ",found);
+      if(searched == -1) searched = self.txt.length;
+      tentative_search = self.txt.indexOf(" ",searched+1);
+      if(tentative_search == -1) tentative_search = self.txt.length;
+      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.text_w-20 && searched != self.txt.length)
+      {
+        searched = tentative_search;
+        tentative_search = self.txt.indexOf(" ",searched+1);
+        if(tentative_search == -1) tentative_search = self.txt.length;
+      }
+      if(self.txt.substring(searched, searched+1) == " ") searched++;
+      self.lines.push(self.txt.substring(found,searched));
+      found = searched;
+    }
+  }
+
+  self.draw = function(canv)
+  {
+    var box_height = 188;
+    var yoff = 400-400*quiz_t;
+    canv.context.drawImage(grad_img,0,canv.height-box_height+yoff,canv.width,box_height);
+
+    if(self.lines)
+    {
+      canv.context.font = "20px Open Sans";
+      canv.context.textAlign = "left";
+      canv.context.fillStyle = "#FFFFFF";
+      canv.fillRoundRect(self.text_x,self.text_y,self.text_w,self.text_h,5);
+      canv.context.beginPath();
+      canv.context.moveTo(self.text_x   ,self.text_y+10);
+      canv.context.lineTo(self.text_x-10,self.text_y+15);
+      canv.context.lineTo(self.text_x   ,self.text_y+20);
+      canv.context.fill();
+      canv.context.fillStyle = "#000000";
+      for(var i = 0; i < self.lines.length; i++)
+        canv.context.fillText(self.lines[i],self.text_x+10,self.text_y+((i+1)*24),self.text_w);
+    }
+
+    for(var i = 0; i < char_imgs.length; i++)
+    {
+      if(i == self.img) quiz_char_ts[i] = lerp(quiz_char_ts[i],1,0.1);
+      else              quiz_char_ts[i] = lerp(quiz_char_ts[i],0,0.1);
+      canv.context.drawImage(char_imgs[i],char_xs[i]+20,char_ys[i]+150+400-(400*quiz_char_ts[i])+yoff,char_ws[i],char_hs[i]);
+    }
+  }
+
+  self.click = function(evt)
+  {
+    click_aud.play();
+    if (self.rest_lines && self.rest_lines.length > 0)
+      self.loadQuiz(self.rest_lines, self.canv);
+    else
+    {
+      self.lines = undefined;
+      scene.setMode(GAME_MODE_MENU);
+    }
+  }
+}
+
+
 var GamePlayScene = function(game, stage, section)
 {
   dc = stage.drawCanv;
@@ -1042,6 +1152,7 @@ var GamePlayScene = function(game, stage, section)
 
   var menu_clicker;
   var blurb_clicker;
+  var quiz_clicker;
   var play_dragger;
   var play_presser;
   var play_clicker;
@@ -1070,6 +1181,7 @@ var GamePlayScene = function(game, stage, section)
   var g2Display;
 
   var blurb;
+  var quiz;
 
   var menuButton;
   var readyButton;
@@ -1349,7 +1461,7 @@ var GamePlayScene = function(game, stage, section)
     level.return_to_menu = false;
     level.complete = section == 0 ? default_completeness : 1;
     level.new_blurbs = [
-      [CHAR_ANNOY, "What's, uh... \"am - pla - tood\"...?"],
+      [CHAR_ANNOY, "What's, uh... \" Am - Plah - Tood \"...?"],
       [CHAR_GIRL, "It's AMPLITUDE. Amplitude is how tall those waves are."]
     ];
     level.blurb = true;
@@ -1492,6 +1604,9 @@ var GamePlayScene = function(game, stage, section)
     ];
     level.blurb = true;
     level.blurb_txt = "Waves are made up of repeating oscillations. A pulse is simply a single oscillation of a wave. A pulse has the same amplitude, wavelength, and offset as the entire wave.";
+    level.quiz = [
+      [CHAR_AXE, "Bip Bop Zoobidy Dop! Hey there this is some test text I'm going 2 quiz u now heyyyyyoooooo here we go!"],
+    ];
     levels.push(level);
 
     s_random_lvl = n_levels;
@@ -2229,6 +2344,7 @@ var GamePlayScene = function(game, stage, section)
     placer_dragger = new Dragger({source:stage.dispCanv.canvas});
     menu_clicker = new Clicker({source:stage.dispCanv.canvas});
     blurb_clicker = new Clicker({source:stage.dispCanv.canvas});
+    quiz_clicker = new Clicker({source:stage.dispCanv.canvas});
     play_dragger = new Dragger({source:stage.dispCanv.canvas});
     play_presser = new Presser({source:stage.dispCanv.canvas});
     play_clicker = new Clicker({source:stage.dispCanv.canvas});
@@ -2256,11 +2372,13 @@ var GamePlayScene = function(game, stage, section)
     g2Display.dotted = false;
 
     blurb_t = 0;
+    quiz_t = 0;
     char_xs = [p(0,dc.width),p(0,dc.width),p(0,dc.width),p(0.02987012987012987,dc.width)];
     char_ys = [p(0.55,dc.height),p(0.55,dc.height),p(0.6,dc.height),p(0.5,dc.height)];
     char_ws = [p(0.2,dc.width),p(0.23,dc.width),p(0.23,dc.width),p(0.14675324675324675,dc.width)];
     char_hs = [p(0.4247159090909091,dc.height),p(0.4,dc.height),p(0.368,dc.height),p(0.4671875,dc.height)];
     char_ts = [0,0,0,0];
+    quiz_char_ts = [0,0,0,0];
     char_imgs = [];
     char_imgs[CHAR_GIRL] = new Image();
     char_imgs[CHAR_GIRL].src = "assets/francis.png";
@@ -2271,6 +2389,7 @@ var GamePlayScene = function(game, stage, section)
     char_imgs[CHAR_TALL] = new Image();
     char_imgs[CHAR_TALL].src = "assets/scout.png";
     blurb = new Blurb(self);
+    quiz = new Quiz(self);
 
     menuButton  = new ButtonBox(10,10,80,30, function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
     menuButton.draw = function(canv)
@@ -2310,7 +2429,7 @@ var GamePlayScene = function(game, stage, section)
             console.log("Wrote levels:"+levels_string);
           }
 
-          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
+          if(levels[cur_level].return_to_menu) self.popQuiz();
           else
           {
             if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
@@ -2333,7 +2452,7 @@ var GamePlayScene = function(game, stage, section)
         )
         {
           click_aud.play();
-          if(levels[cur_level].return_to_menu) self.setMode(GAME_MODE_MENU);
+          if(levels[cur_level].return_to_menu) self.popQuiz();
           else
           {
             if(!levels[cur_level].random) cur_level = (cur_level+1)%n_levels;
@@ -2365,6 +2484,7 @@ var GamePlayScene = function(game, stage, section)
     }
     clip.register(menu_clicker);
     blurb_clicker.register(blurb);
+    quiz_clicker.register(quiz);
 
     myE0.register(play_dragger, play_presser, play_clicker);
     myE1.register(play_dragger, play_presser, play_clicker);
@@ -2413,6 +2533,18 @@ var GamePlayScene = function(game, stage, section)
       self.setMode(GAME_MODE_BLURB);
       levels[cur_level].blurb_seen = true;
     }
+  }
+
+  self.popQuiz = function()
+  {
+    if(levels[cur_level].quiz && !levels[cur_level].quiz_seen)
+    {
+      quiz.loadQuiz(levels[cur_level].quiz, dc);
+      self.setMode(GAME_MODE_QUIZ);
+      levels[cur_level].quiz_seen = true;
+    }
+    else
+      self.setMode(GAME_MODE_MENU);
   }
 
   self.populateWithLevel = function(level)
@@ -2549,6 +2681,7 @@ var GamePlayScene = function(game, stage, section)
     play_presser.ignore();
     play_clicker.ignore();
     blurb_clicker.ignore();
+    quiz_clicker.ignore();
 
     game_mode = mode;
 
@@ -2588,6 +2721,10 @@ var GamePlayScene = function(game, stage, section)
     else if(game_mode == GAME_MODE_BLURB)
     {
       blurb_clicker.flush();
+    }
+    else if(game_mode == GAME_MODE_QUIZ)
+    {
+      quiz_clicker.flush();
     }
 
     clip.tick();
@@ -2713,6 +2850,18 @@ var GamePlayScene = function(game, stage, section)
         char_ts[i] = lerp(char_ts[i],0,0.1);
     }
     blurb.draw(dc);
+
+    if(game_mode == GAME_MODE_QUIZ)
+    {
+      quiz_t = lerp(quiz_t,1,0.1);
+    }
+    else
+    {
+      quiz_t = lerp(quiz_t,0,0.1);
+      for(var i = 0; i < quiz_char_ts.length; i++)
+        quiz_char_ts[i] = lerp(quiz_char_ts[i],0,0.1);
+    }
+    quiz.draw(dc);
 
     if(placer_debug)
     {
