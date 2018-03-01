@@ -1108,6 +1108,7 @@ var GamePlayScene = function(game, stage, section)
     if(type == "AMPLITUDE")  log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_amplitude  : levels[cur_level].gC1_amplitude));
     if(type == "WAVELENGTH") log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_wavelength : levels[cur_level].gC1_wavelength));
     if(type == "OFFSET")     log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_offset     : levels[cur_level].gC1_offset));
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
     mySlog.log(log_data);
   }
   var log_arrow_move = function(mslider,type,side)
@@ -1130,6 +1131,7 @@ var GamePlayScene = function(game, stage, section)
     if(type == "AMPLITUDE")  log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_amplitude  : levels[cur_level].gC1_amplitude));
     if(type == "WAVELENGTH") log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_wavelength : levels[cur_level].gC1_wavelength));
     if(type == "OFFSET")     log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_offset     : levels[cur_level].gC1_offset));
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
     mySlog.log(log_data);
   }
   var log_level_begin = function()
@@ -1159,6 +1161,7 @@ var GamePlayScene = function(game, stage, section)
         closeness:validator.delta,
       }
     };
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
     mySlog.log(log_data);
   }
   var log_level_succeed = function()
@@ -1179,6 +1182,7 @@ var GamePlayScene = function(game, stage, section)
         closeness:validator.delta,
       }
     };
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
     mySlog.log(log_data);
   }
   var log_level_fail = function()
@@ -1199,11 +1203,13 @@ var GamePlayScene = function(game, stage, section)
         closeness:validator.delta,
       }
     };
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
     mySlog.log(log_data);
   }
 
   self.ready = function()
   {
+    document.getElementById("the_body").addEventListener("onbeforeunload",function(){if(mySlog) mySlog.flush();})
     validator = new Validator(myComp, gComp); //garbage to alloc
 
     global_n_ticks = 0;
@@ -2551,7 +2557,10 @@ var GamePlayScene = function(game, stage, section)
     }
 
     if(game_mode == GAME_MODE_MENU)
+    {
       clip.desired_y = 0;
+      mySlog.flush();
+    }
     else if(game_mode == GAME_MODE_PLAY)
       clip.desired_y = dc.height+20;
   }

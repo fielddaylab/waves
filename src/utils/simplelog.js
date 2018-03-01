@@ -11,12 +11,12 @@ var slog = function(app_id,app_version)
   self.session_id = UUIDint();
   self.persistent_session_id = UUIDint();
 
-  self.req_url = "http://www.simplelog.com/log.php?app_id="+encodeURIComponent(self.app_id)+"&app_version="+encodeURIComponent(self.app_version)+"&session_id="+encodeURIComponent(self.session_id)+"&persistent_session_id="+encodeURIComponent(self.persistent_session_id);
+  self.req_url = "https://fielddaylab.wisc.edu/logger/log.php?app_id="+encodeURIComponent(self.app_id)+"&app_version="+encodeURIComponent(self.app_version)+"&session_id="+encodeURIComponent(self.session_id)+"&persistent_session_id="+encodeURIComponent(self.persistent_session_id);
 
   self.log = function(data)
   {
-    data.flush_index = self.flush_index;
-    data.client_time = (new Date()).toUTCString();
+    data.session_n = self.flush_index;
+    data.client_time = (new Date()).toISOString().split('T')[0];
     self.flush_index++;
     self.accrued_log.push(data);
   }
@@ -29,7 +29,7 @@ var slog = function(app_id,app_version)
       if(xhr.readyState == 4 && xhr.status == 200)
       {
         var cutoff = -1;
-        for(var i = 0; i < self.accrued_log.length && cutoff < 0; i++) if(self.accrued_log[i].flush_index >= xhr.flush_index) cutoff = i;
+        for(var i = 0; i < self.accrued_log.length && cutoff < 0; i++) if(self.accrued_log[i].session_n >= xhr.flush_index) cutoff = i;
         self.accrued_log.splice(0,cutoff);
       }
     }
