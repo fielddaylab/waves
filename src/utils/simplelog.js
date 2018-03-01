@@ -9,7 +9,12 @@ var slog = function(app_id,app_version)
   self.app_id = app_id;
   self.app_version = app_version;
   self.session_id = UUIDint();
-  self.persistent_session_id = UUIDint();
+  self.persistent_session_id = getCookie("persistent_session_id");
+  if(!self.persistent_session_id)
+  {
+    self.persistent_session_id = self.session_id;
+    setCookie("persistent_session_id",self.persistent_session_id,100);
+  }
 
   self.req_url = "https://fielddaylab.wisc.edu/logger/log.php?app_id="+encodeURIComponent(self.app_id)+"&app_version="+encodeURIComponent(self.app_version)+"&session_id="+encodeURIComponent(self.session_id)+"&persistent_session_id="+encodeURIComponent(self.persistent_session_id);
 
@@ -22,15 +27,16 @@ var slog = function(app_id,app_version)
   }
   self.flush = function()
   {
+    if(!self.accrued_log.length) return;
     var xhr = new XMLHttpRequest();
-    xhr.flush_index = self.flush_index;
+    xhr.flushed = self.accrued_log[self.accrued_log.length-1].session_n;
     xhr.onreadystatechange = function()
     {
       if(xhr.readyState == 4 && xhr.status == 200)
       {
-        var cutoff = -1;
-        for(var i = 0; i < self.accrued_log.length && cutoff < 0; i++) if(self.accrued_log[i].session_n >= xhr.flush_index) cutoff = i;
-        self.accrued_log.splice(0,cutoff);
+        var cutoff = self.accrued_log.length-1;
+        for(var i = self.accrued_log.length-1; i >= 0 && self.accrued_log[i].session_n > xhr.flushed; i--) cutoff = i-1;
+        if(cutoff >= 0) self.accrued_log.splice(0,cutoff+1);
       }
     }
 
