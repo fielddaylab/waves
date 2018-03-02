@@ -1102,6 +1102,7 @@ var Quiz = function(scene)
         canv.context.fillText(self.qlines[i],self.text_x+10,self.text_y+myoff,self.text_w);
         myoff += 24;
       }
+      canv.context.fillStyle = "#0576B9";
       var cache_myoff = myoff;
       for(var i = 0; i < self.alinesa.length; i++)
       {
@@ -1124,6 +1125,7 @@ var Quiz = function(scene)
         canv.context.fillText(self.alinesd[i],self.text_x+10+self.text_w/2,self.text_y+cache_myoff,self.text_w);
         cache_myoff += 24;
       }
+      canv.context.fillStyle = "#000000";
     }
 
     for(var i = 0; i < char_imgs.length; i++)
