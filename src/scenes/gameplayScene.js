@@ -1130,24 +1130,14 @@ var Quiz = function(scene)
       else              quiz_char_ts[i] = lerp(quiz_char_ts[i],0,0.1);
       canv.context.drawImage(char_imgs[i],char_xs[i]+20,char_ys[i]+150+400-(400*quiz_char_ts[i])+yoff,char_ws[i],char_hs[i]);
     }
-    if(self.qimg) canv.context.drawImage(self.qimg, 200, 200, 300, 300);
-    if(self.aimg) canv.context.drawImage(self.aimg, 200, 600, 300, 300);
+    if(self.qimg) canv.context.drawImage(self.qimg, 100, 200, 300, 300);
+    if(self.aimg) canv.context.drawImage(self.aimg, 500, 200, 300, 300);
   }
 
   self.click = function(evt)
   {
-    if(!self.alinesa[0] || self.alinesa[0] == "")
-    {
-      click_aud.play();
-      if(self.rest_lines && self.rest_lines.length > 0)
-        self.loadQuiz(self.rest_lines, self.canv);
-      else
-      {
-        self.lines = undefined;
-        scene.setMode(GAME_MODE_MENU);
-      }
-    }
-    else //a quiz!
+    var done = false;
+    if(self.alinesa[0] && self.alinesa[0] != "") //a quiz!
     {
       if(self.qlines)
       {
@@ -1157,13 +1147,12 @@ var Quiz = function(scene)
           myoff += 24;
         }
         var cache_myoff = myoff;
-        for(var i = 0; i < self.alinesa.length; i++)
+        for(var i = 0; i < self.alinesa.length && !done; i++)
         {
           if(ptWithin(evt.doX, evt.doY, self.text_x, self.text_y+cache_myoff, self.text_w/3, 24))
           {
-            if(self.correct == 0) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
-            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
-            click_aud.play();
+            if(self.correct == 0) self.rest_lines.splice(1,1);
+            else                  self.rest_lines = self.rest_lines.slice(1);
             var log_data =
             {
               level:cur_level,
@@ -1178,17 +1167,16 @@ var Quiz = function(scene)
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
             mySlog.log(log_data);
-            return;
+            done = true;
           }
           cache_myoff += 24;
         }
-        for(var i = 0; i < self.alinesb.length; i++)
+        for(var i = 0; i < self.alinesb.length && !done; i++)
         {
           if(ptWithin(evt.doX, evt.doY, self.text_x, self.text_y+cache_myoff, self.text_w/3, 24))
           {
-            if(self.correct == 1) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
-            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
-            click_aud.play();
+            if(self.correct == 1) self.rest_lines.splice(1,1);
+            else                  self.rest_lines = self.rest_lines.slice(1);
             var log_data =
             {
               level:cur_level,
@@ -1203,18 +1191,17 @@ var Quiz = function(scene)
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
             mySlog.log(log_data);
-            return;
+            done = true;
           }
           cache_myoff += 24;
         }
         cache_myoff = myoff;
-        for(var i = 0; i < self.alinesc.length; i++)
+        for(var i = 0; i < self.alinesc.length && !done; i++)
         {
           if(ptWithin(evt.doX, evt.doY, self.text_x+self.text_w/2, self.text_y+cache_myoff, self.text_w/3, 24))
           {
-            if(self.correct == 2) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
-            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
-            click_aud.play();
+            if(self.correct == 2) self.rest_lines.splice(1,1);
+            else                  self.rest_lines = self.rest_lines.slice(1);
             var log_data =
             {
               level:cur_level,
@@ -1229,17 +1216,16 @@ var Quiz = function(scene)
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
             mySlog.log(log_data);
-            return;
+            done = true;
           }
           cache_myoff += 24;
         }
-        for(var i = 0; i < self.alinesd.length; i++)
+        for(var i = 0; i < self.alinesd.length && !done; i++)
         {
           if(ptWithin(evt.doX, evt.doY, self.text_x+self.text_w/2, self.text_y+cache_myoff, self.text_w/3, 24))
           {
-            if(self.correct == 3) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
-            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
-            click_aud.play();
+            if(self.correct == 3) self.rest_lines.splice(1,1);
+            else                  self.rest_lines = self.rest_lines.slice(1);
             var log_data =
             {
               level:cur_level,
@@ -1254,10 +1240,29 @@ var Quiz = function(scene)
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
             mySlog.log(log_data);
-            return;
+            done = true;
           }
           cache_myoff += 24;
         }
+      }
+    }
+    else done = true;
+
+    if(done)
+    {
+      click_aud.play();
+      if(self.rest_lines && self.rest_lines.length > 0)
+        self.loadQuiz(self.rest_lines, self.canv);
+      else
+      {
+        self.qlines = undefined;
+        self.alinesa = undefined;
+        self.alinesb = undefined;
+        self.alinesc = undefined;
+        self.alinesd = undefined;
+        self.qimg = undefined;
+        self.aimg = undefined;
+        scene.setMode(GAME_MODE_MENU);
       }
     }
   }
@@ -1729,8 +1734,11 @@ var GamePlayScene = function(game, stage, section)
       [CHAR_AXE, null, null, "Question time!", "","","","",0],
       [CHAR_AXE, GenImg("assets/q1.png"), null, "What wave property is shown by the label 'G'?", "Amplitude","Wavelength","Crest","Trough",0],
       [CHAR_AXE, null, null, "Correct!", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q1.png"), null, "Sorry! 'G' is labeling the 'Amplitude' of the wave!", "","","","",0],
-      //[CHAR_AXE, GenImg("assets/q1.png"), GenImg("assets/a1.png"), "What wave property is shown by the label 'G'?", "Amplitude","Wavelength","Crest","Trough"],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "Nope- 'G' is labeling the 'Amplitude' of the wave!", "","","","",0],
+      [CHAR_AXE, null, null, "Next Question:", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "What wave property is shown by the label 'J'?", "Amplitude","Wavelength","Crest","Trough",1],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "Wrong! 'J' is labeling the 'Wavelength' of the wave!", "","","","",0],
     ];
     levels.push(level);
 
@@ -1955,6 +1963,16 @@ var GamePlayScene = function(game, stage, section)
     ];
     level.blurb = true;
     level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red pulse to interfere with the blue pulse so that they overlap just enough to create the grey wave.";
+    level.quiz = [
+      [CHAR_AXE, null, null, "Question time, #2!", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q2.png"), GenImg("assets/a2.png"), "What will happen when these pulses collide?", "A","B","C","D",0],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q2.png"), GenImg("assets/a2.png"), "Nope- The pulses will sit on top of each other- making a bigger, lower pulse! The answer is 'A'!", "","","","",0],
+      [CHAR_AXE, null, null, "Next Question:", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q3.png"), GenImg("assets/a2.png"), "Here are two different pulses- what will happen when they collide?", "A","B","C","D",1],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q3.png"), GenImg("assets/a2.png"), "Wrong! The answer is B- they will cancel each other out, making a straight line!", "","","","",0],
+    ];
     levels.push(level);
 
     pl_random_lvl = n_levels;
