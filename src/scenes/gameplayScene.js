@@ -1044,6 +1044,7 @@ var Quiz = function(scene)
   self.alinesc;
   self.alinesd;
   self.correct = 0;
+  self.question = 0;
 
   self.text_x = 250;
   self.text_w = dc.width-self.text_x-20;
@@ -1062,6 +1063,7 @@ var Quiz = function(scene)
     self.atxtc = first_line[6];
     self.atxtd = first_line[7];
     self.correct = first_line[8];
+    self.question = first_line[9];
     self.rest_lines = quiz.slice(1);
     self.canv = canv;
     self.format(canv);
@@ -1161,8 +1163,9 @@ var Quiz = function(scene)
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
-                answer:0,
-                correct:self.correct,
+                question:self.question,
+                answered:0,
+                answer:self.correct,
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
@@ -1185,8 +1188,9 @@ var Quiz = function(scene)
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
-                answer:1,
-                correct:self.correct,
+                question:self.question,
+                answered:1,
+                answer:self.correct,
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
@@ -1210,8 +1214,9 @@ var Quiz = function(scene)
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
-                answer:2,
-                correct:self.correct,
+                question:self.question,
+                answered:2,
+                answer:self.correct,
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
@@ -1234,8 +1239,9 @@ var Quiz = function(scene)
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
-                answer:3,
-                correct:self.correct,
+                question:self.question,
+                answered:3,
+                answer:self.correct,
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
@@ -1731,14 +1737,14 @@ var GamePlayScene = function(game, stage, section)
     level.blurb = true;
     level.blurb_txt = "Waves are made up of repeating oscillations. A pulse is simply a single oscillation of a wave. A pulse has the same amplitude, wavelength, and offset as the entire wave.";
     level.quiz = [
-      [CHAR_AXE, null, null, "Question time!", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q1.png"), null, "What wave property is shown by the label 'G'?", "Amplitude","Wavelength","Crest","Trough",0],
-      [CHAR_AXE, null, null, "Correct!", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q1.png"), null, "Nope- 'G' is labeling the 'Amplitude' of the wave!", "","","","",0],
-      [CHAR_AXE, null, null, "Next Question:", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q1.png"), null, "What wave property is shown by the label 'J'?", "Amplitude","Wavelength","Crest","Trough",1],
-      [CHAR_AXE, null, null, "Correct!", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q1.png"), null, "Wrong! 'J' is labeling the 'Wavelength' of the wave!", "","","","",0],
+      [CHAR_AXE, null, null, "Question time!", "","","","",0,0],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "What wave property is shown by the label 'G'?", "Amplitude","Wavelength","Crest","Trough",0,0],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0,0],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "Nope- 'G' is labeling the 'Amplitude' of the wave!", "","","","",0,0],
+      [CHAR_AXE, null, null, "Next Question:", "","","","",0,1],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "What wave property is shown by the label 'J'?", "Amplitude","Wavelength","Crest","Trough",1,1],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0,1],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "Wrong! 'J' is labeling the 'Wavelength' of the wave!", "","","","",0,1],
     ];
     levels.push(level);
 
@@ -1964,14 +1970,14 @@ var GamePlayScene = function(game, stage, section)
     level.blurb = true;
     level.blurb_txt = "Alter the Amplitude, Wavelength, and Offset of the red pulse to interfere with the blue pulse so that they overlap just enough to create the grey wave.";
     level.quiz = [
-      [CHAR_AXE, null, null, "Question time, #2!", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q2.png"), GenImg("assets/a2.png"), "What will happen when these pulses collide?", "A","B","C","D",0],
-      [CHAR_AXE, null, null, "Correct!", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q2.png"), GenImg("assets/a2.png"), "Nope- The pulses will sit on top of each other- making a bigger, lower pulse! The answer is 'A'!", "","","","",0],
-      [CHAR_AXE, null, null, "Next Question:", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q3.png"), GenImg("assets/a2.png"), "Here are two different pulses- what will happen when they collide?", "A","B","C","D",1],
-      [CHAR_AXE, null, null, "Correct!", "","","","",0],
-      [CHAR_AXE, GenImg("assets/q3.png"), GenImg("assets/a2.png"), "Wrong! The answer is B- they will cancel each other out, making a straight line!", "","","","",0],
+      [CHAR_AXE, null, null, "Question time, #2!", "","","","",0,2],
+      [CHAR_AXE, GenImg("assets/q2.png"), GenImg("assets/a2.png"), "What will happen when these pulses collide?", "A","B","C","D",0,2],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0,2],
+      [CHAR_AXE, GenImg("assets/q2.png"), GenImg("assets/a2.png"), "Nope- The pulses will sit on top of each other- making a bigger, lower pulse! The answer is 'A'!", "","","","",0,2],
+      [CHAR_AXE, null, null, "Next Question:", "","","","",0,3],
+      [CHAR_AXE, GenImg("assets/q3.png"), GenImg("assets/a2.png"), "Here are two different pulses- what will happen when they collide?", "A","B","C","D",1,3],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0,3],
+      [CHAR_AXE, GenImg("assets/q3.png"), GenImg("assets/a2.png"), "Wrong! The answer is B- they will cancel each other out, making a straight line!", "","","","",0,3],
     ];
     levels.push(level);
 
