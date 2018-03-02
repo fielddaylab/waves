@@ -782,7 +782,6 @@ var Level = function()
   self.blurb_seen = false;
 
   self.quiz = false;
-  self.quiz_txt = "";
   self.quiz_seen = false;
 }
 
@@ -977,29 +976,7 @@ var Blurb = function(scene)
 
   self.format = function(canv)
   {
-    self.lines = [];
-    var found = 0;
-    var searched = 0;
-    var tentative_search = 0;
-
-    canv.context.font = "20px Open Sans";
-
-    while(found < self.txt.length)
-    {
-      searched = self.txt.indexOf(" ",found);
-      if(searched == -1) searched = self.txt.length;
-      tentative_search = self.txt.indexOf(" ",searched+1);
-      if(tentative_search == -1) tentative_search = self.txt.length;
-      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.text_w-20 && searched != self.txt.length)
-      {
-        searched = tentative_search;
-        tentative_search = self.txt.indexOf(" ",searched+1);
-        if(tentative_search == -1) tentative_search = self.txt.length;
-      }
-      if(self.txt.substring(searched, searched+1) == " ") searched++;
-      self.lines.push(self.txt.substring(found,searched));
-      found = searched;
-    }
+    self.lines = textToLines("20px Open Sans",self.text_w-20,self.txt,canv.context);
   }
 
   self.draw = function(canv)
@@ -1035,7 +1012,7 @@ var Blurb = function(scene)
   self.click = function(evt)
   {
     click_aud.play();
-    if (self.rest_lines && self.rest_lines.length > 0)
+    if(self.rest_lines && self.rest_lines.length > 0)
       self.loadDialog(self.rest_lines, self.canv);
     else
     {
@@ -1053,9 +1030,20 @@ var Quiz = function(scene)
   self.w = dc.width;
   self.h = dc.height;
 
-  self.txt = "";
-  self.lines;
   self.img = 0;
+  self.qimg = 0;
+  self.aimg = 0;
+  self.qtxt = "";
+  self.atxta = "";
+  self.atxtb = "";
+  self.atxtc = "";
+  self.atxtd = "";
+  self.qlines;
+  self.alinesa;
+  self.alinesb;
+  self.alinesc;
+  self.alinesd;
+  self.correct = 0;
 
   self.text_x = 250;
   self.text_w = dc.width-self.text_x-20;
@@ -1065,8 +1053,15 @@ var Quiz = function(scene)
   self.loadQuiz = function(quiz, canv)
   {
     var first_line = quiz[0];
-    self.img = first_line[0];
-    self.txt = first_line[1];
+    self.img   = first_line[0];
+    self.qimg  = first_line[1];
+    self.aimg  = first_line[2];
+    self.qtxt  = first_line[3];
+    self.atxta = first_line[4];
+    self.atxtb = first_line[5];
+    self.atxtc = first_line[6];
+    self.atxtd = first_line[7];
+    self.correct = first_line[8];
     self.rest_lines = quiz.slice(1);
     self.canv = canv;
     self.format(canv);
@@ -1074,29 +1069,11 @@ var Quiz = function(scene)
 
   self.format = function(canv)
   {
-    self.lines = [];
-    var found = 0;
-    var searched = 0;
-    var tentative_search = 0;
-
-    canv.context.font = "20px Open Sans";
-
-    while(found < self.txt.length)
-    {
-      searched = self.txt.indexOf(" ",found);
-      if(searched == -1) searched = self.txt.length;
-      tentative_search = self.txt.indexOf(" ",searched+1);
-      if(tentative_search == -1) tentative_search = self.txt.length;
-      while(canv.context.measureText(self.txt.substring(found,tentative_search)).width < self.text_w-20 && searched != self.txt.length)
-      {
-        searched = tentative_search;
-        tentative_search = self.txt.indexOf(" ",searched+1);
-        if(tentative_search == -1) tentative_search = self.txt.length;
-      }
-      if(self.txt.substring(searched, searched+1) == " ") searched++;
-      self.lines.push(self.txt.substring(found,searched));
-      found = searched;
-    }
+    self.qlines = textToLines("20px Open Sans",self.text_w-20,self.qtxt,canv.context);
+    self.alinesa = textToLines("20px Open Sans",self.text_w-20,self.atxta,canv.context);
+    self.alinesb = textToLines("20px Open Sans",self.text_w-20,self.atxtb,canv.context);
+    self.alinesc = textToLines("20px Open Sans",self.text_w-20,self.atxtc,canv.context);
+    self.alinesd = textToLines("20px Open Sans",self.text_w-20,self.atxtd,canv.context);
   }
 
   self.draw = function(canv)
@@ -1105,7 +1082,7 @@ var Quiz = function(scene)
     var yoff = 400-400*quiz_t;
     canv.context.drawImage(grad_img,0,canv.height-box_height+yoff,canv.width,box_height);
 
-    if(self.lines)
+    if(self.qlines)
     {
       canv.context.font = "20px Open Sans";
       canv.context.textAlign = "left";
@@ -1117,8 +1094,34 @@ var Quiz = function(scene)
       canv.context.lineTo(self.text_x   ,self.text_y+20);
       canv.context.fill();
       canv.context.fillStyle = "#000000";
-      for(var i = 0; i < self.lines.length; i++)
-        canv.context.fillText(self.lines[i],self.text_x+10,self.text_y+((i+1)*24),self.text_w);
+      var myoff = 24;
+      for(var i = 0; i < self.qlines.length; i++)
+      {
+        canv.context.fillText(self.qlines[i],self.text_x+10,self.text_y+myoff,self.text_w);
+        myoff += 24;
+      }
+      var cache_myoff = myoff;
+      for(var i = 0; i < self.alinesa.length; i++)
+      {
+        canv.context.fillText(self.alinesa[i],self.text_x+10,self.text_y+cache_myoff,self.text_w);
+        cache_myoff += 24;
+      }
+      for(var i = 0; i < self.alinesb.length; i++)
+      {
+        canv.context.fillText(self.alinesb[i],self.text_x+10,self.text_y+cache_myoff,self.text_w);
+        cache_myoff += 24;
+      }
+      cache_myoff = myoff;
+      for(var i = 0; i < self.alinesc.length; i++)
+      {
+        canv.context.fillText(self.alinesc[i],self.text_x+10+self.text_w/2,self.text_y+cache_myoff,self.text_w);
+        cache_myoff += 24;
+      }
+      for(var i = 0; i < self.alinesd.length; i++)
+      {
+        canv.context.fillText(self.alinesd[i],self.text_x+10+self.text_w/2,self.text_y+cache_myoff,self.text_w);
+        cache_myoff += 24;
+      }
     }
 
     for(var i = 0; i < char_imgs.length; i++)
@@ -1127,21 +1130,140 @@ var Quiz = function(scene)
       else              quiz_char_ts[i] = lerp(quiz_char_ts[i],0,0.1);
       canv.context.drawImage(char_imgs[i],char_xs[i]+20,char_ys[i]+150+400-(400*quiz_char_ts[i])+yoff,char_ws[i],char_hs[i]);
     }
+    if(self.qimg) canv.context.drawImage(self.qimg, 200, 200, 300, 300);
+    if(self.aimg) canv.context.drawImage(self.aimg, 200, 600, 300, 300);
   }
 
   self.click = function(evt)
   {
-    click_aud.play();
-    if (self.rest_lines && self.rest_lines.length > 0)
-      self.loadQuiz(self.rest_lines, self.canv);
-    else
+    if(!self.alinesa[0] || self.alinesa[0] == "")
     {
-      self.lines = undefined;
-      scene.setMode(GAME_MODE_MENU);
+      click_aud.play();
+      if(self.rest_lines && self.rest_lines.length > 0)
+        self.loadQuiz(self.rest_lines, self.canv);
+      else
+      {
+        self.lines = undefined;
+        scene.setMode(GAME_MODE_MENU);
+      }
+    }
+    else //a quiz!
+    {
+      if(self.qlines)
+      {
+        var myoff = 0;//24;
+        for(var i = 0; i < self.qlines.length; i++)
+        {
+          myoff += 24;
+        }
+        var cache_myoff = myoff;
+        for(var i = 0; i < self.alinesa.length; i++)
+        {
+          if(ptWithin(evt.doX, evt.doY, self.text_x, self.text_y+cache_myoff, self.text_w/3, 24))
+          {
+            if(self.correct == 0) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
+            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
+            click_aud.play();
+            var log_data =
+            {
+              level:cur_level,
+              event:"CUSTOM",
+              event_custom:2, //2 = QUESTION_ANSWER
+              event_data_complex:
+              {
+                event_custom:"QUESTION_ANSWER",
+                answer:0,
+                correct:self.correct,
+              }
+            };
+            log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+            mySlog.log(log_data);
+            return;
+          }
+          cache_myoff += 24;
+        }
+        for(var i = 0; i < self.alinesb.length; i++)
+        {
+          if(ptWithin(evt.doX, evt.doY, self.text_x, self.text_y+cache_myoff, self.text_w/3, 24))
+          {
+            if(self.correct == 1) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
+            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
+            click_aud.play();
+            var log_data =
+            {
+              level:cur_level,
+              event:"CUSTOM",
+              event_custom:2, //2 = QUESTION_ANSWER
+              event_data_complex:
+              {
+                event_custom:"QUESTION_ANSWER",
+                answer:1,
+                correct:self.correct,
+              }
+            };
+            log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+            mySlog.log(log_data);
+            return;
+          }
+          cache_myoff += 24;
+        }
+        cache_myoff = myoff;
+        for(var i = 0; i < self.alinesc.length; i++)
+        {
+          if(ptWithin(evt.doX, evt.doY, self.text_x+self.text_w/2, self.text_y+cache_myoff, self.text_w/3, 24))
+          {
+            if(self.correct == 2) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
+            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
+            click_aud.play();
+            var log_data =
+            {
+              level:cur_level,
+              event:"CUSTOM",
+              event_custom:2, //2 = QUESTION_ANSWER
+              event_data_complex:
+              {
+                event_custom:"QUESTION_ANSWER",
+                answer:2,
+                correct:self.correct,
+              }
+            };
+            log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+            mySlog.log(log_data);
+            return;
+          }
+          cache_myoff += 24;
+        }
+        for(var i = 0; i < self.alinesd.length; i++)
+        {
+          if(ptWithin(evt.doX, evt.doY, self.text_x+self.text_w/2, self.text_y+cache_myoff, self.text_w/3, 24))
+          {
+            if(self.correct == 3) { self.rest_lines = [self.rest_lines[0]];     self.loadQuiz(self.rest_lines, self.canv); }
+            else                  { self.rest_lines = self.rest_lines.slice(1); self.loadQuiz(self.rest_lines, self.canv); }
+            click_aud.play();
+            var log_data =
+            {
+              level:cur_level,
+              event:"CUSTOM",
+              event_custom:2, //2 = QUESTION_ANSWER
+              event_data_complex:
+              {
+                event_custom:"QUESTION_ANSWER",
+                answer:3,
+                correct:self.correct,
+              }
+            };
+            log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+            mySlog.log(log_data);
+            return;
+          }
+          cache_myoff += 24;
+        }
+      }
     }
   }
 }
 
+var cur_level;
 
 var GamePlayScene = function(game, stage, section)
 {
@@ -1195,7 +1317,6 @@ var GamePlayScene = function(game, stage, section)
 
   var n_levels;
   var levels;
-  var cur_level;
 
   var log_slider_move = function(mslider,type,side)
   {
@@ -1605,7 +1726,11 @@ var GamePlayScene = function(game, stage, section)
     level.blurb = true;
     level.blurb_txt = "Waves are made up of repeating oscillations. A pulse is simply a single oscillation of a wave. A pulse has the same amplitude, wavelength, and offset as the entire wave.";
     level.quiz = [
-      [CHAR_AXE, "Bip Bop Zoobidy Dop! Hey there this is some test text I'm going 2 quiz u now heyyyyyoooooo here we go!"],
+      [CHAR_AXE, null, null, "Question time!", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "What wave property is shown by the label 'G'?", "Amplitude","Wavelength","Crest","Trough",0],
+      [CHAR_AXE, null, null, "Correct!", "","","","",0],
+      [CHAR_AXE, GenImg("assets/q1.png"), null, "Sorry! 'G' is labeling the 'Amplitude' of the wave!", "","","","",0],
+      //[CHAR_AXE, GenImg("assets/q1.png"), GenImg("assets/a1.png"), "What wave property is shown by the label 'G'?", "Amplitude","Wavelength","Crest","Trough"],
     ];
     levels.push(level);
 
@@ -2685,7 +2810,7 @@ var GamePlayScene = function(game, stage, section)
 
     game_mode = mode;
 
-    if (game_mode == GAME_MODE_MENU && section == 0 && levels[clip.pl_play.req_lvl].complete) {
+    if(game_mode == GAME_MODE_MENU && section == 0 && levels[clip.pl_play.req_lvl].complete) {
       game.nextScene();
     }
 
