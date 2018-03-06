@@ -1161,7 +1161,7 @@ var Quiz = function(scene)
             {
               level:cur_level,
               event:"CUSTOM",
-              event_custom:2, //2 = QUESTION_ANSWER
+              event_custom:3, //3 = QUESTION_ANSWER
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
@@ -1186,7 +1186,7 @@ var Quiz = function(scene)
             {
               level:cur_level,
               event:"CUSTOM",
-              event_custom:2, //2 = QUESTION_ANSWER
+              event_custom:3, //3 = QUESTION_ANSWER
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
@@ -1212,7 +1212,7 @@ var Quiz = function(scene)
             {
               level:cur_level,
               event:"CUSTOM",
-              event_custom:2, //2 = QUESTION_ANSWER
+              event_custom:3, //3 = QUESTION_ANSWER
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
@@ -1237,7 +1237,7 @@ var Quiz = function(scene)
             {
               level:cur_level,
               event:"CUSTOM",
-              event_custom:2, //2 = QUESTION_ANSWER
+              event_custom:3, //3 = QUESTION_ANSWER
               event_data_complex:
               {
                 event_custom:"QUESTION_ANSWER",
@@ -1337,7 +1337,7 @@ var GamePlayScene = function(game, stage, section)
     {
       level:cur_level,
       event:"CUSTOM",
-      event_custom:0, //0 = SLIDER_MOVE_RELEASE
+      event_custom:1, //1 = SLIDER_MOVE_RELEASE
       event_data_complex:
       {
         event_custom:"SLIDER_MOVE_RELEASE",
@@ -1363,7 +1363,7 @@ var GamePlayScene = function(game, stage, section)
     {
       level:cur_level,
       event:"CUSTOM",
-      event_custom:1, //1 = ARROW_MOVE_RELEASE
+      event_custom:2, //2 = ARROW_MOVE_RELEASE
       event_data_complex:
       {
         event_custom:"ARROW_MOVE_RELEASE",
