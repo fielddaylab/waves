@@ -1347,8 +1347,12 @@ var GamePlayScene = function(game, stage, section)
         end_val:mslider.drag_end_val,
         min_val:mslider.drag_min_val,
         max_val:mslider.drag_max_val,
+        ave_val:mslider.drag_ave_val,
         begin_closeness:mslider.drag_validator_begin,
         end_closeness:validator.delta,
+        drag_length_ticks:mslider.drag_length,
+        direction_shifts:mslider.drag_turns,
+        stdev_val:mslider.drag_stdev,
       }
     };
     if(type == "AMPLITUDE")  log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_amplitude  : levels[cur_level].gC1_amplitude));

@@ -423,6 +423,12 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback,validator,log_
   self.drag_min_val = 0;
   self.drag_max_val = 0;
   self.drag_validator_begin = 0;
+  self.drag_ave_val = 0;
+  self.drag_length = 0;
+  self.drag_turns = 0;
+  self.drag_direction = 0;
+  self.drag_vals = [];
+  self.drag_stdev = 0;
   self.dragStart = function(evt)
   {
     self.dragging = true;
@@ -430,20 +436,44 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback,validator,log_
     self.drag_min_val = self.drag_begin_val;
     self.drag_max_val = self.drag_begin_val;
     self.drag_validator_begin = validator.delta;
+    self.drag_ave_val = self.drag_begin_val;
+    self.drag_length = 1;
+    self.drag_turns = 0;
+    self.drag_direction = 0;
+    self.drag_vals = [];
+    self.drag_stdev = 0;
     self.drag(evt);
   }
   self.drag = function(evt)
   {
     if(evt.doX < self.slit_x) evt.doX = self.slit_x;
     if(evt.doX > self.slit_x+self.maxPixel()) evt.doX = self.slit_x+self.maxPixel();
+    var old_dval = self.desired_val;
+    var old_ddir = self.drag_direction;
     self.desired_val = self.valAtPixel(evt.doX-self.slit_x);
+         if(self.desired_val > old_dval) self.drag_direction = 1;
+    else if(self.desired_val < old_dval) self.drag_direction = -1;
+    if(old_ddir != self.desired_dir) self.drag_turns++;
     if(self.desired_val < self.drag_min_val) self.drag_min_val = self.desired_val;
     if(self.desired_val > self.drag_max_val) self.drag_max_val = self.desired_val;
+    self.drag_ave_val += self.desired_val;
+    self.drag_length++;
+    self.drag_vals.push(self.desired_val);
   }
   self.dragFinish = function()
   {
     self.dragging = false;
     self.drag_end_val = self.desired_val;
+    self.drag_ave_val /= self.drag_length;
+    self.drag_length++;
+    self.drag_stdev = 0;
+    for(var i = 0; i < self.drag_vals.length; i++)
+    {
+      var d = self.drag_vals[i]-self.drag_ave_val;
+      self.drag_stdev += d*d;
+    }
+    self.drag_stdev /= self.drag_vals.length;
+    self.drag_stdev = Math.sqrt(self.drag_stdev);
     log_callback(self);
   }
   self.set = function(n)
