@@ -21,7 +21,7 @@ var slog = function(app_id,app_version)
   self.log = function(data)
   {
     data.session_n = self.flush_index;
-    data.client_time = (new Date()).toISOString().split('T')[0];
+    data.client_time = (new Date()).toISOString().split('T').join(" ");
     self.flush_index++;
     self.accrued_log.push(data);
   }
@@ -43,7 +43,7 @@ var slog = function(app_id,app_version)
       }
     }
 
-    var post = "data="+encodeURIComponent(JSON.stringify(self.accrued_log));
+    var post = "data="+encodeURIComponent(btoa(JSON.stringify(self.accrued_log)));
 
     xhr.open("POST", self.req_url+"&req_id="+encodeURIComponent(UUIDint()), true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
