@@ -361,7 +361,7 @@ function SmoothSliderBox(x,y,w,h,min_val,max_val,val,callback,validator,log_call
     self.desired_val = self.valAtPixel(evt.doX-self.slit_x);
          if(self.desired_val > old_dval) self.drag_direction = 1;
     else if(self.desired_val < old_dval) self.drag_direction = -1;
-    if(old_ddir != self.desired_dir) self.drag_turns++;
+    if(old_ddir != self.drag_direction) self.drag_turns++;
     if(self.desired_val < self.drag_min_val) self.drag_min_val = self.desired_val;
     if(self.desired_val > self.drag_max_val) self.drag_max_val = self.desired_val;
     self.drag_ave_val += self.desired_val;
@@ -483,7 +483,7 @@ function SmoothSliderSqrtBox(x,y,w,h,min_val,max_val,val,callback,validator,log_
     self.desired_val = self.valAtPixel(evt.doX-self.slit_x);
          if(self.desired_val > old_dval) self.drag_direction = 1;
     else if(self.desired_val < old_dval) self.drag_direction = -1;
-    if(old_ddir != self.desired_dir) self.drag_turns++;
+    if(old_ddir != self.drag_direction) self.drag_turns++;
     if(self.desired_val < self.drag_min_val) self.drag_min_val = self.desired_val;
     if(self.desired_val > self.drag_max_val) self.drag_max_val = self.desired_val;
     self.drag_ave_val += self.desired_val;
