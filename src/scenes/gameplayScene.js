@@ -453,7 +453,7 @@ var CompositionAnimationDrawer = function(component_a, component_b, x, y, w, h)
   }
 }
 
-var ComponentEditor = function(component, color, side, validator, log_slider_move, log_arrow_move)
+var ComponentEditor = function(component, color, side, validator, log_slider_move, log_arrow_move, log_reset_btn)
 {
   var self = this;
   self.component = component;
@@ -512,7 +512,7 @@ var ComponentEditor = function(component, color, side, validator, log_slider_mov
   self.graph.draw_zero_x = true;
   self.graph.draw_zero_y = true;
   var b_h = ((self.h/2)-(4*10))/3;
-  self.reset_button  = new ButtonBox(self.play_reset_x, self.reset_y, self.play_reset_w, self.play_reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(knob_blue_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
+  self.reset_button  = new ButtonBox(self.play_reset_x, self.reset_y, self.play_reset_w, self.play_reset_h, function(on) { if(!self.enabled || !self.component.enabled || self.component.playing) return; log_reset_btn(); click_aud.play(); self.reset(); }); self.reset_button.draw = function(canv) { canv.context.drawImage(knob_blue_img,self.reset_button.x,self.reset_button.y,self.reset_button.w,self.reset_button.h); };
   self.toggle_button = new ToggleBox(self.toggle_x, self.toggle_y, self.toggle_w, self.toggle_h, true, function(on) { if(!self.toggle_enabled) return; click_aud.play(); if(on) self.goal_contribution = 1; else self.goal_contribution = 0; });
   self.toggle_button.draw = function(canv)
   {
@@ -1456,6 +1456,28 @@ var GamePlayScene = function(game, stage, section)
     log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
     mySlog.log(log_data);
   }
+  var log_reset_btn = function()
+  {
+    var log_data =
+    {
+      level:cur_level,
+      event:"CUSTOM",
+      event_custom: 4, // 4 = RESET_BTN_PRESS
+      event_data_complex:
+      {
+        event_custom:"RESET_BTN_PRESS",
+        amplitude_left:myC0.amplitude,
+        wavelength_left:myC0.wavelength,
+        offset_left:myC0.offset,
+        amplitude_right:myC1.amplitude,
+        wavelength_right:myC1.wavelength,
+        offset_right:myC1.offset,
+        closeness:validator.delta,
+      }
+    };
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+  }
 
   self.ready = function()
   {
@@ -1488,9 +1510,9 @@ var GamePlayScene = function(game, stage, section)
     myDisplay.draw_zero_x = false;
     myDisplay.draw_zero_x_at_composition = false;
     myDisplay.draw_zero_y = true;
-    nullEditor = new ComponentEditor(myC0, "#FF0000", "left", validator, log_slider_move, log_arrow_move);
-    myE0 = new ComponentEditor(myC0, "#FF0000", "left", validator, log_slider_move, log_arrow_move);
-    myE1 = new ComponentEditor(myC1, "#0000FF", "right", validator, log_slider_move, log_arrow_move);
+    nullEditor = new ComponentEditor(myC0, "#FF0000", "left", validator, log_slider_move, log_arrow_move, log_reset_btn);
+    myE0 = new ComponentEditor(myC0, "#FF0000", "left", validator, log_slider_move, log_arrow_move, log_reset_btn);
+    myE1 = new ComponentEditor(myC1, "#0000FF", "right", validator, log_slider_move, log_arrow_move, log_reset_btn);
 
     s_play_lvl = n_levels;
     //lvl? //single-wave playground
