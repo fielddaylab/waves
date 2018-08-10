@@ -24,6 +24,7 @@ var slog = function(app_id,app_version)
     data.client_time = (new Date()).toISOString().split('T').join(" ");
     self.flush_index++;
     self.accrued_log.push(data);
+    self.flush();
   }
   self.flush = function()
   {
