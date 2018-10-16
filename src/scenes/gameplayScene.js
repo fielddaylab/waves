@@ -1481,7 +1481,6 @@ var GamePlayScene = function(game, stage, section)
 
   self.ready = function()
   {
-    document.getElementById("the_body").addEventListener("onbeforeunload",function(){if(mySlog) mySlog.flush();})
     validator = new Validator(myComp, gComp); //garbage to alloc
 
     global_n_ticks = 0;
@@ -2869,7 +2868,6 @@ var GamePlayScene = function(game, stage, section)
     if(game_mode == GAME_MODE_MENU)
     {
       clip.desired_y = 0;
-      mySlog.flush();
     }
     else if(game_mode == GAME_MODE_PLAY)
       clip.desired_y = dc.height+20;
