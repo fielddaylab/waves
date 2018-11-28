@@ -1171,7 +1171,7 @@ var Quiz = function(scene)
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-            mySlog.log(log_data);
+            window.mySlog.log(log_data);
             done = true;
           }
           cache_myoff += 24;
@@ -1196,7 +1196,7 @@ var Quiz = function(scene)
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-            mySlog.log(log_data);
+            window.mySlog.log(log_data);
             done = true;
           }
           cache_myoff += 24;
@@ -1222,7 +1222,7 @@ var Quiz = function(scene)
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-            mySlog.log(log_data);
+            window.mySlog.log(log_data);
             done = true;
           }
           cache_myoff += 24;
@@ -1247,7 +1247,7 @@ var Quiz = function(scene)
               }
             };
             log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-            mySlog.log(log_data);
+            window.mySlog.log(log_data);
             done = true;
           }
           cache_myoff += 24;
@@ -1359,7 +1359,7 @@ var GamePlayScene = function(game, stage, section)
     if(type == "WAVELENGTH") log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_wavelength : levels[cur_level].gC1_wavelength));
     if(type == "OFFSET")     log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_offset     : levels[cur_level].gC1_offset));
     log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    mySlog.log(log_data);
+    window.mySlog.log(log_data);
   }
   var log_arrow_move = function(mslider,type,side)
   {
@@ -1382,7 +1382,7 @@ var GamePlayScene = function(game, stage, section)
     if(type == "WAVELENGTH") log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_wavelength : levels[cur_level].gC1_wavelength));
     if(type == "OFFSET")     log_data.event_data_complex.correct_val = lerp(mslider.min_val,mslider.max_val,(side == "left" ? levels[cur_level].gC0_offset     : levels[cur_level].gC1_offset));
     log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    mySlog.log(log_data);
+    window.mySlog.log(log_data);
   }
   var log_level_begin = function()
   {
@@ -1391,7 +1391,7 @@ var GamePlayScene = function(game, stage, section)
       level:cur_level,
       event:"BEGIN",
     };
-    mySlog.log(log_data);
+    window.mySlog.log(log_data);
   }
   var log_level_complete = function()
   {
@@ -1412,7 +1412,7 @@ var GamePlayScene = function(game, stage, section)
       }
     };
     log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    mySlog.log(log_data);
+    window.mySlog.log(log_data);
   }
   var log_level_succeed = function()
   {
@@ -1433,7 +1433,7 @@ var GamePlayScene = function(game, stage, section)
       }
     };
     log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    mySlog.log(log_data);
+    window.mySlog.log(log_data);
   }
   var log_level_fail = function()
   {
@@ -1454,7 +1454,7 @@ var GamePlayScene = function(game, stage, section)
       }
     };
     log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    mySlog.log(log_data);
+    window.mySlog.log(log_data);
   }
   var log_reset_btn = function()
   {
@@ -1476,7 +1476,7 @@ var GamePlayScene = function(game, stage, section)
       }
     };
     log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    mySlog.log(log_data);
+    window.mySlog.log(log_data);
   }
 
   self.ready = function()
@@ -1497,8 +1497,6 @@ var GamePlayScene = function(game, stage, section)
     cur_level = 0;
     n_levels = 0;
     levels = [];
-
-    mySlog = new slog("WAVES",1);
 
     nullC = new Component(COMP_TYPE_NONE, 0, 0, 0, 0);
     myC0 = new Component(COMP_TYPE_SIN, 1, graph_default_offset, graph_default_wavelength, graph_default_amplitude);
