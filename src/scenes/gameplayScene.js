@@ -797,7 +797,29 @@ var ClipBoard = function(w,h,scene,levels)
   self._dirty = true;
 
   self.buttons = [];
-  self.dismiss_button = new ButtonBox(p(0.6597402597402597,dc.width),p(0.08125,dc.height),p(0.06363636363636363,dc.width),p(0.075,dc.height), function(on) { if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); else { scene.setMode(GAME_MODE_PLAY); click_aud.play(); } }); self.buttons.push(self.dismiss_button);
+  self.dismiss_button = new ButtonBox(p(0.6597402597402597,dc.width),p(0.08125,dc.height),p(0.06363636363636363,dc.width),p(0.075,dc.height), 
+    function(on) { 
+      // Log menu dismiss
+      var log_data =
+      {
+        level:cur_level,
+        event:"CUSTOM",
+        event_custom:7, //6 = DISMISS_MENU_BUTTON
+        event_data_complex:
+        {
+          event_custom:"DISMISS_MENU_BUTTON",
+        }
+      };
+      log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+      //console.log(log_data);
+      window.mySlog.log(log_data);
+      if(!levels[self.s_levels.req_lvl].complete) scene.requestLevel(s_play_lvl); 
+      else {
+        scene.setMode(GAME_MODE_PLAY); 
+        click_aud.play(); 
+      } 
+    }); 
+  self.buttons.push(self.dismiss_button);
   self.dismiss_button.draw = function(canv)
   {
     canv.context.drawImage(close_img,this.x,this.y,this.w,this.h);
@@ -2565,7 +2587,24 @@ var GamePlayScene = function(game, stage, section)
     blurb = new Blurb(self);
     quiz = new Quiz(self);
 
-    menuButton  = new ButtonBox(10,10,80,30, function(on) { click_aud.play(); self.setMode(GAME_MODE_MENU); });
+    menuButton  = new ButtonBox(10,10,80,30, function(on) { 
+      click_aud.play(); 
+      self.setMode(GAME_MODE_MENU); 
+      // Log Menu Button
+      var log_data =
+      {
+        level:cur_level,
+        event:"CUSTOM",
+        event_custom:5, //5 = MENU_BUTTON
+        event_data_complex:
+        {
+          event_custom:"MENU_BUTTON",
+        }
+      };
+      log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+      //console.log(log_data);
+      window.mySlog.log(log_data);
+    });
     menuButton.draw = function(canv)
     {
       canv.context.drawImage(menu_img,menuButton.x,menuButton.y,menuButton.w,menuButton.h);
@@ -2626,6 +2665,21 @@ var GamePlayScene = function(game, stage, section)
         )
         {
           click_aud.play();
+          // Log skip button
+          var log_data =
+          {
+            level:cur_level,
+            event:"CUSTOM",
+            event_custom:6, //6 = SKIP_BUTTON
+            event_data_complex:
+            {
+              event_custom:"SKIP_BUTTON",
+            }
+          };
+          log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+          //console.log(log_data);
+          window.mySlog.log(log_data);
+
           if(levels[cur_level].return_to_menu) self.popQuiz();
           else
           {
