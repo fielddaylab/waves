@@ -804,7 +804,7 @@ var ClipBoard = function(w,h,scene,levels)
       {
         level:cur_level,
         event:"CUSTOM",
-        event_custom:7, //6 = DISMISS_MENU_BUTTON
+        event_custom:7, //7 = DISMISS_MENU_BUTTON
         event_data_complex:
         {
           event_custom:"DISMISS_MENU_BUTTON",
