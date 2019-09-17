@@ -10,6 +10,9 @@ Note: Note: event_custom will always map to a string of the event name. For exam
 Versions:
 1. Original Version
 2. Logging Menu Button clicks, skip clicks, and menu dismiss (close menu). (7/25/2019)
+3. Bug fixes. Three main changes: (1) Default global_lvl_complete to false so that new games don't cause a level fail.
+(2) Does not log level 0 success/fail, because that is just the default cur_level value (and its a playground)
+(3) Does not log playground success/fail (lvls 0,10,18) (9/17/2019)
 
 ### Event Categories
 - [COMPLETE](#COMPLETE)
