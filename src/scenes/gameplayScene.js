@@ -1,5 +1,5 @@
 var global_n_ticks;
-var global_lvl_complete;
+var global_lvl_complete = false;
 
 var blue = "#76DAE2";
 
@@ -2985,7 +2985,8 @@ var GamePlayScene = function(game, stage, section)
 
     var old_glc = global_lvl_complete;
     global_lvl_complete = (!levels[cur_level].playground && (validator.delta < levels[cur_level].allowed_wiggle_room && myE0.goal_contribution == 1 && myE1.goal_contribution == 1 && !myC0.playing && !myC1.playing));
-    if(old_glc != global_lvl_complete)
+    if(old_glc != global_lvl_complete && cur_level != 0 && !levels[cur_level].playground)
+    // if glc changed & the current level is not the default value & the current level is not a playground
     {
       if(global_lvl_complete) log_level_succeed();
       else                    log_level_fail();
