@@ -1,6 +1,6 @@
 var Game = function(init)
 {
-  window.mySlog = new slog("WAVES",3);
+  window.mySlog = new slog("WAVES",4);
   var default_init =
   {
     width:640,

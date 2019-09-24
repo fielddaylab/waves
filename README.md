@@ -13,6 +13,7 @@ Versions:
 3. Bug fixes. Three main changes: (1) Default global_lvl_complete to false so that new games don't cause a level fail.
 (2) Does not log level 0 success/fail, because that is just the default cur_level value (and its a playground)
 (3) Does not log playground success/fail (lvls 0,10,18) (9/17/2019)
+4. Simple log now sends player_id (if present) from the URL to log.php (9/24/2019)
 
 ### Event Categories
 - [COMPLETE](#COMPLETE)
