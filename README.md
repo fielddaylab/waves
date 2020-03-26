@@ -15,6 +15,34 @@ Versions:
 (3) Does not log playground success/fail (lvls 0,10,18) (9/17/2019)
 4. Simple log now sends player_id (if present) from the URL to log.php (9/24/2019)
 
+## Game Information:
+- There are 3 types of levels: Playground, Challenge, Random. 
+- The games starts with wave playground (level 0).
+- Playground does not have a correct answer (its for exploration only)
+- Challenges and playgrounds need to be played to unlock subsequent levels.
+- After completing each challenge, a random level will be unlocked, that can be played an unlimited amount of times, constantly giving a random scenario within the scope of the previous challenge.
+- There are 4 questions: 2 after challenge 1 and 2 after challenge 2.
+- There are 34 Levels
+
+| Menu Options | Included Level Range | Succeeding Questions |
+| --- | --- | --- | 
+| Playground - Wave | Lv 0| |
+| Challenges - 1| Lv 1 - 8 |Q0, Q1 |
+| Random - 1 |Lv 9 | |
+| Playground - Pulse| | |
+| Challenges - 2|Lv 11-16 |Q2, Q3 |
+| Random - 2| Lv 17| |
+| Playground - Composition | Lv 18 | |
+| Challenges - 3 | | |
+| Random -3 | | |
+| Challenges - 4 | | |
+| Random - 4 | | |
+| Challenges - 5 | | |
+| Random - 5 | Lv 34 | |
+
+
+-
+
 ### Event Categories
 - [COMPLETE](#COMPLETE)
 - [SUCCEED](#SUCCEED)
