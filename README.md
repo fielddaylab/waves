@@ -33,11 +33,11 @@ Versions:
 | Challenges - 2|Lv 11-16 |Q2, Q3 |
 | Random - 2| Lv 17| |
 | Playground - Composition | Lv 18 | |
-| Challenges - 3 | | |
-| Random -3 | | |
-| Challenges - 4 | | |
-| Random - 4 | | |
-| Challenges - 5 | | |
+| Challenges - 3 | Lv 19-28 | |
+| Random -3 | Lv 29| |
+| Challenges - 4 | Lv 30-31 | |
+| Random - 4 | Lv 32 | |
+| Challenges - 5 | Lv 33 | |
 | Random - 5 | Lv 34 | |
 
 
