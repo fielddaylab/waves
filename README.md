@@ -29,7 +29,7 @@ Versions:
 | Playground - Wave | Lv 0| |
 | Challenges - 1| Lv 1 - 8 |Q0, Q1 |
 | Random - 1 |Lv 9 | |
-| Playground - Pulse| | |
+| Playground - Pulse| Lv 10 | |
 | Challenges - 2|Lv 11-16 |Q2, Q3 |
 | Random - 2| Lv 17| |
 | Playground - Composition | Lv 18 | |
@@ -40,8 +40,6 @@ Versions:
 | Challenges - 5 | | |
 | Random - 5 | Lv 34 | |
 
-
--
 
 ### Event Categories
 - [COMPLETE](#COMPLETE)
