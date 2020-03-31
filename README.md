@@ -56,6 +56,8 @@ Versions:
 <a name="COMPLETE"/>
 
 #### COMPLETE
+This event means the user has successfully completed a level (i.e. clicking the "next" button that pops up when the wave has turned green)
+
 | event Name | Description | Note |
 | --- | --- | --- |
 |event_custom |string | |
