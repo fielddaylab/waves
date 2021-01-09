@@ -120,8 +120,8 @@ var LoadingScene = function(game, stage)
     var w = window.screen.width;
     var h = window.screen.height;
     if(
-      (w > h && (w < 880+buffer || h < 660+buffer)) ||
-      (h > w && (h < 880+buffer || w < 660+buffer))
+      (w > h && (w < 880+buffer || h < 627+buffer)) ||
+      (h > w && (h < 880+buffer || w < 627+buffer))
     )
       allow_play = false;
     else allow_play = true;
@@ -134,7 +134,7 @@ var LoadingScene = function(game, stage)
       sc.style.justifyContent = "center";
       sc.style.alignItems = "center";
       sc.style.backgroundColor = "#15A9CB";
-      sc.innerHTML = "<img width='300' src='assets/loading/logo.png'></img><div style='font-family:Open Sans; font-size:16px; color:#FFFFFF; padding:20px; text-align:center;'>Sorry!<br />Game requires screen size<br />of at least "+(880+buffer)+"x"+(660+buffer)+" pixels.<br />(Your screen size is "+window.screen.width+"x"+window.screen.height+")<br />Try playing on a desktop, laptop, or tablet!</div>";
+      sc.innerHTML = "<img width='300' src='assets/loading/logo.png'></img><div style='font-family:Open Sans; font-size:16px; color:#FFFFFF; padding:20px; text-align:center;'>Sorry!<br />Game requires screen size<br />of at least "+(880+buffer)+"x"+(627+buffer)+" pixels.<br />(Your screen size is "+window.screen.width+"x"+window.screen.height+")<br />Try playing on a desktop, laptop, or tablet!</div>";
     }
 
     //note- assets used on loading screen itself NOT included in wait
@@ -239,7 +239,7 @@ var LoadingScene = function(game, stage)
       ctx.textAlign = "left";
       x = 10;
       y = 20
-      ctx.fillText("Game requires screen size of at least 880x660 pixels.",x,y);
+      ctx.fillText("Game requires screen size of at least 880x667 pixels.",x,y);
       ctx.fillText("Try playing on a desktop, laptop, or tablet!",x,y+20);
     }
 
