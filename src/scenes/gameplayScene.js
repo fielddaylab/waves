@@ -2624,6 +2624,9 @@ var GamePlayScene = function(game, stage, section)
         )
         {
           click_aud.play();
+          
+          completeLevel([cur_level]); //tell LoL API this level was just completed
+
           levels[cur_level].complete++;
           log_level_complete();
           ga('send', 'event', 'wave_level', 'complete', cur_level, 0);
@@ -2928,6 +2931,8 @@ var GamePlayScene = function(game, stage, section)
   var t = 0;
   self.tick = function()
   {
+    if (gameIsPaused) return; //do nothing when game is paused
+
     global_n_ticks++;
 
     if(placer_debug)

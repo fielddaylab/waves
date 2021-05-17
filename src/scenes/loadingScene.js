@@ -38,6 +38,7 @@ var LoadingScene = function(game, stage)
 
   self.ready = function()
   {
+    gameStart(); //tell LoL API game is ready
     allow_play = true;
 
     pad = 20;
